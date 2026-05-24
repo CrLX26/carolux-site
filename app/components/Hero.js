@@ -102,7 +102,6 @@ export default function Hero() {
         {/* Sketch image — scroll scale (outer motion.div) + parallax (inner div) */}
         <motion.div
           aria-hidden="true"
-          className="hidden md:block"
           style={{
             position: "absolute",
             right: 0,
@@ -128,8 +127,9 @@ export default function Hero() {
               fill
               priority={true}
               sizes="100vw"
-              style={{ objectFit: "cover", objectPosition: "right center" }}
+              style={{ objectFit: "cover", objectPosition: "center center" }}
             />
+            {/* Bottom fade — desktop and mobile */}
             <div
               style={{
                 position: "absolute",
@@ -138,6 +138,16 @@ export default function Hero() {
                 right: 0,
                 height: "18%",
                 background: "linear-gradient(to top, #faf8f5, transparent)",
+              }}
+            />
+            {/* Mobile text-contrast scrim — fades left side so text stays readable */}
+            <div
+              className="md:hidden"
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(to right, rgba(250,248,245,0.82) 0%, rgba(250,248,245,0.55) 55%, transparent 100%)",
               }}
             />
           </div>
