@@ -25,8 +25,8 @@
 | Component | Status | Notes |
 |---|---|---|
 | `Nav.js` | Complete | **DO NOT TOUCH** — user hard constraint |
-| `Hero.js` | Complete (desktop) | Scroll-tunnel hero with thermal reveal. Mobile has issues — see Known Issues |
-| `Stats.js` | Complete (desktop) | Scroll-scrubbed video + floating giant stats. Mobile uses autoplay + IntersectionObserver |
+| `Hero.js` | Complete | Desktop + mobile fixed. See Known Issues for remaining verification |
+| `Stats.js` | Complete | Desktop scroll-scrub + mobile autoplay/IntersectionObserver |
 | `Services.js` | Complete | Static section |
 | `WhyUs.js` | Complete | Static section |
 | `Packages.js` | Complete | 3-column pricing cards |
@@ -196,40 +196,69 @@ No files in `public/fonts/` — Google Fonts loaded via `next/font/google`.
 ## Git State
 
 ```
-main branch:         3 commits — initial commit + .gitignore cleanup + mobile hero fix
-mobile-fixes branch: current working branch, pushed to GitHub
+main branch:         3 commits
+mobile-fixes branch: 5 commits — current working branch, pushed to GitHub
 ```
 
-**Important:** `app/design-reference/` is **untracked** on the `mobile-fixes` branch (listed as `??` in git status). It exists on disk but has NOT been committed. The design-reference page works at `/design-reference` in dev but will NOT be included in any commit until explicitly staged.
-
-### Commit history (main):
+### Commit history (mobile-fixes, newest first):
 ```
+22573e9  docs: update CLAUDE.md with complete project state
+3fab8e6  fix: mobile hero layout — headline overflow and bridge text wrapping
 42b2ed1  fix: show hero image on mobile — remove hidden md:block, add text-contrast scrim
 0ab8fdf  Clean up .gitignore line endings
 37a3a8f  Initial commit — Carolux Pro website
 ```
 
+**Important:** `app/design-reference/` is **untracked** (listed as `??` in git status). It exists on disk and works at `/design-reference` in dev but has NOT been committed to any branch.
+
+---
+
+## Mobile Fixes Applied (mobile-fixes branch)
+
+All code changes are done. Needs real-phone testing before merging to main.
+
+### What was fixed:
+| Issue | Fix | Commit |
+|---|---|---|
+| Hero image hidden on mobile | Removed `hidden md:block` from sketch image div | `42b2ed1` |
+| Added cream contrast scrim | `className="md:hidden"` gradient over image | `42b2ed1` |
+| Headline overflows on narrow screens | Font clamp min: `4.5rem → 3rem` (48px at 390px) | `3fab8e6` |
+| Bridge text wraps too aggressively | Container width: `65% → 88% on mobile, 65% on md+` | `3fab8e6` |
+
+### What still needs real-phone verification:
+- **Hero image** renders on iOS Safari at 390px (was hidden before `42b2ed1`)
+- **Bridge text** reads comfortably at 3 lines instead of 4+
+- **Stats autoplay** — video plays on iOS (muted + playsInline present, should work)
+- **IntersectionObserver** stat reveals fire correctly on mobile scroll
+- **Nav** renders without overlap (do not touch Nav.js — observation only)
+
+### How to test on a real phone:
+```bash
+npm run dev           # start dev server on port 3000
+npx localtunnel --port 3000   # run as background process
+# opens a loca.lt URL — the IP address shown at that page IS the password
+```
+Alternatively: Vercel auto-deploys every push. Check Vercel Dashboard for preview URL.
+Note: Vercel preview deployments may require login — disable in Vercel → Settings → Deployment Protection.
+
 ---
 
 ## Known Issues
 
-### 1. Mobile Hero Image — PARTIALLY FIXED, needs verification
-**What was done:** Removed `className="hidden md:block"` from the sketch image `motion.div` in `Hero.js`. Changed `objectPosition` from `"right center"` to `"center center"`. Added a left-to-right cream gradient scrim (`className="md:hidden"`) for text contrast on mobile.
+### 1. Mobile display — FIXED in code, needs phone verification
+See "Mobile Fixes Applied" table above.
 
-**Status:** Fix committed to `mobile-fixes` branch (`42b2ed1`). Was visually confirmed in a simulated viewport during that session. Needs real-phone testing — use `npx localtunnel --port 3000` to expose local dev server publicly for phone testing (run as a background process, get the URL, open on phone).
+### 2. Thermal reveal — intentionally desktop-only
+`hidden md:block` on the thermal overlay `motion.div` is correct and intentional. Thermal requires a mouse cursor. Not a bug.
 
-**Note:** The thermal overlay `motion.div` correctly retains `className="hidden md:block"` — thermal requires mouse cursor, intentionally desktop-only.
+### 3. Mouse parallax on mobile
+`window.addEventListener("mousemove")` never fires on mobile. Image stays flat at `translate(0px, 0px)`. Acceptable — no touch parallax equivalent has been implemented.
 
-### 2. Mobile Effects — Broken / Not Implemented
-Hero was designed for desktop-first. On mobile:
-- **Thermal reveal:** Correctly hidden (`md:block`) — this is intentional, not a bug
-- **Mouse parallax:** Fires on `window.addEventListener("mousemove")` — no touch equivalent. On mobile the parallax never runs, so image stays flat at `translate(0px, 0px)` — this is acceptable but could be improved with a subtle CSS animation
-- **Hero scroll tunnel:** `minHeight: "145vh"` + sticky panel works on mobile, but the bridge text and hero content transitions were tuned for desktop viewport heights. On small screens (e.g. 390px wide iPhone) the bridge text may clip or overlap
-- **Bridge text sizing:** `fontSize: "clamp(22px, 3.2vw, 46px)"` — `3.2vw` on a 390px wide screen = ~12.5px, so `clamp` floor of 22px kicks in. Text wraps aggressively on narrow viewports
-- **Primary CTA and subheading width:** `maxWidth: "400px"` works on most phones but may cause issues on very small screens
+### 4. Design Reference Page — Not Committed
+`app/design-reference/` is untracked. Works in dev at `/design-reference`. Should be committed separately as a dev-only tool.
 
-### 3. Design Reference Page — Not Committed
-`app/design-reference/` is untracked. Works in dev at `/design-reference`. Should be committed separately (it's a dev-only reference tool, not part of the production site).
+### 5. Very small phones (iPhone SE 1st gen, 568px tall)
+`minHeight: "720px"` on the sticky hero panel means the panel is taller than the viewport on 568px screens. Trust badges may be clipped. Intentional trade-off — not worth fixing for such old hardware.
 
 ---
 
@@ -243,53 +272,23 @@ Hero was designed for desktop-first. On mobile:
 
 ---
 
-## Next Task — Mobile Display Fixes
+## Next Task
 
-The next session should:
+**Test on a real phone, then merge to main.**
 
-1. **Verify current branch is `mobile-fixes`**
+1. Start dev server: `npm run dev`
+2. Expose with localtunnel: `npx localtunnel --port 3000`
+3. Open on phone, enter the IP shown on the loca.lt page as the password
+4. Verify all items in the "needs real-phone verification" list above
+5. If everything looks good:
    ```bash
-   git branch
-   # should show * mobile-fixes
+   # On GitHub: open a PR from mobile-fixes → main and merge
+   # Or locally:
+   git checkout main
+   git merge mobile-fixes
+   git push origin main
    ```
-
-2. **Start dev server**
-   ```bash
-   npm run dev
-   ```
-
-3. **Expose for phone testing**
-   ```bash
-   npx localtunnel --port 3000
-   # run in background, get the tunnel URL, test on physical phone
-   # note: loca.lt asks for a password — the IP shown at that page IS the password
-   ```
-
-4. **Diagnose and fix these mobile issues in priority order:**
-
-   **P1 — Hero image visibility on mobile**
-   The fix was committed (`42b2ed1`) but needs real-phone confirmation. Check that `house-normal6.webp` actually renders on a 390px viewport. If not, investigate Next.js `Image` component `sizes` prop and whether the image is being served at appropriate resolution.
-
-   **P2 — Bridge text readability on mobile**
-   On narrow screens, `clamp(22px, 3.2vw, 46px)` falls to 22px and the text width at `65%` of viewport may be too narrow, causing too many line breaks. Consider `width: "min(65%, 420px)"` and adjusting the font size clamp floor for mobile.
-
-   **P3 — Hero content layout on mobile**
-   Check that headline, subheading, CTAs, and trust badges all render properly at 390px width. The content block uses `paddingLeft: "clamp(1.5rem, 8vw, 7rem)"` which on mobile = `clamp(1.5rem, ?, 7rem)` → 1.5rem left pad. Should be fine but verify visually.
-
-   **P4 — Stats section on mobile**
-   Stats uses `isTouch` to switch between scroll-scrub and autoplay modes. Verify: video actually autoplays on iOS (muted autoplay works, but `play()` call needs `muted` attribute on the video element). Check the `IntersectionObserver` stat reveal works on mobile scroll.
-
-   **P5 — Nav on mobile**
-   DO NOT touch `Nav.js`. But check it renders without overlap on mobile. If there are issues, report them without changing anything.
-
-5. **After all fixes are verified on phone:**
-   ```bash
-   git add app/components/Hero.js app/components/Stats.js  # only changed files
-   git commit -m "fix: mobile display improvements — bridge text, stats layout"
-   git push origin mobile-fixes
-   ```
-
-6. **Do NOT merge to main** without user review. User will review the `mobile-fixes` branch PR on GitHub before merging.
+6. **Do NOT merge to main without user review.**
 
 ---
 
@@ -298,16 +297,16 @@ The next session should:
 Internal tool at `/design-reference` (not linked from navigation). Shows:
 
 - **Color System** — Carolux, Tresmares, SweepingCorp palettes (click-to-copy hex)
-- **Typography** — Cormorant Garamond, DM Sans, Plus Jakarta Sans specimens with size/weight specs
+- **Typography** — Cormorant Garamond, DM Sans, Plus Jakarta Sans specimens
 - **Spacing & Grid** — 4px base grid visual scale
 - **Components — In Use** — Live demos of all elements currently used on the site
-- **Motion & Scroll Patterns** — Cards describing each animation with token references + easing curve visualizer
+- **Motion & Scroll Patterns** — Animation cards with token references + easing visualizer
 - **Textures & FX** — Grain, edge fades, mobile scrim, thermal radial reveal
-- **Tresmares Library** — All Tresmares patterns NOT YET used on Carolux (cards, ghost button, input, badge, table, char reveal, underline link, pulse dot, gradient shift, overlay menu, submenu card, long-ease demo, center display block)
-- **SweepingCorp Library** — All SweepingCorp patterns NOT YET used on Carolux (square button, ripple CTA, logo reel, scroll mouse indicator, clip-path reveal, spring overshoot easing, dark card, video hover card, covered section grid, canvas glow background)
+- **Tresmares Library** — All Tresmares patterns not yet used on Carolux (cards, ghost button, input, badge, table, char reveal, underline link, pulse dot, gradient shift, overlay menu, submenu card, long-ease demo, center display block)
+- **SweepingCorp Library** — All SweepingCorp patterns not yet used on Carolux (square button, ripple CTA, logo reel, scroll mouse indicator, clip-path reveal, spring overshoot easing, dark card, video hover card, covered section grid, canvas glow background)
 
 Source tags: Orange = Tresmares, Green = SweepingCorp, Teal = Carolux.
-Sidebar navigation with 8 sections. All interactive demos (click-to-copy, ripple, char replay, video hover, overlay menu, input focus).
+Sidebar with 8 sections. All interactive demos (click-to-copy, ripple, char replay, video hover, overlay menu, input focus).
 
 **File NOT committed** — must be staged manually if you want it in git.
 
@@ -317,9 +316,8 @@ Sidebar navigation with 8 sections. All interactive demos (click-to-copy, ripple
 
 - Connected to GitHub repo `CrLX26/carolux-site`
 - Auto-deploys: every push to any branch gets a preview URL
-- **Preview deployments require Vercel login by default** — disable this in Vercel Dashboard → Settings → Deployment Protection if you want unauthenticated phone testing via Vercel URLs
+- **Preview deployments require Vercel login by default** — disable in Vercel Dashboard → Settings → Deployment Protection for unauthenticated phone testing
 - Production URL (main branch): to be confirmed after first main deploy
-- Alternative for phone testing without Vercel: `npx localtunnel --port 3000` (see above)
 
 ---
 
@@ -329,17 +327,16 @@ Sidebar navigation with 8 sections. All interactive demos (click-to-copy, ripple
 # 1. Navigate to project
 cd "H:\Claude Code Folders\Carolux Pro Website\carolux-site"
 
-# 2. Confirm you're on the right branch
-git branch
+# 2. Confirm branch
+git branch       # should show * mobile-fixes
 git status
 
 # 3. Start dev server
-npm run dev
-# → http://localhost:3000
+npm run dev      # → http://localhost:3000
 
 # 4. For phone testing
 npx localtunnel --port 3000   # run as background process
-# note: when opening on phone, the loca.lt page shows an IP address — enter it as the password
+# loca.lt page shows an IP address — enter it as the password
 
 # 5. Read Next.js docs if doing anything framework-level
 # node_modules/next/dist/docs/
