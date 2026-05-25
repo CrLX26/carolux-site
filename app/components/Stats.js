@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useSyncExternalStore } from "react";
-import { useScroll } from "framer-motion";
+import { useScroll, useTransform, motion } from "framer-motion";
 import { STATS } from "../lib/content";
 
 // ── External store: pointer coarse (touch) detection ─────────────────────────
@@ -39,6 +39,8 @@ export default function Stats() {
     target: containerRef,
     offset: ["start start", "end end"],
   });
+
+  const curtainOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
 
   // ── Desktop: video scrub + stat reveals driven by scroll ─────────────────
   useEffect(() => {
@@ -150,6 +152,19 @@ export default function Stats() {
             inset: 0,
             background: "rgba(250,248,245,0.38)",
             zIndex: 1,
+          }}
+        />
+
+        {/* Cream curtain — matches Hero background, fades out over first 8% of scroll progress */}
+        <motion.div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "#faf8f5",
+            zIndex: 2,
+            pointerEvents: "none",
+            opacity: curtainOpacity,
           }}
         />
 
