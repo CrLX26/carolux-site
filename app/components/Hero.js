@@ -502,7 +502,7 @@ export default function Hero() {
                   style={{
                     display: "block",
                     fontFamily: "var(--font-cormorant)",
-                    fontSize: "clamp(4.5rem, 9vw, 10rem)",
+                    fontSize: "clamp(3rem, 9vw, 10rem)",
                     fontWeight: 400,
                     fontStyle: i === 1 ? "italic" : "normal",
                     lineHeight: 0.86,
@@ -686,12 +686,12 @@ export default function Hero() {
 
         {/* Transition text — scroll-driven, lives inside sticky panel */}
         <div
+          className="w-[88%] md:w-[65%]"
           style={{
             position: "absolute",
             bottom: "12%",
             left: "50%",
             transform: "translateX(-50%)",
-            width: "65%",
             zIndex: 15,
             textAlign: "center",
             pointerEvents: "none",
