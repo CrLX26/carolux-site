@@ -695,7 +695,7 @@ export default function Hero() {
             left: 0,
             right: 0,
             height: "12%",
-            background: "linear-gradient(to bottom, transparent 0%, #faf8f5 100%)",
+            background: "linear-gradient(to bottom, rgba(250,248,245,0) 0%, #faf8f5 100%)",
             zIndex: 25,
             pointerEvents: "none",
           }}
