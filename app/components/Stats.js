@@ -111,7 +111,7 @@ export default function Stats() {
       ref={containerRef}
       className="burst-reveal"
       style={{
-        height: isTouch ? "100svh" : "250vh",
+        height: isTouch ? "100svh" : "288vh",
         position: "relative",
       }}
     >

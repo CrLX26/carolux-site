@@ -33,7 +33,8 @@ export default function Hero() {
   // Scroll-driven values — all derived from same progress
   // y must be unitless numbers (px) — string values silently fail in Framer Motion
   const imageScale         = useTransform(scrollYProgress, [0, 1],                [1, 1.08]);
-  const imageOpacity       = useTransform(scrollYProgress, [0, 0.85, 0.99, 1],  [1, 1, 0, 0]);
+  const imageOpacity       = useTransform(scrollYProgress, [0.94, 1],             [1, 0]);
+  const imageY             = useTransform(scrollYProgress, [0.34, 0.90],          [0, -200]);
   const heroContentOpacity = useTransform(scrollYProgress, [0.05, 0.26],         [1, 0]);
   const heroContentY       = useTransform(scrollYProgress, [0.05, 0.30],         [0, -1100]);
   const bridgeY            = useTransform(scrollYProgress, [0.34, 0.90, 1.0],       [320, 0, 0]);
@@ -104,7 +105,7 @@ export default function Hero() {
     <div
       id="home"
       ref={heroRef}
-      style={{ minHeight: "145vh", position: "relative" }}
+      style={{ minHeight: "167vh", position: "relative" }}
     >
       {/* Inner sticky viewport — pins while outer scrolls */}
       <div
@@ -146,6 +147,7 @@ export default function Hero() {
             width: "100%",
             scale: imageScale,
             opacity: imageOpacity,
+            y: imageY,
             transformOrigin: "right center",
           }}
         >
@@ -236,6 +238,7 @@ export default function Hero() {
               bottom: 0,
               width: "100%",
               scale: imageScale,
+              y: imageY,
               transformOrigin: "right center",
             }}
           >
