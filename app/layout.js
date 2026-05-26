@@ -1,26 +1,30 @@
-import { DM_Sans, Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
+import { Gloock, Manrope, Jost } from "next/font/google";
 import "./globals.css";
 import { localBusinessSchema } from "./lib/schema";
 
-const dmSans = DM_Sans({
+// Manrope — geometric sans, strong readability at small sizes.
+const manrope = Manrope({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
+// Gloock — display serif for headlines and large stat numbers.
+const gloock = Gloock({
   variable: "--font-cormorant",
   subsets: ["latin"],
   weight: ["400"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+// Jost — Futura-influenced geometric sans. Used for uppercase tracked labels
+// (alarm card lines 1 & 3). Reads as a specification or regulatory notation —
+// precise and authoritative without the softness of Manrope. Not on reject list.
+const jost = Jost({
+  variable: "--font-label",
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -45,7 +49,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${cormorant.variable} ${jakarta.variable}`}>
+    <html lang="en" className={`${manrope.variable} ${gloock.variable} ${jost.variable}`}>
       <body className="min-h-dvh flex flex-col">
         {children}
         <script

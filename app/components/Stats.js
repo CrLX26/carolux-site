@@ -10,23 +10,39 @@ function subscribePointer(cb) {
   mq.addEventListener("change", cb);
   return () => mq.removeEventListener("change", cb);
 }
-const getPointerSnapshot = () => window.matchMedia("(pointer: coarse)").matches;
+const getPointerSnapshot      = () => window.matchMedia("(pointer: coarse)").matches;
 const getPointerServerSnapshot = () => false;
 
-export default function Stats() {
-  const containerRef = useRef(null); // outer 400vh scroll tunnel
-  const sectionRef = useRef(null);   // inner sticky viewport
-  const videoRef = useRef(null);
+// ── Cumulative reveal — entry windows only ────────────────────────────────────
+// Each tuple: [enterStart, enterEnd] in scroll progress 0→1.
+// Stats fade in one by one as the burst plays — and STAY visible.
+// All four are present when the burst ends.
+const WINDOWS = [
+  [0.12, 0.22],   // stat 1 — 15%  savings
+  [0.36, 0.46],   // stat 2 — 90%+ under-insulated
+  [0.60, 0.70],   // stat 3 — R-49
+  [0.84, 0.94],   // stat 4 — 100%+ ROI
+];
 
-  // 4 DOM refs — one per stat wrapper
+// Maps scroll progress to opacity + Y for one stat.
+// Cumulative: once fully revealed, stays at opacity 1, Y 0 — no exit phase.
+function getStatStyle(v, [enterStart, enterEnd]) {
+  if (v <= enterStart) return { opacity: 0, y: 60 };
+  if (v >= enterEnd)   return { opacity: 1, y: 0 };
+  const p = (v - enterStart) / (enterEnd - enterStart);
+  return { opacity: p, y: 60 * (1 - p) };
+}
+
+export default function Stats() {
+  const containerRef = useRef(null); // outer scroll tunnel
+  const sectionRef   = useRef(null); // inner sticky viewport
+  const videoRef     = useRef(null);
+
   const stat1Ref = useRef(null);
   const stat2Ref = useRef(null);
   const stat3Ref = useRef(null);
   const stat4Ref = useRef(null);
   const statRefs = [stat1Ref, stat2Ref, stat3Ref, stat4Ref];
-
-  // tracks which stats are currently visible — needed for asymmetric up/down thresholds
-  const shownRef = useRef([false, false, false, false]);
 
   const isTouch = useSyncExternalStore(
     subscribePointer,
@@ -34,41 +50,56 @@ export default function Stats() {
     getPointerServerSnapshot,
   );
 
-  // ── Scroll progress across the full 400vh container ──────────────────────
+  // ── Scroll progress across the full scroll tunnel ────────────────────────
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // ── Desktop: video scrub + stat reveals driven by scroll ─────────────────
+  // ── Desktop: rAF video scrub + cumulative scroll-driven stat reveals ──────
   useEffect(() => {
     if (isTouch) return;
     const video = videoRef.current;
     if (video) video.pause();
-    return scrollYProgress.on("change", (v) => {
-      if (video) {
-        const dur = video.duration;
-        if (dur && !isNaN(dur)) video.currentTime = Math.max(0, Math.min(v * 2.5, dur));
-      }
-      // Scrub: v * 2.5 (vs original 3) — 20% more scroll per video frame
-      // Thresholds scaled ×1.2 to match — stats appear at identical video frames, more scroll to reach them
-      // Scroll DOWN: stats appear spread over 0.18→0.90 (range = 0.72)
-      // Scroll UP:   stats disappear spread over 0.90→0.54 (range = 0.36 = exactly half)
-      const SHOW = [0.18, 0.42, 0.66, 0.90];
-      const HIDE = [0.54, 0.66, 0.78, 0.90];
-      [[stat1Ref, 0], [stat2Ref, 1], [stat3Ref, 2], [stat4Ref, 3]].forEach(([ref, i]) => {
-        if (!ref.current) return;
-        if (!shownRef.current[i] && v >= SHOW[i]) {
-          shownRef.current[i] = true;
-          ref.current.style.opacity = "1";
-          ref.current.style.transform = "translateY(0px)";
-        } else if (shownRef.current[i] && v < HIDE[i]) {
-          shownRef.current[i] = false;
-          ref.current.style.opacity = "0";
-          ref.current.style.transform = "translateY(20px)";
+
+    // rAF loop lerps video.currentTime toward target — smooth follow.
+    let targetTime = 0;
+    let rafId      = null;
+
+    const tick = () => {
+      const dur = video?.duration;
+      if (video && dur && !isNaN(dur)) {
+        const clamped = Math.max(0, Math.min(targetTime, dur));
+        const delta   = clamped - video.currentTime;
+        if (Math.abs(delta) > 0.001) {
+          const next = video.currentTime + delta * 0.20;
+          if (typeof video.fastSeek === "function") {
+            video.fastSeek(next);
+          } else {
+            video.currentTime = next;
+          }
         }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    // Scroll listener: scrub video + drive each stat's transform/opacity.
+    // Stats reveal cumulatively — each enters once and remains visible.
+    const unsubscribe = scrollYProgress.on("change", (v) => {
+      targetTime = v * 2.5;
+      statRefs.forEach((ref, i) => {
+        if (!ref.current) return;
+        const { opacity, y } = getStatStyle(v, WINDOWS[i]);
+        ref.current.style.opacity   = String(opacity);
+        ref.current.style.transform = `translateY(${y}px)`;
       });
     });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      unsubscribe();
+    };
   }, [scrollYProgress, isTouch]);
 
   // ── Mobile: autoplay video + IntersectionObserver stat reveals ───────────
@@ -84,17 +115,17 @@ export default function Stats() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          [stat1Ref, stat2Ref, stat3Ref, stat4Ref].forEach((ref, i) => {
+          statRefs.forEach((ref, i) => {
             setTimeout(() => {
               if (!ref.current) return;
-              ref.current.style.opacity = "1";
+              ref.current.style.opacity   = "1";
               ref.current.style.transform = "translateY(0px)";
             }, i * 150);
           });
         } else {
-          [stat1Ref, stat2Ref, stat3Ref, stat4Ref].forEach((ref) => {
+          statRefs.forEach((ref) => {
             if (!ref.current) return;
-            ref.current.style.opacity = "0";
+            ref.current.style.opacity   = "0";
             ref.current.style.transform = "translateY(20px)";
           });
         }
@@ -106,23 +137,21 @@ export default function Stats() {
   }, [isTouch]);
 
   return (
-    // Outer scroll tunnel — 400vh on desktop (sticky trick), 100svh on mobile
     <div
       ref={containerRef}
       className="burst-reveal"
       style={{
-        height: isTouch ? "100svh" : "288vh",
+        height:   isTouch ? "100svh" : "420vh",
         position: "relative",
       }}
     >
-      {/* Inner sticky panel — stays fixed in viewport while outer scrolls */}
       <div
         ref={sectionRef}
         style={{
           position: isTouch ? "relative" : "sticky",
-          top: 0,
-          height: "100svh",
-          width: "100%",
+          top:      0,
+          height:   "100svh",
+          width:    "100%",
           overflow: "hidden",
         }}
       >
@@ -133,152 +162,233 @@ export default function Stats() {
           playsInline
           muted
           style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: 0,
+            position:      "absolute",
+            inset:         0,
+            width:         "100%",
+            height:        "100%",
+            objectFit:     "cover",
+            zIndex:        0,
             pointerEvents: "none",
           }}
         >
           <source src="/videos/insulation-burst-bg-scrub.mp4" type="video/mp4" />
         </video>
 
-        {/* Light cream scrim — just enough contrast, no glass */}
+        {/* Light cream scrim */}
         <div
           aria-hidden="true"
           style={{
-            position: "absolute",
-            inset: 0,
+            position:   "absolute",
+            inset:      0,
             background: "rgba(250,248,245,0.38)",
-            zIndex: 1,
+            zIndex:     1,
           }}
         />
 
         {/* Edge fades — video bleeds into page on all four sides */}
         {[
-          { top: 0, left: 0, right: 0, height: "18%", background: "linear-gradient(to bottom, #faf8f5 0%, transparent 100%)" },
-          { bottom: 0, left: 0, right: 0, height: "18%", background: "linear-gradient(to top, #faf8f5 0%, transparent 100%)" },
-          { top: 0, left: 0, bottom: 0, width: "18%", background: "linear-gradient(to right, #faf8f5 0%, transparent 100%)" },
-          { top: 0, right: 0, bottom: 0, width: "18%", background: "linear-gradient(to left, #faf8f5 0%, transparent 100%)" },
+          { top: 0,    left: 0, right:  0,     height: "18%", background: "linear-gradient(to bottom, #faf8f5 0%, transparent 100%)" },
+          { bottom: 0, left: 0, right:  0,     height: "18%", background: "linear-gradient(to top,    #faf8f5 0%, transparent 100%)" },
+          { top: 0,    left: 0, bottom: 0,     width:  "18%", background: "linear-gradient(to right,  #faf8f5 0%, transparent 100%)" },
+          { top: 0,    right: 0, bottom: 0,    width:  "18%", background: "linear-gradient(to left,   #faf8f5 0%, transparent 100%)" },
         ].map((edgeStyle, i) => (
           <div
             key={i}
             aria-hidden="true"
-            style={{
-              position: "absolute",
-              ...edgeStyle,
-              zIndex: 5,
-              pointerEvents: "none",
-            }}
+            style={{ position: "absolute", ...edgeStyle, zIndex: 5, pointerEvents: "none" }}
           />
         ))}
 
-        {/* ── 2×2 floating stats grid ────────────────────────────────────── */}
-        <div
-          role="region"
-          aria-label="Key statistics"
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 10,
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            placeItems: "center",
-            paddingBottom: "clamp(48px, 8vh, 72px)",
-          }}
-        >
-          {STATS.map((stat, i) => (
-            <div
-              key={i}
-              ref={statRefs[i]}
-              style={{
-                opacity: 0,
-                transform: "translateY(20px)",
-                transition: "opacity 600ms ease, transform 600ms ease",
-                textAlign: "center",
-                padding: "clamp(12px, 3vw, 40px)",
-                width: "100%",
-              }}
-            >
-              {/* Number — prefix, value, suffix */}
+        {/* ── Desktop: Four-column bottom band ─────────────────────────────
+            Bottom 28% of the panel. Stats reveal cumulatively — each fades in
+            once and stays. Upper 72% remains clear for burst video.
+            JS drives opacity + translateY via refs — no CSS transitions needed. */}
+        {!isTouch && (
+          <div
+            role="region"
+            aria-label="Key statistics"
+            style={{
+              position:            "absolute",
+              bottom:              0,
+              left:                0,
+              right:               0,
+              height:              "28%",
+              zIndex:              10,
+              display:             "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              alignItems:          "center",
+              pointerEvents:       "none",
+            }}
+          >
+            {STATS.map((stat, i) => (
               <div
-                aria-label={`${stat.prefix}${stat.countTo}${stat.suffix}`}
+                key={i}
+                ref={statRefs[i]}
                 style={{
-                  fontFamily: "var(--font-jakarta)",
-                  fontWeight: 700,
-                  fontSize: "clamp(72px, 12vw, 160px)",
-                  lineHeight: 0.9,
-                  color: "#1a2b3c",
-                  textShadow: "0 1px 4px rgba(255,255,255,0.5)",
-                  display: "flex",
-                  alignItems: "baseline",
-                  justifyContent: "center",
-                  letterSpacing: "-0.03em",
+                  opacity:       0,
+                  transform:     "translateY(60px)",
+                  textAlign:     "center",
+                  padding:       "0 clamp(8px, 1.5vw, 28px)",
+                  display:       "flex",
+                  flexDirection: "column",
+                  alignItems:    "center",
                 }}
               >
-                {stat.prefix && (
-                  <span
-                    style={{
-                      fontSize: "0.52em",
-                      letterSpacing: "0.04em",
-                      marginRight: "2px",
-                    }}
-                  >
-                    {stat.prefix}
-                  </span>
-                )}
-                <span>{stat.countTo}</span>
-                {stat.suffix && (
-                  <span
-                    style={{
-                      fontSize: "0.44em",
-                      alignSelf: "flex-start",
-                      paddingTop: "0.12em",
-                      marginLeft: "2px",
-                    }}
-                  >
-                    {stat.suffix}
-                  </span>
-                )}
-              </div>
-
-              {/* Label */}
-              <p
-                style={{
-                  fontFamily: "var(--font-dm-sans)",
-                  fontSize: "clamp(13px, 1.5vw, 16px)",
-                  fontWeight: 500,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "rgba(26,43,60,0.85)",
-                  margin: "clamp(8px, 1vw, 16px) auto 0",
-                  lineHeight: 1.5,
-                  maxWidth: "18ch",
-                }}
-              >
-                {stat.label}
-              </p>
-
-              {/* Source attribution */}
-              {stat.source && (
-                <p
+                {/* Teal accent rule — sits above number */}
+                <div
+                  aria-hidden="true"
                   style={{
-                    fontFamily: "var(--font-dm-sans)",
-                    fontSize: "clamp(10px, 1vw, 12px)",
-                    fontStyle: "italic",
-                    color: "rgba(26,43,60,0.5)",
-                    margin: "6px 0 0",
-                    letterSpacing: "0.04em",
+                    width:        "24px",
+                    height:       "1.5px",
+                    background:   "#4a90a4",
+                    marginBottom: "clamp(10px, 1.2vh, 18px)",
+                    opacity:      0.8,
+                  }}
+                />
+
+                {/* Number */}
+                <div
+                  aria-label={`${stat.prefix}${stat.countTo}${stat.suffix}`}
+                  style={{
+                    fontFamily:     "var(--font-cormorant)",
+                    fontWeight:     400,
+                    fontSize:       "clamp(56px, 9vw, 120px)",
+                    lineHeight:     0.88,
+                    color:          "#0d1d2b",
+                    textShadow:     "0 2px 20px rgba(250,248,245,0.65)",
+                    display:        "flex",
+                    alignItems:     "baseline",
+                    justifyContent: "center",
+                    letterSpacing:  "-0.04em",
                   }}
                 >
-                  {stat.source}
+                  {stat.prefix && (
+                    <span style={{ fontSize: "0.46em", letterSpacing: "0.03em", marginRight: "3px" }}>
+                      {stat.prefix}
+                    </span>
+                  )}
+                  <span>{stat.countTo}</span>
+                  {stat.suffix && (
+                    <span style={{ fontSize: "0.38em", alignSelf: "flex-start", paddingTop: "0.14em", marginLeft: "3px" }}>
+                      {stat.suffix}
+                    </span>
+                  )}
+                </div>
+
+                {/* Label */}
+                <p
+                  style={{
+                    fontFamily:    "var(--font-label)",
+                    fontSize:      "clamp(10px, 1.05vw, 13px)",
+                    fontWeight:    500,
+                    letterSpacing: "0.11em",
+                    textTransform: "uppercase",
+                    color:         "#4a90a4",
+                    margin:        "clamp(8px, 1vh, 14px) auto 0",
+                    lineHeight:    1.4,
+                    maxWidth:      "18ch",
+                  }}
+                >
+                  {stat.label}
                 </p>
-              )}
-            </div>
-          ))}
-        </div>
+
+                {/* Source */}
+                {stat.source && (
+                  <p
+                    style={{
+                      fontFamily:    "var(--font-dm-sans)",
+                      fontSize:      "clamp(8px, 0.72vw, 10px)",
+                      fontStyle:     "italic",
+                      color:         "rgba(13,29,43,0.52)",
+                      margin:        "5px 0 0",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {stat.source}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Mobile: 2×2 grid — all stats visible, stagger on intersect ───── */}
+        {isTouch && (
+          <div
+            role="region"
+            aria-label="Key statistics"
+            style={{
+              position:            "absolute",
+              inset:               0,
+              zIndex:              10,
+              display:             "grid",
+              gridTemplateColumns: "1fr 1fr",
+              placeItems:          "center",
+              paddingBottom:       "clamp(48px, 8vh, 72px)",
+            }}
+          >
+            {STATS.map((stat, i) => (
+              <div
+                key={i}
+                ref={statRefs[i]}
+                style={{
+                  opacity:    0,
+                  transform:  "translateY(20px)",
+                  transition: "opacity 600ms ease, transform 600ms ease",
+                  textAlign:  "center",
+                  padding:    "clamp(12px, 3vw, 32px)",
+                  width:      "100%",
+                }}
+              >
+                {/* Number */}
+                <div
+                  aria-label={`${stat.prefix}${stat.countTo}${stat.suffix}`}
+                  style={{
+                    fontFamily:     "var(--font-cormorant)",
+                    fontWeight:     400,
+                    fontSize:       "clamp(44px, 11vw, 80px)",
+                    lineHeight:     0.9,
+                    color:          "#1a2b3c",
+                    textShadow:     "0 1px 4px rgba(255,255,255,0.5)",
+                    display:        "flex",
+                    alignItems:     "baseline",
+                    justifyContent: "center",
+                    letterSpacing:  "-0.03em",
+                  }}
+                >
+                  {stat.prefix && (
+                    <span style={{ fontSize: "0.52em", letterSpacing: "0.04em", marginRight: "2px" }}>
+                      {stat.prefix}
+                    </span>
+                  )}
+                  <span>{stat.countTo}</span>
+                  {stat.suffix && (
+                    <span style={{ fontSize: "0.44em", alignSelf: "flex-start", paddingTop: "0.12em", marginLeft: "2px" }}>
+                      {stat.suffix}
+                    </span>
+                  )}
+                </div>
+
+                {/* Label */}
+                <p
+                  style={{
+                    fontFamily:    "var(--font-dm-sans)",
+                    fontSize:      "clamp(10px, 2.8vw, 13px)",
+                    fontWeight:    500,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color:         "rgba(26,43,60,0.85)",
+                    margin:        "clamp(6px, 1vw, 12px) auto 0",
+                    lineHeight:    1.5,
+                    maxWidth:      "16ch",
+                  }}
+                >
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

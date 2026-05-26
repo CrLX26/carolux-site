@@ -31,9 +31,9 @@ export const HERO = {
     "Tony and Juan show up to every job. You get the owners on the phone, the owners doing the work, and a 1-year guarantee on everything we touch.",
   primaryCta: "Get a Free Estimate",
   secondaryCta: "Call (704) 228-2729",
-  bridgeText:
-    "Most Charlotte homes are losing money through their attic every single month.",
-  bridgeLocation: "Charlotte, NC",
+  secondaryPre:  "Most homes are",
+  secondaryMain: "Losing Money",
+  secondaryPost: "through their attic. Every single month.",
 };
 
 export const TRUST_BADGES = [
