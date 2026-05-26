@@ -33,7 +33,6 @@ export default function Hero() {
   // Scroll-driven values — all derived from same progress
   // y must be unitless numbers (px) — string values silently fail in Framer Motion
   const imageScale         = useTransform(scrollYProgress, [0, 1],                [1, 1.08]);
-  const imageOpacity       = useTransform(scrollYProgress, [0.94, 1],             [1, 0]);
   const imageY             = useTransform(scrollYProgress, [0.34, 0.90],          [0, -200]);
   const heroContentOpacity = useTransform(scrollYProgress, [0.05, 0.26],         [1, 0]);
   const heroContentY       = useTransform(scrollYProgress, [0.05, 0.30],         [0, -1100]);
@@ -146,7 +145,6 @@ export default function Hero() {
             bottom: 0,
             width: "100%",
             scale: imageScale,
-            opacity: imageOpacity,
             y: imageY,
             transformOrigin: "right center",
           }}
@@ -194,7 +192,7 @@ export default function Hero() {
         {/* ─────────────────────────────────────────────────────────────────────
             Thermal overlay — ONE parent mask reveals ALL children.
             No individual mask on any child element.
-            Outer motion.div fades with images via imageOpacity.
+            Outer motion.div wraps all thermal content.
             Inner div drives the mouse-cursor mask + thermalOpacity.
             ───────────────────────────────────────────────────────────────────── */}
         <motion.div
@@ -204,7 +202,6 @@ export default function Hero() {
             position: "absolute",
             inset: 0,
             zIndex: 20,
-            opacity: imageOpacity,
             pointerEvents: "none",
           }}
         >
