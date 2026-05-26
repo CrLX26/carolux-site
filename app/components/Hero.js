@@ -731,10 +731,11 @@ export default function Hero() {
           />
         </motion.div>
 
-        {/* Bottom blur panel — fades in as image lifts, blurs image behind it.
-            Sits below bridge text (z 12) so text stays sharp.
-            Gradient mask: transparent at top edge → opaque at bottom.
-            backdropFilter blurs the rising house image through the cream haze. */}
+        {/* Bottom cream-blur panel — fades in as image lifts.
+            High cream opacity (0.94) washes out the gray image texture so the
+            blur reads as warm cream, not a gray stripe.
+            Long mask gradient (0%→72%) prevents a hard top edge.
+            Sits below bridge text (z 12) so copy stays sharp. */}
         <motion.div
           aria-hidden="true"
           style={{
@@ -742,12 +743,12 @@ export default function Hero() {
             bottom: 0,
             left: 0,
             right: 0,
-            height: "38%",
-            backdropFilter: "blur(28px)",
-            WebkitBackdropFilter: "blur(28px)",
-            background: "linear-gradient(to bottom, rgba(250,248,245,0) 0%, rgba(250,248,245,0.55) 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 45%)",
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 45%)",
+            height: "48%",
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            background: "linear-gradient(to bottom, rgba(250,248,245,0) 0%, rgba(250,248,245,0.94) 60%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 72%)",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 72%)",
             zIndex: 12,
             pointerEvents: "none",
             opacity: bottomBlurOpacity,
