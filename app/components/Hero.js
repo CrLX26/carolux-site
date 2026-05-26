@@ -446,7 +446,7 @@ export default function Hero() {
           <div
             style={{
               position: "absolute",
-              bottom: "12%",
+              bottom: "20%",
               left: "50%",
               transform: "translateX(-50%)",
               width: "65%",
@@ -777,7 +777,7 @@ export default function Hero() {
           className="w-[88%] md:w-[65%]"
           style={{
             position: "absolute",
-            bottom: "12%",
+            bottom: "20%",
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 15,
