@@ -684,6 +684,21 @@ export default function Hero() {
           />
         </motion.div>
 
+        {/* Bottom cream fade — softens the seam between Hero and Stats burst below */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "14%",
+            background: "linear-gradient(to bottom, transparent 0%, #faf8f5 100%)",
+            zIndex: 25,
+            pointerEvents: "none",
+          }}
+        />
+
         {/* Transition text — scroll-driven, lives inside sticky panel */}
         <div
           className="w-[88%] md:w-[65%]"

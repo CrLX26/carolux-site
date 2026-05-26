@@ -48,12 +48,14 @@ export default function Stats() {
     return scrollYProgress.on("change", (v) => {
       if (video) {
         const dur = video.duration;
-        if (dur && !isNaN(dur)) video.currentTime = Math.max(0, Math.min(v * 3, dur));
+        if (dur && !isNaN(dur)) video.currentTime = Math.max(0, Math.min(v * 2.5, dur));
       }
-      // Scroll DOWN: stats appear spread over 0.15→0.75 (range = 0.60)
-      // Scroll UP:   stats disappear spread over 0.75→0.45 (range = 0.30 = exactly half)
-      const SHOW = [0.15, 0.35, 0.55, 0.75];
-      const HIDE = [0.45, 0.55, 0.65, 0.75];
+      // Scrub: v * 2.5 (vs original 3) — 20% more scroll per video frame
+      // Thresholds scaled ×1.2 to match — stats appear at identical video frames, more scroll to reach them
+      // Scroll DOWN: stats appear spread over 0.18→0.90 (range = 0.72)
+      // Scroll UP:   stats disappear spread over 0.90→0.54 (range = 0.36 = exactly half)
+      const SHOW = [0.18, 0.42, 0.66, 0.90];
+      const HIDE = [0.54, 0.66, 0.78, 0.90];
       [[stat1Ref, 0], [stat2Ref, 1], [stat3Ref, 2], [stat4Ref, 3]].forEach(([ref, i]) => {
         if (!ref.current) return;
         if (!shownRef.current[i] && v >= SHOW[i]) {
