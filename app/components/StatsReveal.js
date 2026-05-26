@@ -3,48 +3,78 @@
 import { useRef, useEffect } from "react";
 
 export default function StatsReveal({ children }) {
-  const ref = useRef(null);
+  const ref    = useRef(null); // stats wrapper
+  const blurRef = useRef(null); // seam blur overlay
 
   useEffect(() => {
-    const el = ref.current;
+    const el     = ref.current;
+    const blurEl = blurRef.current;
     if (!el) return;
 
-    // Mobile: always visible — touch Stats handles its own reveals internally
+    // Mobile: always visible, no seam blur needed
     if (window.matchMedia("(pointer: coarse)").matches) {
       el.style.opacity = "1";
+      if (blurEl) blurEl.style.opacity = "0";
       return;
     }
 
     const check = () => {
-      const top = el.getBoundingClientRect().top;
-      const vh = window.innerHeight;
-
-      // Panel locked at viewport top — fully visible
-      if (top <= 0) {
-        el.style.opacity = "1";
-        return;
-      }
-
+      const top      = el.getBoundingClientRect().top;
+      const vh       = window.innerHeight;
       const fadeStart = vh * 0.5;
-      if (top <= fadeStart) {
-        // Fade zone: scroll-synchronised in both directions
-        // Scrolling down: top 0.5vh → 0  →  opacity 0 → 1
-        // Scrolling up:   top 0 → 0.5vh  →  opacity 1 → 0
-        el.style.opacity = String(1 - top / fadeStart);
+
+      if (top <= 0) {
+        // Stats locked — fully visible, seam blur gone
+        el.style.opacity     = "1";
+        if (blurEl) blurEl.style.opacity = "0";
+      } else if (top <= fadeStart) {
+        // Fade zone — stats fades in, blur fades out inversely
+        const t = 1 - top / fadeStart;
+        el.style.opacity     = String(t);
+        if (blurEl) blurEl.style.opacity = String(1 - t);
+      } else if (top <= vh) {
+        // Stats entering from below — hidden, full seam blur
+        el.style.opacity     = "0";
+        if (blurEl) blurEl.style.opacity = "1";
       } else {
-        // Above fade zone — fully hidden
-        el.style.opacity = "0";
+        // Stats far below — transition not active
+        el.style.opacity     = "0";
+        if (blurEl) blurEl.style.opacity = "0";
       }
     };
 
-    check(); // handle page loads where Stats is already in view
+    check();
     window.addEventListener("scroll", check, { passive: true });
     return () => window.removeEventListener("scroll", check);
   }, []);
 
   return (
-    <div ref={ref} style={{ opacity: 0 }}>
-      {children}
-    </div>
+    <>
+      {/* Seam blur — fixed at viewport bottom, only active during Hero→Stats transition.
+          Blurs and creams the boundary between Hero panel and Stats burst frame 1.
+          Fades out inversely as Stats fades in; gone completely when Stats is locked. */}
+      <div
+        ref={blurRef}
+        aria-hidden="true"
+        style={{
+          position:            "fixed",
+          bottom:              0,
+          left:                0,
+          right:               0,
+          height:              "14vh",
+          background:          "linear-gradient(to bottom, rgba(250,248,245,0) 0%, #faf8f5 65%)",
+          backdropFilter:      "blur(14px)",
+          WebkitBackdropFilter:"blur(14px)",
+          opacity:             0,
+          pointerEvents:       "none",
+          zIndex:              30,
+        }}
+      />
+
+      {/* Stats wrapper — opacity controlled by scroll position */}
+      <div ref={ref} style={{ opacity: 0 }}>
+        {children}
+      </div>
+    </>
   );
 }
