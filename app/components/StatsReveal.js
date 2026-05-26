@@ -57,6 +57,26 @@ export default function StatsReveal({ children }) {
           zIndex:        100,
         }}
       />
+
+      {/* Permanent top-seam feather — always cream at the very top of this
+          wrapper, above the scroll-driven overlay (z 101 > 100).
+          When Stats enters the viewport from below, the first pixels visible
+          are this cream gradient, not a hard edge. Bidirectional — works the
+          same whether scrolling down into Stats or back up through the seam. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position:   "absolute",
+          top:        0,
+          left:       0,
+          right:      0,
+          height:     "140px",
+          background: "linear-gradient(to bottom, #faf8f5 0%, rgba(250,248,245,0) 100%)",
+          pointerEvents: "none",
+          zIndex:     101,
+        }}
+      />
+
       {children}
     </div>
   );
