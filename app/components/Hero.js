@@ -684,7 +684,9 @@ export default function Hero() {
           />
         </motion.div>
 
-        {/* Bottom cream fade — softens the seam between Hero and Stats burst below */}
+        {/* Bottom cream fade — fills the dead zone below bridge text (bottom 12% of panel)
+            Transparent at bridge-text level, solid cream at panel edge.
+            Softens where Hero cream meets Stats burst frame 1. */}
         <div
           aria-hidden="true"
           style={{
@@ -692,7 +694,7 @@ export default function Hero() {
             bottom: 0,
             left: 0,
             right: 0,
-            height: "14%",
+            height: "12%",
             background: "linear-gradient(to bottom, transparent 0%, #faf8f5 100%)",
             zIndex: 25,
             pointerEvents: "none",
