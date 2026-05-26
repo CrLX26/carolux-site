@@ -34,6 +34,7 @@ export default function Hero() {
   // y must be unitless numbers (px) — string values silently fail in Framer Motion
   const imageScale         = useTransform(scrollYProgress, [0, 1],                [1, 1.08]);
   const imageY             = useTransform(scrollYProgress, [0.34, 0.90],          [0, -200]);
+  const bottomBlurOpacity  = useTransform(scrollYProgress, [0.34, 0.70],          [0, 1]);
   const heroContentOpacity = useTransform(scrollYProgress, [0.05, 0.26],         [1, 0]);
   const heroContentY       = useTransform(scrollYProgress, [0.05, 0.30],         [0, -1100]);
   const bridgeY            = useTransform(scrollYProgress, [0.34, 0.90, 1.0],       [320, 0, 0]);
@@ -729,6 +730,29 @@ export default function Hero() {
             transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
           />
         </motion.div>
+
+        {/* Bottom blur panel — fades in as image lifts, blurs image behind it.
+            Sits below bridge text (z 12) so text stays sharp.
+            Gradient mask: transparent at top edge → opaque at bottom.
+            backdropFilter blurs the rising house image through the cream haze. */}
+        <motion.div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "38%",
+            backdropFilter: "blur(28px)",
+            WebkitBackdropFilter: "blur(28px)",
+            background: "linear-gradient(to bottom, rgba(250,248,245,0) 0%, rgba(250,248,245,0.55) 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 45%)",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 45%)",
+            zIndex: 12,
+            pointerEvents: "none",
+            opacity: bottomBlurOpacity,
+          }}
+        />
 
         {/* Bottom cream fade — fills the dead zone below bridge text (bottom 12% of panel)
             Transparent at bridge-text level, solid cream at panel edge.
