@@ -26,7 +26,7 @@ export default function Hero() {
   // Scroll-driven values — all derived from same progress
   // y must be unitless numbers (px) — string values silently fail in Framer Motion
   const imageScale         = useTransform(scrollYProgress, [0, 1],                [1, 1.08]);
-  const imageOpacity       = useTransform(scrollYProgress, [0, 0.45, 0.99, 1],  [1, 1, 0, 0]);
+  const imageOpacity       = useTransform(scrollYProgress, [0, 0.45, 0.70, 1],  [1, 1, 0, 0]);
   const heroContentOpacity = useTransform(scrollYProgress, [0.05, 0.26],         [1, 0]);
   const heroContentY       = useTransform(scrollYProgress, [0.05, 0.30],         [0, -1100]);
   const bridgeY            = useTransform(scrollYProgress, [0.34, 0.90, 1.0],       [320, 0, 0]);
