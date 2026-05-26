@@ -7,6 +7,9 @@ import { COMPANY, HERO, TRUST_BADGES } from "../lib/content";
 
 const EASE = [0.16, 1, 0.3, 1];
 
+// Pre-computed once — HERO.bridgeText is a constant import
+const BRIDGE_CHARS = Array.from(HERO.bridgeText);
+
 const GRAIN_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E")`;
 
 export default function Hero() {
@@ -16,6 +19,10 @@ export default function Hero() {
   const [heroMousePos,  setHeroMousePos]  = useState(null);
   const [thermalOpacity, setThermalOpacity] = useState(0);
   const [parallax,       setParallax]       = useState({ x: 0, y: 0 });
+
+  // Per-character DOM refs for both bridge text instances (base + thermal)
+  const charBaseRefs    = useRef([]);
+  const charThermalRefs = useRef([]);
 
   // ── Scroll progress through the full 200vh tunnel ────────────────────────
   const { scrollYProgress } = useScroll({
@@ -57,6 +64,35 @@ export default function Hero() {
     window.addEventListener("mousemove", onWindowMouseMove);
     return () => window.removeEventListener("mousemove", onWindowMouseMove);
   }, []);
+
+  // ── Bridge text character reveal — Tresmares materialization effect ──────
+  // Characters start at opacity 0.05 and materialize scroll-driven as the
+  // bridge text slides up. First char reveals at ~0.54, last locks at 0.90.
+  // Bidirectional — fades back out scrolling up. Direct DOM mutation, no state.
+  useEffect(() => {
+    const N         = BRIDGE_CHARS.length;
+    const START     = 0.54;  // first char starts revealing (~when text enters view)
+    const STAG_END  = 0.82;  // last char starts its fade window here
+    const FADE      = 0.08;  // each character transitions over this scroll range
+
+    return scrollYProgress.on("change", (v) => {
+      for (let i = 0; i < N; i++) {
+        const charStart = N > 1
+          ? START + (i / (N - 1)) * (STAG_END - START)
+          : START;
+        const charEnd = charStart + FADE;
+        const opacity =
+          v <= charStart ? 0.05
+          : v >= charEnd  ? 1
+          : 0.05 + 0.95 * ((v - charStart) / FADE);
+
+        const base    = charBaseRefs.current[i];
+        const thermal = charThermalRefs.current[i];
+        if (base)    base.style.opacity    = String(opacity);
+        if (thermal) thermal.style.opacity = String(opacity);
+      }
+    });
+  }, [scrollYProgress]);
 
   // Single mask string — hero-relative, used on ONE parent overlay div
   const overlayMask = heroMousePos
@@ -419,6 +455,7 @@ export default function Hero() {
           >
             <motion.div style={{ y: bridgeY }}>
               <p
+                aria-label={HERO.bridgeText}
                 style={{
                   fontFamily: "var(--font-cormorant)",
                   fontStyle: "italic",
@@ -432,7 +469,16 @@ export default function Hero() {
                   backgroundClip: "text",
                 }}
               >
-                {HERO.bridgeText}
+                {BRIDGE_CHARS.map((char, i) => (
+                  <span
+                    key={i}
+                    ref={el => { charThermalRefs.current[i] = el; }}
+                    aria-hidden="true"
+                    style={{ opacity: 0.05 }}
+                  >
+                    {char}
+                  </span>
+                ))}
               </p>
               <div
                 aria-hidden="true"
@@ -716,6 +762,7 @@ export default function Hero() {
         >
           <motion.div style={{ y: bridgeY }}>
             <p
+              aria-label={HERO.bridgeText}
               style={{
                 fontFamily: "var(--font-cormorant)",
                 fontStyle: "italic",
@@ -726,7 +773,16 @@ export default function Hero() {
                 margin: 0,
               }}
             >
-              {HERO.bridgeText}
+              {BRIDGE_CHARS.map((char, i) => (
+                <span
+                  key={i}
+                  ref={el => { charBaseRefs.current[i] = el; }}
+                  aria-hidden="true"
+                  style={{ opacity: 0.05 }}
+                >
+                  {char}
+                </span>
+              ))}
             </p>
             <motion.div
               aria-hidden="true"
