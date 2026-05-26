@@ -3,43 +3,35 @@
 import { useRef, useEffect } from "react";
 
 export default function StatsReveal({ children }) {
-  const ref    = useRef(null); // stats wrapper
-  const blurRef = useRef(null); // seam blur overlay
+  const wrapperRef = useRef(null);
+  const overlayRef = useRef(null);
 
   useEffect(() => {
-    const el     = ref.current;
-    const blurEl = blurRef.current;
-    if (!el) return;
+    const wrapper = wrapperRef.current;
+    const overlay = overlayRef.current;
+    if (!wrapper || !overlay) return;
 
-    // Mobile: always visible, no seam blur needed
+    // Mobile: remove overlay immediately — touch Stats handles its own reveals
     if (window.matchMedia("(pointer: coarse)").matches) {
-      el.style.opacity = "1";
-      if (blurEl) blurEl.style.opacity = "0";
+      overlay.style.opacity = "0";
       return;
     }
 
     const check = () => {
-      const top      = el.getBoundingClientRect().top;
-      const vh       = window.innerHeight;
+      const top       = wrapper.getBoundingClientRect().top;
+      const vh        = window.innerHeight;
       const fadeStart = vh * 0.5;
 
       if (top <= 0) {
-        // Stats locked — fully visible, seam blur gone
-        el.style.opacity     = "1";
-        if (blurEl) blurEl.style.opacity = "0";
+        // Stats locked — overlay fully gone
+        overlay.style.opacity = "0";
       } else if (top <= fadeStart) {
-        // Fade zone — stats fades in, blur fades out inversely
-        const t = 1 - top / fadeStart;
-        el.style.opacity     = String(t);
-        if (blurEl) blurEl.style.opacity = String(1 - t);
-      } else if (top <= vh) {
-        // Stats entering from below — hidden, full seam blur
-        el.style.opacity     = "0";
-        if (blurEl) blurEl.style.opacity = "1";
+        // Fade zone: overlay retreats as Stats enters (top 0.5vh → 0)
+        // Stats video shows through cream haze — bidirectional every pass
+        overlay.style.opacity = String(top / fadeStart);
       } else {
-        // Stats far below — transition not active
-        el.style.opacity     = "0";
-        if (blurEl) blurEl.style.opacity = "0";
+        // Stats not yet in fade zone — full cream cover, no line
+        overlay.style.opacity = "1";
       }
     };
 
@@ -49,32 +41,23 @@ export default function StatsReveal({ children }) {
   }, []);
 
   return (
-    <>
-      {/* Seam blur — fixed at viewport bottom, only active during Hero→Stats transition.
-          Blurs and creams the boundary between Hero panel and Stats burst frame 1.
-          Fades out inversely as Stats fades in; gone completely when Stats is locked. */}
+    <div ref={wrapperRef} style={{ position: "relative" }}>
+      {/* Cream overlay — exact Hero background colour (#faf8f5), position:absolute
+          so it is always visually cream regardless of what body/page shows through.
+          Fades from opaque → transparent as Stats locks, giving the milky
+          cream-to-burst reveal the user wants. Bidirectional every scroll pass. */}
       <div
-        ref={blurRef}
+        ref={overlayRef}
         aria-hidden="true"
         style={{
-          position:            "fixed",
-          bottom:              0,
-          left:                0,
-          right:               0,
-          height:              "14vh",
-          background:          "linear-gradient(to bottom, rgba(250,248,245,0) 0%, #faf8f5 65%)",
-          backdropFilter:      "blur(14px)",
-          WebkitBackdropFilter:"blur(14px)",
-          opacity:             0,
-          pointerEvents:       "none",
-          zIndex:              30,
+          position:      "absolute",
+          inset:         0,
+          background:    "#faf8f5",
+          pointerEvents: "none",
+          zIndex:        100,
         }}
       />
-
-      {/* Stats wrapper — opacity controlled by scroll position */}
-      <div ref={ref} style={{ opacity: 0 }}>
-        {children}
-      </div>
-    </>
+      {children}
+    </div>
   );
 }
