@@ -1,6 +1,7 @@
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import Stats from "./components/Stats";
+import StatsReveal from "./components/StatsReveal";
 import Services from "./components/Services";
 import WhyUs from "./components/WhyUs";
 import Packages from "./components/Packages";
@@ -14,7 +15,9 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <Stats />
+        <StatsReveal>
+          <Stats />
+        </StatsReveal>
         <Services />
         <WhyUs />
         <Packages />

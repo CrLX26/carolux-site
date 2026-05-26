@@ -161,14 +161,16 @@ NOT: HVAC postcard with stars and coupons.
 - Information overload — always aim for 30% less text than first instinct
 
 ### Color System
-- Primary: Dark navy #1a3a6b
-- Accent: Warm orange #e06420
-- Secondary: Subtle light blue (used very sparingly)
-- Background: Clean white or off-white #f5f4f0
-- Text: Near-black #2C2C2C (never pure black)
-- Borders: Soft #d0cec8
+- Primary accent: Teal `#4a90a4` — CTAs, accent lines, badge numbers, nav hover states, teal line
+- Background: Cream `#faf8f5` — page background, edge fades
+- Headings / body: Navy `#1a2b3c` — headings, body text, stat numbers
+- Thermal orange: `#ff4400` / amber `#ff8800` / gold `#ffcc00` — thermal reveal only, never general UI
+- Text: Near-black `#2C2C2C` (never pure black)
+- Borders: Soft `#d0cec8`
 - Apply: Soft gradients, premium spacing, subtle depth
 - Never: Oversaturated gradients, random accent colors
+- **Note:** An earlier draft of this file listed navy #1a3a6b + warm orange #e06420 as the palette.
+  That was superseded. Teal is the confirmed accent. Do not revert.
 
 ### Typography
 - Strong hierarchy — one dominant message per section

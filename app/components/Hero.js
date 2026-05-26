@@ -217,7 +217,7 @@ export default function Hero() {
                 fill
                 priority={true}
                 sizes="100vw"
-                style={{ objectFit: "cover", objectPosition: "right center" }}
+                style={{ objectFit: "cover", objectPosition: "center center" }}
               />
             </div>
           </motion.div>
