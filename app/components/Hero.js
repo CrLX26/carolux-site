@@ -132,7 +132,10 @@ export default function Hero() {
       ref={heroRef}
       style={{ minHeight: "274vh", position: "relative" }}
     >
-      {/* Inner sticky viewport — pins while outer scrolls */}
+      {/* Inner sticky viewport — pins while outer scrolls.
+          zIndex: 2 keeps Hero above the Stats panel during their brief
+          viewport overlap. Hero's cream bottom blur covers the seam;
+          Stats reveals from underneath as Hero lifts away. */}
       <div
         ref={stickyRef}
         style={{
@@ -140,10 +143,11 @@ export default function Hero() {
           top:        navHeight,
           height:     "100svh",
           minHeight:  "720px",
-          overflow:   "hidden",
+          overflow:   "clip",
           display:    "flex",
           alignItems: "center",
           background: "#faf8f5",
+          zIndex:     2,
         }}
       >
         {/* Grain overlay */}
@@ -807,11 +811,9 @@ export default function Hero() {
             left:                 0,
             right:                0,
             height:               "48%",
-            backdropFilter:       "blur(18px)",
-            WebkitBackdropFilter: "blur(18px)",
-            background:           "linear-gradient(to bottom, rgba(250,248,245,0) 0%, rgba(250,248,245,0.94) 60%)",
-            WebkitMaskImage:      "linear-gradient(to bottom, transparent 0%, black 72%)",
-            maskImage:            "linear-gradient(to bottom, transparent 0%, black 72%)",
+            background:           "linear-gradient(to bottom, rgba(250,248,245,0) 0%, rgba(250,248,245,1) 55%)",
+            WebkitMaskImage:      "linear-gradient(to bottom, transparent 0%, black 68%)",
+            maskImage:            "linear-gradient(to bottom, transparent 0%, black 68%)",
             zIndex:               12,
             pointerEvents:        "none",
             opacity:              bottomBlurOpacity,

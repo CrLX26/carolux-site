@@ -61,8 +61,8 @@ export const STATS = [
     prefix: "R-",
     countTo: 49,
     suffix: "",
-    label: "DOE recommended level for NC attics",
-    source: "",
+    label: "Recommended level for NC",
+    source: "Department of Energy",
   },
   {
     prefix: "",

@@ -4,6 +4,9 @@ import { useRef, useEffect, useSyncExternalStore } from "react";
 import { useScroll } from "framer-motion";
 import { STATS } from "../lib/content";
 
+// Identical grain to Hero — ensures seamless texture across the Hero→Stats boundary
+const GRAIN_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E")`;
+
 // ── External store: pointer coarse (touch) detection ─────────────────────────
 function subscribePointer(cb) {
   const mq = window.matchMedia("(pointer: coarse)");
@@ -55,6 +58,7 @@ export default function Stats() {
     target: containerRef,
     offset: ["start start", "end end"],
   });
+
 
   // ── Desktop: rAF video scrub + cumulative scroll-driven stat reveals ──────
   useEffect(() => {
@@ -141,8 +145,10 @@ export default function Stats() {
       ref={containerRef}
       className="burst-reveal"
       style={{
-        height:   isTouch ? "100svh" : "420vh",
-        position: "relative",
+        height:     isTouch ? "100svh" : "420vh",
+        position:   "relative",
+        background: "#faf8f5",
+        marginTop:  "-2px",
       }}
     >
       <div
@@ -152,7 +158,7 @@ export default function Stats() {
           top:      0,
           height:   "100svh",
           width:    "100%",
-          overflow: "hidden",
+          overflow: "clip",
         }}
       >
         {/* ── Video background ───────────────────────────────────────────── */}
@@ -173,6 +179,22 @@ export default function Stats() {
         >
           <source src="/videos/insulation-burst-bg-scrub.mp4" type="video/mp4" />
         </video>
+
+        {/* Grain overlay — matches Hero grain exactly, eliminates Hero→Stats texture seam */}
+        <div
+          aria-hidden="true"
+          style={{
+            position:         "absolute",
+            inset:            0,
+            pointerEvents:    "none",
+            backgroundImage:  GRAIN_BG,
+            backgroundRepeat: "repeat",
+            backgroundSize:   "200px 200px",
+            mixBlendMode:     "multiply",
+            opacity:          0.55,
+            zIndex:           6,
+          }}
+        />
 
         {/* Light cream scrim */}
         <div
@@ -279,7 +301,7 @@ export default function Stats() {
                 <p
                   style={{
                     fontFamily:    "var(--font-label)",
-                    fontSize:      "clamp(10px, 1.05vw, 13px)",
+                    fontSize:      "clamp(12px, 1.25vw, 16px)",
                     fontWeight:    500,
                     letterSpacing: "0.11em",
                     textTransform: "uppercase",
@@ -297,10 +319,10 @@ export default function Stats() {
                   <p
                     style={{
                       fontFamily:    "var(--font-dm-sans)",
-                      fontSize:      "clamp(8px, 0.72vw, 10px)",
+                      fontSize:      "clamp(10px, 0.95vw, 12px)",
                       fontStyle:     "italic",
-                      color:         "rgba(13,29,43,0.52)",
-                      margin:        "5px 0 0",
+                      color:         "rgba(13,29,43,0.72)",
+                      margin:        "6px 0 0",
                       letterSpacing: "0.04em",
                     }}
                   >
