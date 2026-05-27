@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useSyncExternalStore } from "react";
+import { useRef, useEffect, useState, useSyncExternalStore } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { STATS } from "../lib/content";
 
@@ -52,6 +52,19 @@ export default function Stats() {
     getPointerSnapshot,
     getPointerServerSnapshot,
   );
+
+  // ── Nav height — used to close the gap between Hero releasing and Stats pinning ──
+  // Gap = navHeight + 100svh. A negative marginTop of that amount on the outer
+  // container makes Stats pin at exactly the scroll position Hero releases.
+  const [navH, setNavH] = useState(64);
+  useEffect(() => {
+    const header = document.querySelector("header");
+    if (!header) return;
+    const measure = () => setNavH(header.getBoundingClientRect().height);
+    measure();
+    window.addEventListener("resize", measure, { passive: true });
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
   // ── Scroll progress across the full scroll tunnel ────────────────────────
   const { scrollYProgress } = useScroll({
@@ -169,7 +182,7 @@ export default function Stats() {
         height:     isTouch ? "100svh" : "420vh",
         position:   "relative",
         background: "#faf8f5",
-        marginTop:  "-2px",
+        marginTop:  isTouch ? 0 : `calc(-100svh - ${navH}px)`,
       }}
     >
       <div
@@ -242,7 +255,6 @@ export default function Stats() {
 
         {/* Edge fades — video bleeds into page on all four sides */}
         {[
-          { top: 0,    left: 0, right:  0,     height: "18%", background: "linear-gradient(to bottom, #faf8f5 0%, transparent 100%)" },
           { bottom: 0, left: 0, right:  0,     height: "18%", background: "linear-gradient(to top,    #faf8f5 0%, transparent 100%)" },
           { top: 0,    left: 0, bottom: 0,     width:  "18%", background: "linear-gradient(to right,  #faf8f5 0%, transparent 100%)" },
           { top: 0,    right: 0, bottom: 0,    width:  "18%", background: "linear-gradient(to left,   #faf8f5 0%, transparent 100%)" },

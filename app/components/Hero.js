@@ -51,8 +51,6 @@ export default function Hero() {
   // scrolls up at exactly 2000px/unit — same rate as both text blocks — so all
   // three move as one unified system from that point to the end of the tunnel.
   const imageY            = useTransform(scrollYProgress, [0.80, 1.00],  [0, -400]);
-  // Cream-blur panel — starts after content is mostly gone, peaks at 80%
-  const bottomBlurOpacity = useTransform(scrollYProgress, [0.55, 0.82],  [0, 1]);
   // Alarm card — same scroll rate as heroContentY (2000px per progress unit).
   // Multi-input form: re-evaluates whenever scrollYProgress OR alarmStartMV changes,
   // so the post-mount measurement immediately takes effect without needing a re-render.
@@ -116,12 +114,13 @@ export default function Hero() {
 
       // Distance to the nearest edge.
       // Left / right / top use panel coordinates (rect-relative).
-      // Bottom uses the TOP of the solid cream strip (bottom 12% of panel, zIndex:25)
-      // as the effective boundary — so the spotlight shrinks to zero before
-      // it ever reaches that always-on cream layer.
-      // Viewport Y of cream strip top = rect.top + rect.height * 0.88
-      const fromBottom = (rect.top + rect.height * 0.88) - e.clientY;
-      const minDist = Math.min(mx, my, rect.width - mx, fromBottom);
+      // Alarm card bottom — 50px below the last line of alarm text.
+      // getBoundingClientRect() reads live rendered position post-transform,
+      // so the threshold tracks the card as it scrolls through the viewport.
+      const alarmRect       = alarmCardRef.current?.getBoundingClientRect();
+      const fromAlarmBottom = alarmRect ? (alarmRect.bottom + 500) - e.clientY : Infinity;
+      // Left / top / right shrink at viewport edges. Bottom shrinks at alarm card only.
+      const minDist = Math.min(mx, my, rect.width - mx, fromAlarmBottom);
 
       // Radius shrinks linearly from SPOTLIGHT_RADIUS → 0 as cursor approaches
       // any edge. Reaches zero exactly at the edge. SPOTLIGHT_RAMP controls how
@@ -155,7 +154,7 @@ export default function Hero() {
     <div
       id="home"
       ref={heroRef}
-      style={{ minHeight: "274vh", position: "relative" }}
+      style={{ minHeight: "calc(274vh - 300px)", position: "relative" }}
     >
       {/* Inner sticky viewport — pins while outer scrolls.
           zIndex: 2 keeps Hero above the Stats panel during their brief
@@ -217,17 +216,6 @@ export default function Hero() {
               priority={true}
               sizes="100vw"
               style={{ objectFit: "cover", objectPosition: "center center" }}
-            />
-            {/* Bottom fade — image edge into page */}
-            <div
-              style={{
-                position:   "absolute",
-                bottom:     0,
-                left:       0,
-                right:      0,
-                height:     "18%",
-                background: "linear-gradient(to top, #faf8f5, transparent)",
-              }}
             />
             {/* Mobile text-contrast scrim */}
             <div
@@ -825,40 +813,6 @@ export default function Hero() {
           />
         </motion.div>
 
-        {/* Cream-blur panel — fades in as hero content exits.
-            Smooths the Hero→Stats seam so frame-0 of the burst video
-            doesn't appear as a hard edge. */}
-        <motion.div
-          aria-hidden="true"
-          style={{
-            position:             "absolute",
-            bottom:               0,
-            left:                 0,
-            right:                0,
-            height:               "48%",
-            background:           "linear-gradient(to bottom, rgba(250,248,245,0) 0%, rgba(250,248,245,1) 55%)",
-            WebkitMaskImage:      "linear-gradient(to bottom, transparent 0%, black 68%)",
-            maskImage:            "linear-gradient(to bottom, transparent 0%, black 68%)",
-            zIndex:               12,
-            pointerEvents:        "none",
-            opacity:              bottomBlurOpacity,
-          }}
-        />
-
-        {/* Solid cream strip at very bottom — always-on seam */}
-        <div
-          aria-hidden="true"
-          style={{
-            position:      "absolute",
-            bottom:        0,
-            left:          0,
-            right:         0,
-            height:        "12%",
-            background:    "linear-gradient(to bottom, rgba(250,248,245,0) 0%, #faf8f5 100%)",
-            zIndex:        25,
-            pointerEvents: "none",
-          }}
-        />
       </div>
     </div>
   );
