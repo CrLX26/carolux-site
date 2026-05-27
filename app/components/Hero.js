@@ -7,6 +7,17 @@ import { COMPANY, HERO, TRUST_BADGES } from "../lib/content";
 
 const EASE = [0.16, 1, 0.3, 1];
 
+// ── Thermal spotlight tuning ───────────────────────────────────────────────
+// Tell Claude which direction to adjust using plain English:
+//
+//   "make the circle bigger / smaller"        → change SPOTLIGHT_RADIUS
+//   "start shrinking sooner"                  → raise  SPOTLIGHT_RAMP  (e.g. 400)
+//   "only shrink right at the edge"           → lower  SPOTLIGHT_RAMP  (e.g. 100)
+//   "stop closer to / farther from the edge"  → those two are now the same control
+//
+const SPOTLIGHT_RADIUS = 180; // px — full circle size when cursor is in open centre
+const SPOTLIGHT_RAMP   = 300; // px — distance from any edge where shrinking begins
+
 const GRAIN_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E")`;
 
 export default function Hero() {
@@ -102,11 +113,25 @@ export default function Hero() {
 
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
-      setHeroMousePos({ x: mx, y: my });
 
-      // Edge fade: thermal opacity drops to 0 within 150px of sticky panel edge
-      const minDist = Math.min(mx, my, rect.width - mx, rect.height - my);
-      setThermalOpacity(minDist > 150 ? 1 : minDist <= 0 ? 0 : minDist / 150);
+      // Distance to the nearest edge.
+      // Left / right / top use panel coordinates (rect-relative).
+      // Bottom uses the TOP of the solid cream strip (bottom 12% of panel, zIndex:25)
+      // as the effective boundary — so the spotlight shrinks to zero before
+      // it ever reaches that always-on cream layer.
+      // Viewport Y of cream strip top = rect.top + rect.height * 0.88
+      const fromBottom = (rect.top + rect.height * 0.88) - e.clientY;
+      const minDist = Math.min(mx, my, rect.width - mx, fromBottom);
+
+      // Radius shrinks linearly from SPOTLIGHT_RADIUS → 0 as cursor approaches
+      // any edge. Reaches zero exactly at the edge. SPOTLIGHT_RAMP controls how
+      // early shrinking begins.
+      const radius = SPOTLIGHT_RADIUS * Math.min(1, Math.max(0, minDist / SPOTLIGHT_RAMP));
+
+      setHeroMousePos({ x: mx, y: my, radius });
+
+      // Opacity is now just a clean on/off — radius handles the edge behaviour
+      setThermalOpacity(minDist > 0 ? 1 : 0);
 
       // Parallax: ±20px offset from cursor position relative to panel centre
       const cx = rect.width  / 2;
@@ -122,7 +147,7 @@ export default function Hero() {
 
   // Cursor-centred mask for the thermal overlay
   const overlayMask = heroMousePos
-    ? `radial-gradient(circle 180px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
+    ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
     : "none";
 
   return (

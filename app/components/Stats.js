@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useSyncExternalStore } from "react";
-import { useScroll } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { STATS } from "../lib/content";
 
 // Identical grain to Hero — ensures seamless texture across the Hero→Stats boundary
@@ -59,6 +59,27 @@ export default function Stats() {
     offset: ["start start", "end end"],
   });
 
+  // ── Option A: scale-punch entrance (desktop only) ────────────────────────
+  // Inner wrapper starts zoomed-in + low, snaps to rest over first 6% of the
+  // scroll tunnel (≈ 25vh). Four-keyframe exponential decay: fast exit, hard land.
+  //
+  // To switch to Option B (Hero-driven pre-staging):
+  //   1. Delete these two useTransform calls.
+  //   2. Delete the motion.div wrapper in the JSX (search "ENTRANCE-WRAPPER").
+  //   3. In page.js: pass heroScrollYProgress (from Hero's useScroll) into <Stats>.
+  //   4. In Stats: accept heroScrollYProgress prop; add
+  //      const stageY = useTransform(heroScrollYProgress, [0.87, 0.95, 1.0], [100, 30, 0]);
+  //      and apply style={{ y: stageY }} to the sectionRef div.
+  const entranceScale = useTransform(
+    scrollYProgress,
+    [0,    0.02, 0.07, 0.12],
+    [1.30, 1.20, 1.06, 1.0],
+  );
+  const entranceY = useTransform(
+    scrollYProgress,
+    [0,    0.02, 0.07, 0.12],
+    [120,  75,   18,   0],
+  );
 
   // ── Desktop: rAF video scrub + cumulative scroll-driven stat reveals ──────
   useEffect(() => {
@@ -161,6 +182,18 @@ export default function Stats() {
           overflow: "clip",
         }}
       >
+        {/* ENTRANCE-WRAPPER — Option A scale-punch. Remove this motion.div (and its
+            closing tag below) when switching to Option B. */}
+        <motion.div
+          style={{
+            position:        "absolute",
+            inset:           0,
+            transformOrigin: "50% 65%",
+            scale:           isTouch ? 1 : entranceScale,
+            y:               isTouch ? 0 : entranceY,
+          }}
+        >
+
         {/* ── Video background ───────────────────────────────────────────── */}
         <video
           ref={videoRef}
@@ -411,6 +444,8 @@ export default function Stats() {
             ))}
           </div>
         )}
+
+        </motion.div>{/* /ENTRANCE-WRAPPER */}
       </div>
     </div>
   );
