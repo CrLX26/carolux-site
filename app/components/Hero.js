@@ -49,17 +49,45 @@ export default function Hero() {
   const heroContentY      = useTransform(scrollYProgress, [0.05, 0.60],  [0, -1100]);
 
   // ── Hero → Stats cross-dissolve ───────────────────────────────────────────
-  // The whole sticky panel fades to 0 — not a cream overlay on top, but the
-  // panel itself dissolving. Stats (underneath, zoomed-in at scale 1.3) emerges.
-  // FADE_END must stay below ~0.956 so the panel goes invisible before it
-  // physically unsticks — it then exits the viewport silently.
+  // The whole sticky panel fades to 0 as it reaches the end of its tunnel,
+  // so Stats (underneath, zoomed-in at scale 1.3) emerges.
   //
-  //   "start sooner / later"  → adjust FADE_START
-  //   "fade faster / slower"  → narrow / widen the gap between the two
+  // IMPORTANT: this is driven by the panel's REAL position, not scrollYProgress.
+  // Framer's scrollYProgress for heroRef reverses (~0.94 → ~0.7) across the
+  // sticky-unpin boundary — the overlap with the pulled-up Stats panel — which
+  // made the opacity fade to 0 then snap back to 1, popping Stats in and out.
+  // The outer's bottom edge moves monotonically, so once the panel dissolves it
+  // stays dissolved (and fades back in cleanly on reverse scroll).
   //
-  const FADE_START       = 0.85; // alarm card is near the top 10% of the panel
-  const FADE_END         = 0.95; // panel fully transparent — must be < ~0.956
-  const heroPanelOpacity = useTransform(scrollYProgress, [FADE_START, FADE_END], [1, 0]);
+  //   "start sooner / later"  → raise / lower FADE_START_F
+  //   "fade faster / slower"  → widen / narrow the gap to FADE_END_F
+  //
+  const FADE_START_F = 1.22; // begin dissolve when outer.bottom = 1.22 × viewport
+  const FADE_END_F   = 1.06; // fully transparent by 1.06 × viewport (right at unpin)
+  const heroPanelOpacity = useMotionValue(1);
+  useEffect(() => {
+    const outer = heroRef.current;
+    if (!outer) return;
+    let raf = null;
+    const measure = () => {
+      raf = null;
+      const vh = window.innerHeight;
+      const bottom = outer.getBoundingClientRect().bottom; // monotonic ↓ on scroll-down
+      const start = vh * FADE_START_F;
+      const end = vh * FADE_END_F;
+      const o = bottom >= start ? 1 : bottom <= end ? 0 : (bottom - end) / (start - end);
+      heroPanelOpacity.set(o);
+    };
+    const onScroll = () => { if (raf === null) raf = requestAnimationFrame(measure); };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf !== null) cancelAnimationFrame(raf);
+    };
+  }, [heroPanelOpacity]);
   // imageY removed — hero image fills sticky panel at all times (no lift at end of tunnel).
   // Alarm card — same scroll rate as heroContentY (2000px per progress unit).
   // Multi-input form: re-evaluates whenever scrollYProgress OR alarmStartMV changes,
