@@ -49,33 +49,31 @@ export default function Hero() {
   const heroContentY      = useTransform(scrollYProgress, [0.05, 0.60],  [0, -1100]);
 
   // ── Hero → Stats cross-dissolve ───────────────────────────────────────────
-  // The whole sticky panel fades to 0 as it reaches the end of its tunnel,
-  // so Stats (underneath, zoomed-in at scale 1.3) emerges.
+  // Triggered by the ALERT text's real on-screen position (alarmCardRef), NOT a
+  // viewport fraction and NOT scrollYProgress (which reverses across the
+  // sticky-unpin boundary and made Stats pop in/out). The panel holds full
+  // opacity until the alert ("Most homes are losing money…") rides up into the
+  // top of the screen, THEN dissolves — so Stats never shows while the alert is
+  // mid-screen. alarmCardRef.top decreases monotonically with scroll, so once
+  // dissolved it stays dissolved (and fades back in on reverse scroll).
   //
-  // IMPORTANT: this is driven by the panel's REAL position, not scrollYProgress.
-  // Framer's scrollYProgress for heroRef reverses (~0.94 → ~0.7) across the
-  // sticky-unpin boundary — the overlap with the pulled-up Stats panel — which
-  // made the opacity fade to 0 then snap back to 1, popping Stats in and out.
-  // The outer's bottom edge moves monotonically, so once the panel dissolves it
-  // stays dissolved (and fades back in cleanly on reverse scroll).
+  //   "start sooner / more gradual" → raise ALERT_TOP_START (begins higher up)
+  //   "finish later"                → lower ALERT_TOP_END (toward / below 0)
   //
-  //   "start sooner / later"  → raise / lower FADE_START_F
-  //   "fade faster / slower"  → widen / narrow the gap to FADE_END_F
-  //
-  const FADE_START_F = 1.22; // begin dissolve when outer.bottom = 1.22 × viewport
-  const FADE_END_F   = 1.06; // fully transparent by 1.06 × viewport (right at unpin)
+  const ALERT_TOP_START = 190; // alert top this far down (px) → begin dissolve
+  const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
-    const outer = heroRef.current;
-    if (!outer) return;
     let raf = null;
     const measure = () => {
       raf = null;
-      const vh = window.innerHeight;
-      const bottom = outer.getBoundingClientRect().bottom; // monotonic ↓ on scroll-down
-      const start = vh * FADE_START_F;
-      const end = vh * FADE_END_F;
-      const o = bottom >= start ? 1 : bottom <= end ? 0 : (bottom - end) / (start - end);
+      const card = alarmCardRef.current;
+      const top = card ? card.getBoundingClientRect().top : ALERT_TOP_START;
+      const t =
+        top >= ALERT_TOP_START ? 1 :
+        top <= ALERT_TOP_END ? 0 :
+        (top - ALERT_TOP_END) / (ALERT_TOP_START - ALERT_TOP_END);
+      const o = t * t * (3 - 2 * t); // smoothstep — gentle in/out, no hard edges
       heroPanelOpacity.set(o);
     };
     const onScroll = () => { if (raf === null) raf = requestAnimationFrame(measure); };
