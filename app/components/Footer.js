@@ -38,7 +38,8 @@ function FootLink({ href, children, external = false }) {
 
 export default function Footer() {
   return (
-    <footer style={{ background: C.navyDeep, color: C.cream }}>
+    // pb on mobile clears the fixed Call/Estimate bar (Nav, ~60px); md+ has no bar.
+    <footer className="pb-20 md:pb-0" style={{ background: C.navyDeep, color: C.cream }}>
       <div
         style={{
           maxWidth: "1200px",

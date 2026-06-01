@@ -15,7 +15,7 @@ export default function Services() {
   return (
     <section id="services" style={sectionStyle(C.cream)}>
       <div style={containerStyle}>
-        <SectionHeading eyebrow="What We Do" title="Two services. Done right." maxWidth="22ch" />
+        <SectionHeading title="Two services. Done right." maxWidth="22ch" />
 
         <div
           style={{

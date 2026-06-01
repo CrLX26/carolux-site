@@ -16,11 +16,7 @@ export default function Packages() {
   return (
     <section id="packages" style={sectionStyle(C.cream)}>
       <div style={containerStyle}>
-        <SectionHeading
-          eyebrow="What We Offer"
-          title="Choose your package"
-          maxWidth="20ch"
-        />
+        <SectionHeading title="Choose your package" maxWidth="20ch" />
 
         <div
           style={{

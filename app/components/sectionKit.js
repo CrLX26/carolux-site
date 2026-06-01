@@ -65,29 +65,31 @@ export function SectionHeading({ eyebrow, title, dark = false, align = "center",
   const fg = dark ? C.cream : C.navy;
   return (
     <div style={{ textAlign: align, maxWidth, margin: align === "center" ? "0 auto" : undefined }}>
-      <Reveal
-        as="p"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "12px",
-          margin: 0,
-          fontFamily: "var(--font-label)",
-          fontSize: "clamp(11px, 1vw, 13px)",
-          fontWeight: 500,
-          letterSpacing: "0.18em",
-          textTransform: "uppercase",
-          color: C.teal,
-        }}
-      >
-        <span aria-hidden="true" style={{ width: "26px", height: "1.5px", background: C.teal, opacity: 0.8 }} />
-        {eyebrow}
-      </Reveal>
+      {eyebrow && (
+        <Reveal
+          as="p"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "12px",
+            margin: 0,
+            fontFamily: "var(--font-label)",
+            fontSize: "clamp(11px, 1vw, 13px)",
+            fontWeight: 500,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: C.teal,
+          }}
+        >
+          <span aria-hidden="true" style={{ width: "26px", height: "1.5px", background: C.teal, opacity: 0.8 }} />
+          {eyebrow}
+        </Reveal>
+      )}
       <Reveal
         as="h2"
-        delay={0.08}
+        delay={eyebrow ? 0.08 : 0}
         style={{
-          margin: "clamp(14px, 2vh, 22px) 0 0",
+          margin: eyebrow ? "clamp(14px, 2vh, 22px) 0 0" : 0,
           fontFamily: "var(--font-cormorant)",
           fontWeight: 400,
           fontSize: "clamp(2.25rem, 5vw, 4rem)",
