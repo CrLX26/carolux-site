@@ -47,6 +47,19 @@ export default function Hero() {
   // -1100px clears the content block on all screen sizes.
   // Window [0.05, 0.60] keeps movement at ~1.7× scroll speed — natural, not frantic.
   const heroContentY      = useTransform(scrollYProgress, [0.05, 0.60],  [0, -1100]);
+
+  // ── Hero → Stats cross-dissolve ───────────────────────────────────────────
+  // The whole sticky panel fades to 0 — not a cream overlay on top, but the
+  // panel itself dissolving. Stats (underneath, zoomed-in at scale 1.3) emerges.
+  // FADE_END must stay below ~0.956 so the panel goes invisible before it
+  // physically unsticks — it then exits the viewport silently.
+  //
+  //   "start sooner / later"  → adjust FADE_START
+  //   "fade faster / slower"  → narrow / widen the gap between the two
+  //
+  const FADE_START       = 0.85; // alarm card is near the top 10% of the panel
+  const FADE_END         = 0.95; // panel fully transparent — must be < ~0.956
+  const heroPanelOpacity = useTransform(scrollYProgress, [FADE_START, FADE_END], [1, 0]);
   // imageY removed — hero image fills sticky panel at all times (no lift at end of tunnel).
   // Alarm card — same scroll rate as heroContentY (2000px per progress unit).
   // Multi-input form: re-evaluates whenever scrollYProgress OR alarmStartMV changes,
@@ -157,7 +170,7 @@ export default function Hero() {
           zIndex: 2 keeps Hero above the Stats panel during their brief
           viewport overlap. Hero's cream bottom blur covers the seam;
           Stats reveals from underneath as Hero lifts away. */}
-      <div
+      <motion.div
         ref={stickyRef}
         style={{
           position:   "sticky",
@@ -169,6 +182,7 @@ export default function Hero() {
           alignItems: "center",
           background: "#faf8f5",
           zIndex:     2,
+          opacity:    heroPanelOpacity,
         }}
       >
         {/* Grain overlay */}
@@ -802,7 +816,7 @@ export default function Hero() {
           />
         </motion.div>
 
-      </div>
+      </motion.div>
     </div>
   );
 }

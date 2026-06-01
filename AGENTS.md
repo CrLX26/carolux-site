@@ -1,6 +1,6 @@
 # CAROLUX PRO WEBSITE — AGENTS.md
 ## Read this file at the start of every session. Every decision made here is permanent until explicitly changed.
-*Last updated: May 2026*
+*Last updated: June 2026*
 
 ---
 
@@ -66,7 +66,6 @@ or component code.**
 |-------|--------|
 | Business Name | Carolux Insulation LLC |
 | Owners | Tony Kermis & Juan Gonzalez — Equal Co-Owners (50/50) |
-| Address | 125 Rowe St, Gastonia, NC 28056 |
 | Phone | (704) 228-2729 |
 | Email | team@caroluxinsulation.com |
 | Website | caroluxinsulation.com |
@@ -86,7 +85,7 @@ the technology and AI vision for the company.
 - Tony's home inspector background — technical credibility
 - Air sealing included on new installs (most competitors skip it or charge extra)
 - Americover vapor barriers — American-made with virgin resins, not hardware store poly
-- 1-year workmanship guarantee on all work
+- 2-year workmanship guarantee on all work
 - Free estimates, written same day
 - Transparent pricing — price quoted is price paid, no surprise charges
 
@@ -161,16 +160,14 @@ NOT: HVAC postcard with stars and coupons.
 - Information overload — always aim for 30% less text than first instinct
 
 ### Color System
-- Primary accent: Teal `#4a90a4` — CTAs, accent lines, badge numbers, nav hover states, teal line
-- Background: Cream `#faf8f5` — page background, edge fades
-- Headings / body: Navy `#1a2b3c` — headings, body text, stat numbers
-- Thermal orange: `#ff4400` / amber `#ff8800` / gold `#ffcc00` — thermal reveal only, never general UI
-- Text: Near-black `#2C2C2C` (never pure black)
-- Borders: Soft `#d0cec8`
+- Primary accent: Teal #4a90a4 — CTAs, nav hover, accent lines, badge numbers, stat rules
+- Background: Cream #faf8f5 — page background, edge fades, nav
+- Headings / body: Navy #1a2b3c — headings, body text, stat numbers
+- Thermal orange: #ff4400 / amber #ff8800 / gold #ffcc00 — thermal reveal only, never general UI
+- Text: Near-black #2C2C2C (never pure black)
+- Borders: Soft #d0cec8
 - Apply: Soft gradients, premium spacing, subtle depth
 - Never: Oversaturated gradients, random accent colors
-- **Note:** An earlier draft of this file listed navy #1a3a6b + warm orange #e06420 as the palette.
-  That was superseded. Teal is the confirmed accent. Do not revert.
 
 ### Typography
 - Strong hierarchy — one dominant message per section
@@ -218,8 +215,9 @@ Optimization) dominance in the Charlotte NC residential insulation market.
 - FAQPage schema — on any page with Q&A content
 - Review schema — when reviews are displayed
 - All schemas maintained in app/lib/schema.js
-- NAP (Name, Address, Phone) must match exactly everywhere:
-  Carolux Insulation LLC | 125 Rowe St, Gastonia, NC 28056 | (704) 228-2729
+- NAP (Name, Phone, Email, Website) must match exactly everywhere:
+  Carolux Insulation LLC | (704) 228-2729 | team@caroluxinsulation.com | caroluxinsulation.com
+- No physical address published — use areaServed in LocalBusiness schema instead
 
 ### Page Speed — Core Web Vitals Must Stay Green
 - No unnecessary JavaScript — server components for all indexable content
@@ -315,17 +313,18 @@ that requires its own decisions.
 Components in app/:
 - Nav — navigation bar
 - Hero — hero section with thermal effect (desktop) / static (mobile TBD)
-- Stats — key statistics
-- Services — services offered
-- WhyUs — differentiators
-- Packages — pricing/packages section
-- Reviews — Google reviews
-- Contact — contact form
-- Footer — footer with NAP and links
+- Stats — key statistics with burst insulation video scrub
+- Services — services offered (unstyled placeholder)
+- WhyUs — differentiators (unstyled placeholder)
+- Packages — pricing/packages section (unstyled placeholder)
+- Reviews — Google reviews (unstyled placeholder)
+- Contact — contact form (unstyled placeholder)
+- Footer — footer with NAP and links (unstyled placeholder)
 
 Content data: app/lib/content.js
 Schema data: app/lib/schema.js
 Job photos: public/images/
+Videos: public/videos/
 
 ---
 
@@ -336,6 +335,7 @@ Job photos: public/images/
 - Exact dollar savings promises — always use percentages and "results vary"
 - Anything that breaks Core Web Vitals green status
 - Client-side rendering for content Google needs to index
+- Physical address anywhere on the site or in schema
 
 ---
 
@@ -357,13 +357,61 @@ Job photos: public/images/
 
 ---
 
-## PDF PROPOSAL — FUTURE PHASE
+## CAROLUX PROPOSAL PAGE — CURRENT STATE HANDOFF
 
-When the PDF proposal feature is built (part of the carolux-tools project,
-not this website), use Playwright for HTML-to-PDF conversion. Playwright is
-already installed globally on the machine. Design the proposal as a beautiful
-HTML page, Playwright renders it to PDF server-side. Supports full CSS3,
-custom fonts, photos, and Chart.js charts.
+The customer-facing proposal page is a React component (`src/components/ProposalPage/index.jsx`) deployed at carolux-tools.vercel.app/proposal/demo. It lives in the carolux-tools repo, separate from the marketing website.
+
+**What it is:** A shareable URL sent to homeowners after an in-home assessment. It replaces the generic contractor PDF with a personalized digital proposal. The page renders entirely from a data object produced by Agent 2 — it invents nothing.
+
+**Current design state:** Two branches exist — `proposal-redesign-2` (full navy) and `proposal-cream-variant` (navy hero/CTA, cream body sections). The cream variant is the leading candidate for merge to main. Neither is merged yet.
+
+**Page sections in order:**
+1. Hero — house exterior photo, client name, address, Juan and Tony headshots
+2. Trust strip — 4 badges
+3. R-value gap display — R-current → R-49, with counter animation pending
+4. Video/findings section — Loom placeholder + Quick Findings Snapshot widget
+5. Photo evidence grid — real job photos with deterministic captions
+6. Scope section — line items with reason text, no prices, air sealing callout card
+7. Before/After — "See The Work", example photos from Ballantyne/SouthPark, slider pending
+8. Investment — "What It Costs", headline total, line items, "Included In Your Plan" checklist, payment badges pending
+9. Payback calculator — monthly electric bill input, DOE-sourced savings estimate
+10. Why Carolux — four-point differentiator section
+11. Image transition strip — job-site photo of Juan and Tony (photo not yet taken)
+12. CTA section — dark navy, reserve install date
+13. Footer
+
+**Brand:** Deep navy `#0a1626`, warm gold `#c8a24c`, cream body `#f6f3ec`. Cormorant Garamond display, DM Sans body. Inline styles only on this component — no Tailwind.
+
+**Key decisions locked:**
+- All pricing and line items are deterministic JavaScript — Claude never generates numbers
+- Air sealing callout card and checklist item are conditional on `pd.airSealingIncluded`
+- Before/after shows based on `jobType` using example photos until job completion flow is built
+- Warranty is 2 years throughout
+- Never speak negatively about competitors in any copy
+- Never use the word "mold" — always "biological growth"
+
+**Approved Why Carolux copy — use exactly as written:**
+
+> 01 — You're dealing with the owners, every time.
+> Tony and Juan personally oversee every job from assessment to completion. The person who walked your home is the person accountable for the work. That accountability is the whole model.
+>
+> 02 — Our price reflects how we're built.
+> No franchise fees, no subcontractors, no overhead. We built Carolux around technology and efficiency at every stage — from the moment you call us to the day your job is complete. That's why our price is competitive and our standard is high.
+>
+> 03 — Air sealing is included, not upsold.
+> Most contractors skip it or charge extra. We include it on every full installation because without it, insulation underperforms. It's the highest-impact step in the job and the one that separates a real upgrade from a temporary fix.
+>
+> 04 — Everything is guaranteed.
+> All work carries a 2-year workmanship guarantee. If anything isn't right, we come back and fix it. No runaround, no service ticket. You call us directly.
+
+**Immediate items still pending before merge:**
+- Before/after slider (react-compare-slider)
+- Example photos named correctly in /public
+- R-value counter animation
+- Payment badges
+- Playwright scenarios 3, 4, 5
+- Why Carolux copy updated to approved version above
+- Deposit display bug fixed
 
 ---
 
@@ -465,7 +513,7 @@ Static `md:hidden` element: cream left-to-right gradient (`rgba(250,248,245,0.82
 ### STATS.JS
 
 **28. Video scroll scrub**
-`scrollYProgress.on("change")` maps progress `v` to `video.currentTime = Math.max(0, Math.min(v * 3, duration))`. Video is 3 seconds long. Desktop only.
+`scrollYProgress.on("change")` maps progress `v` to `video.currentTime = v * 7` (video is `insulation-burst-bg2-scrub.mp4`, 7 seconds). rAF loop lerps currentTime toward target at 20% factor per frame for smooth seeking. `fastSeek()` used where available. Desktop only.
 
 **29. Stat reveal on scroll (desktop)**
 Each stat starts `opacity: 0, translateY(20px)`. At SHOW thresholds `[0.15, 0.35, 0.55, 0.75]` inline style is set to `opacity: 1, translateY(0)`. CSS `transition: opacity 600ms ease, transform 600ms ease`. Direct DOM mutation via `ref.current.style`. Desktop only.

@@ -2,16 +2,10 @@ export const COMPANY = {
   name: "Carolux Insulation LLC",
   phone: "(704) 228-2729",
   phoneHref: "tel:7042282729",
-  email: "caroluxinsulation@gmail.com",
-  emailHref: "mailto:caroluxinsulation@gmail.com",
+  email: "team@caroluxinsulation.com",
+  emailHref: "mailto:team@caroluxinsulation.com",
   instagram: "https://instagram.com/caroluxinsulation",
-  address: {
-    street: "125 Rowe St",
-    city: "Gastonia",
-    state: "NC",
-    zip: "28056",
-  },
-  serviceArea: "Gastonia & Charlotte, NC",
+  serviceArea: "Charlotte & Gastonia, NC",
   owners: "Tony Kermis and Juan Gonzalez",
   year: "2026",
 };
@@ -28,7 +22,7 @@ export const HERO = {
   eyebrow: "Attic & Crawl Space Insulation Experts",
   headline: ["Charlotte's", "Insulation", "Experts."],
   subheading:
-    "Tony and Juan show up to every job. You get the owners on the phone, the owners doing the work, and a 1-year guarantee on everything we touch.",
+    "Tony and Juan show up to every job. You get the owners on the phone, the owners doing the work, and a 2-year guarantee on everything we touch.",
   primaryCta: "Get a Free Estimate",
   secondaryCta: "Call (704) 228-2729",
   secondaryPre:  "Most homes are",
@@ -39,7 +33,7 @@ export const HERO = {
 export const TRUST_BADGES = [
   "Both owners on every job",
   "Air sealing always included",
-  "1-Year workmanship guarantee",
+  "2-Year workmanship guarantee",
 ];
 
 export const STATS = [
@@ -47,7 +41,7 @@ export const STATS = [
     prefix: "",
     countTo: 15,
     suffix: "%",
-    label: "Avg. heating & cooling savings",
+    label: "Up to 15% heating & cooling savings",
     source: "EPA ENERGY STAR",
   },
   {
@@ -105,9 +99,9 @@ export const WHY_US = [
   },
   {
     roman: "III",
-    title: "1-Year Guarantee",
+    title: "2-Year Guarantee",
     description:
-      "We stand behind our work. If anything we've installed isn't performing the way it should within a year, we come back and make it right. No questions, no hassle.",
+      "We stand behind our work. If anything we've installed isn't performing the way it should within two years, we come back and make it right. No questions, no hassle.",
   },
 ];
 
@@ -120,7 +114,7 @@ export const PACKAGES = [
       "Pre-job air leak sealing included",
       "R-49 DOE target for NC",
       "Post-install performance check",
-      "1-year workmanship guarantee",
+      "2-year workmanship guarantee",
     ],
     cta: "Get an Attic Quote",
     featured: false,
@@ -133,7 +127,7 @@ export const PACKAGES = [
       "Full crawl space encapsulation",
       "Priority scheduling",
       "Both owners on every job",
-      "Extended 2-year guarantee",
+      "2-year workmanship guarantee",
     ],
     cta: "Get a Bundle Quote",
     featured: true,
@@ -146,7 +140,7 @@ export const PACKAGES = [
       "Crawl space perimeter insulation",
       "Full moisture & drainage inspection",
       "Code-compliant installation",
-      "1-year workmanship guarantee",
+      "2-year workmanship guarantee",
     ],
     cta: "Get a Crawl Space Quote",
     featured: false,

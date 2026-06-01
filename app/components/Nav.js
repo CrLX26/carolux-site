@@ -36,7 +36,7 @@ export default function Nav() {
           position: "sticky",
           top: 0,
           zIndex: 100,
-          background: "#ffffff",
+          background: "#faf8f5",
           borderBottom: scrolled
             ? "1px solid rgba(74,144,164,0.14)"
             : "1px solid transparent",
@@ -60,7 +60,7 @@ export default function Nav() {
             href="/"
             style={{
               fontFamily: "var(--font-cormorant)",
-              fontWeight: 700,
+              fontWeight: 400,
               fontSize: "25px",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
@@ -115,7 +115,7 @@ export default function Nav() {
             </a>
 
             <a
-              href="/free-estimate/"
+              href="#contact"
               style={{
                 fontFamily: "var(--font-dm-sans)",
                 fontSize: "15px",
@@ -273,7 +273,7 @@ export default function Nav() {
                 </a>
 
                 <a
-                  href="/free-estimate/"
+                  href="#contact"
                   onClick={() => setOpen(false)}
                   style={{
                     fontFamily: "var(--font-dm-sans)",
@@ -333,7 +333,7 @@ export default function Nav() {
           Call Us
         </a>
         <a
-          href="/free-estimate/"
+          href="#contact"
           style={{
             flex: 1,
             display: "flex",
