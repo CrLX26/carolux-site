@@ -222,7 +222,10 @@ export default function Hero() {
               fill
               priority={true}
               sizes="100vw"
-              style={{ objectFit: "cover", objectPosition: "center center" }}
+              // Mobile centers the house (it sits on the right of the photo) on the
+              // roof apex; md+ keeps the original desktop framing untouched.
+              className="object-[72%_50%] md:object-[center_center]"
+              style={{ objectFit: "cover" }}
             />
             {/* Mobile text-contrast scrim */}
             <div
