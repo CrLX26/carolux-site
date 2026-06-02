@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+/* thermal-sweep: transform-based lens (see below) */
+
 html,
 body {
   background-color: #faf8f5;
@@ -21,40 +23,56 @@ html.lenis body {
 }
 
 /* ── Mobile thermal reveal (Hero.js .thermal-sweep) ──────────────────────────
-   A soft radial spotlight masks the thermal house image and sweeps a looping
+   A soft radial spotlight reveals the thermal house image and sweeps a looping
    path, beginning and ending at the "S" of "Losing Money" (~20% / 68%).
-   Replaces the desktop mouse-driven reveal, which can't run on touch. */
-@property --tx {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 20%;
-}
-@property --ty {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 68%;
-}
+   Replaces the desktop mouse-driven reveal, which can't run on touch.
 
+   The spotlight is a fixed centred radial mask on .thermal-sweep (the "lens").
+   Instead of animating the gradient's position (custom properties consumed in
+   mask-image are NOT reliably interpolated on mobile WebKit — the reveal jumps
+   keyframe-to-keyframe), we animate transform: translate() on the lens, which
+   every engine interpolates smoothly on the GPU. The inner .thermal-sweep-content
+   carries the same path negated, so the scene stays put while the aperture
+   sweeps over it. translate percentages are element-relative, so it scales with
+   the panel. Lens translate(x,y) puts the aperture at (50+x)% / (50+y)%. */
 .thermal-sweep {
-  -webkit-mask-image: radial-gradient(circle 120px at var(--tx) var(--ty), #000 0%, #000 48%, transparent 100%);
-  mask-image: radial-gradient(circle 120px at var(--tx) var(--ty), #000 0%, #000 48%, transparent 100%);
-  animation: thermal-sweep-path 11s ease-in-out infinite;
+  -webkit-mask-image: radial-gradient(circle 120px at center, #000 0%, #000 48%, transparent 100%);
+  mask-image: radial-gradient(circle 120px at center, #000 0%, #000 48%, transparent 100%);
+  animation: thermal-sweep-lens 11s ease-in-out infinite;
+  will-change: transform;
+}
+.thermal-sweep-content {
+  animation: thermal-sweep-counter 11s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* Loop path: S → up-left → roof → right windows → lower-center → left → back to S */
-@keyframes thermal-sweep-path {
-  0%   { --tx: 20%; --ty: 68%; }
-  15%  { --tx: 9%;  --ty: 34%; }
-  32%  { --tx: 70%; --ty: 30%; }
-  50%  { --tx: 88%; --ty: 56%; }
-  68%  { --tx: 50%; --ty: 80%; }
-  84%  { --tx: 55%; --ty: 45%; }
-  100% { --tx: 20%; --ty: 68%; }
+@keyframes thermal-sweep-lens {
+  0%   { transform: translate(-30%,  18%); }
+  15%  { transform: translate(-41%, -16%); }
+  32%  { transform: translate( 20%, -20%); }
+  50%  { transform: translate( 38%,   6%); }
+  68%  { transform: translate(  0%,  30%); }
+  84%  { transform: translate(  5%,  -5%); }
+  100% { transform: translate(-30%,  18%); }
+}
+/* Exact negation of the lens path — keeps the scene visually stationary. */
+@keyframes thermal-sweep-counter {
+  0%   { transform: translate( 30%, -18%); }
+  15%  { transform: translate( 41%,  16%); }
+  32%  { transform: translate(-20%,  20%); }
+  50%  { transform: translate(-38%,  -6%); }
+  68%  { transform: translate(  0%, -30%); }
+  84%  { transform: translate( -5%,   5%); }
+  100% { transform: translate( 30%, -18%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .thermal-sweep {
+  .thermal-sweep,
+  .thermal-sweep-content {
     animation: none;
+  }
+  .thermal-sweep {
     opacity: 0; /* no static spotlight for reduced-motion users */
   }
 }

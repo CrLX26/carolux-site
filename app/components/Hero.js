@@ -361,6 +361,15 @@ export default function Hero() {
               pointerEvents:    "none",
             }}
           >
+            {/* Counter-move wrapper: on mobile it carries the negated sweep path
+                so the thermal scene stays visually fixed while the lens above
+                sweeps its aperture across it. inset:0 matches the lens box, so
+                the absolutely-positioned children below resolve identically
+                whether or not this wrapper is animating (desktop: no class). */}
+            <div
+              className={isMobile ? "thermal-sweep-content" : undefined}
+              style={{ position: "absolute", inset: 0 }}
+            >
             {/* Dark fill — solid left, fades toward house photo */}
             <div
               style={{
@@ -652,6 +661,7 @@ export default function Hero() {
                 {HERO.secondaryPost}
               </p>
             </motion.div>
+            </div>
           </div>
         </motion.div>
         {/* ── End thermal overlay ──────────────────────────────────────────── */}
