@@ -263,6 +263,24 @@ export default function Hero() {
               }}
             />
           </div>
+
+          {/* ── Mobile thermal reveal (md:hidden) ─────────────────────────────
+              Touch has no cursor, so instead of the desktop mouse spotlight a
+              CSS keyframe sweeps a soft radial mask over the thermal house image
+              in a continuous loop (see .thermal-sweep in globals.css). Aligned to
+              the same 72%/50% framing as the house photo so the two register. */}
+          <div
+            aria-hidden="true"
+            className="md:hidden thermal-sweep"
+            style={{
+              position:           "absolute",
+              inset:              0,
+              backgroundImage:    "url(/images/house-thermal4.webp)",
+              backgroundSize:     "cover",
+              backgroundPosition: "72% 50%",
+              pointerEvents:      "none",
+            }}
+          />
         </motion.div>
 
         {/* ── Thermal overlay — desktop only ───────────────────────────────

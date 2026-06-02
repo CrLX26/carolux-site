@@ -19,3 +19,42 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
+
+/* ── Mobile thermal reveal (Hero.js .thermal-sweep) ──────────────────────────
+   A soft radial spotlight masks the thermal house image and sweeps a looping
+   path, beginning and ending at the "S" of "Losing Money" (~20% / 68%).
+   Replaces the desktop mouse-driven reveal, which can't run on touch. */
+@property --tx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 20%;
+}
+@property --ty {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 68%;
+}
+
+.thermal-sweep {
+  -webkit-mask-image: radial-gradient(circle 120px at var(--tx) var(--ty), #000 0%, #000 48%, transparent 100%);
+  mask-image: radial-gradient(circle 120px at var(--tx) var(--ty), #000 0%, #000 48%, transparent 100%);
+  animation: thermal-sweep-path 11s ease-in-out infinite;
+}
+
+/* Loop path: S → up-left → roof → right windows → lower-center → left → back to S */
+@keyframes thermal-sweep-path {
+  0%   { --tx: 20%; --ty: 68%; }
+  15%  { --tx: 9%;  --ty: 34%; }
+  32%  { --tx: 70%; --ty: 30%; }
+  50%  { --tx: 88%; --ty: 56%; }
+  68%  { --tx: 50%; --ty: 80%; }
+  84%  { --tx: 26%; --ty: 50%; }
+  100% { --tx: 20%; --ty: 68%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thermal-sweep {
+    animation: none;
+    opacity: 0; /* no static spotlight for reduced-motion users */
+  }
+}
