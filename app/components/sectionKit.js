@@ -171,7 +171,12 @@ export function Cta({
         borderRadius: "3px",
         cursor: "pointer",
         textDecoration: "none",
-        whiteSpace: "nowrap",
+        // Cap at the container and let long labels wrap instead of forcing a
+        // nowrap line wider than a phone (that overflow scrolled the whole page).
+        // Short labels still sit on one line, so existing CTAs are unchanged.
+        maxWidth: "100%",
+        whiteSpace: "normal",
+        textAlign: "center",
         transition:
           "background 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
         ...style,

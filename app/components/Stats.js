@@ -98,7 +98,14 @@ export default function Stats() {
   useEffect(() => {
     if (isTouch) return;
     const video = videoRef.current;
-    if (video) video.pause();
+    // The element ships with preload="none" so it never competes with the hero
+    // on mobile first-load. Desktop needs the frames to scrub, so eagerly load
+    // here (after mount, desktop has the bandwidth and the scrub depends on it).
+    if (video) {
+      video.preload = "auto";
+      video.load();
+      video.pause();
+    }
 
     // rAF loop lerps video.currentTime toward target — smooth follow.
     let targetTime = 0;
@@ -144,15 +151,17 @@ export default function Stats() {
   useEffect(() => {
     if (!isTouch) return;
     const video = videoRef.current;
-    if (video) {
-      video.loop = true;
-      video.play().catch(() => {});
-    }
+    if (video) video.loop = true;
     const section = sectionRef.current;
     if (!section) return;
+    // Defer the heavy video until Stats is near the viewport. preload="none"
+    // means nothing downloads until this play() call, so the 16MB clip never
+    // competes with the hero on first load. rootMargin starts it ~300px early
+    // so it's running by the time the section is in view. Pause on exit.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          if (video) video.play().catch(() => {});
           statRefs.forEach((ref, i) => {
             setTimeout(() => {
               if (!ref.current) return;
@@ -161,6 +170,7 @@ export default function Stats() {
             }, i * 150);
           });
         } else {
+          if (video) video.pause();
           statRefs.forEach((ref) => {
             if (!ref.current) return;
             ref.current.style.opacity   = "0";
@@ -168,7 +178,7 @@ export default function Stats() {
           });
         }
       },
-      { threshold: 0.3 },
+      { threshold: 0.3, rootMargin: "300px 0px" },
     );
     observer.observe(section);
     return () => observer.disconnect();
@@ -210,7 +220,7 @@ export default function Stats() {
         {/* ── Video background ───────────────────────────────────────────── */}
         <video
           ref={videoRef}
-          preload="auto"
+          preload="none"
           playsInline
           muted
           style={{
@@ -279,11 +289,18 @@ export default function Stats() {
               bottom:              0,
               left:                0,
               right:               0,
-              height:              "28%",
               zIndex:              10,
               display:             "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
+              // auto-fit reflows the row to 2×2 when 4 numbers can't fit across
+              // (narrow windows / landscape phones), so the 4th stat is never
+              // clipped off the right edge. Numbers keep their size and drop to
+              // a second row instead of shrinking. Height is content-driven and
+              // anchored to the bottom so the second row grows upward.
+              gridTemplateColumns: "repeat(auto-fit, minmax(clamp(150px, 22vw, 230px), 1fr))",
               alignItems:          "center",
+              justifyItems:        "center",
+              rowGap:              "clamp(20px, 3vh, 36px)",
+              paddingBottom:       "clamp(24px, 5vh, 64px)",
               pointerEvents:       "none",
             }}
           >
