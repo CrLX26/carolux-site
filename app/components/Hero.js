@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import { COMPANY, HERO, TRUST_BADGES } from "../lib/content";
@@ -29,6 +29,19 @@ export default function Hero() {
   const [heroMousePos,   setHeroMousePos]   = useState(null);
   const [thermalOpacity, setThermalOpacity] = useState(0);
   const [parallax,       setParallax]       = useState({ x: 0, y: 0 });
+
+  // Width-based "is this a phone?" — the desktop thermal reveal is mouse-driven
+  // and can't run on touch, so on mobile the SAME overlay is revealed by the CSS
+  // keyframe spotlight instead. SSR-safe (server snapshot = false = desktop).
+  const isMobile = useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia("(max-width: 767px)");
+      mq.addEventListener("change", cb);
+      return () => mq.removeEventListener("change", cb);
+    },
+    () => window.matchMedia("(max-width: 767px)").matches,
+    () => false,
+  );
   const [navHeight,      setNavHeight]      = useState(0);
   // MotionValue holding the alarm card's starting offset (computed after mount).
   // Using useMotionValue + .set() instead of state so that the multi-input
@@ -263,34 +276,15 @@ export default function Hero() {
               }}
             />
           </div>
-
-          {/* ── Mobile thermal reveal (md:hidden) ─────────────────────────────
-              Touch has no cursor, so instead of the desktop mouse spotlight a
-              CSS keyframe sweeps a soft radial mask over the thermal house image
-              in a continuous loop (see .thermal-sweep in globals.css). Aligned to
-              the same 72%/50% framing as the house photo so the two register. */}
-          <div
-            aria-hidden="true"
-            className="md:hidden thermal-sweep"
-            style={{
-              position:           "absolute",
-              inset:              0,
-              backgroundImage:    "url(/images/house-thermal4.webp)",
-              backgroundSize:     "cover",
-              backgroundPosition: "72% 50%",
-              pointerEvents:      "none",
-            }}
-          />
         </motion.div>
 
-        {/* ── Thermal overlay — desktop only ───────────────────────────────
-            ONE parent mask div reveals all thermal children.
-            Mouse cursor position drives the radial-gradient mask.
-            Thermal image + orange-coloured text appear at the cursor.
+        {/* ── Thermal overlay — reveals thermal image + orange text ─────────
+            Desktop: mouse cursor drives the radial-gradient mask.
+            Mobile (isMobile): the SAME overlay is revealed by the .thermal-sweep
+            CSS keyframe spotlight instead (touch has no cursor).
             ──────────────────────────────────────────────────────────────── */}
         <motion.div
           aria-hidden="true"
-          className="hidden md:block"
           style={{
             position:      "absolute",
             inset:         0,
@@ -299,12 +293,13 @@ export default function Hero() {
           }}
         >
           <div
+            className={isMobile ? "thermal-sweep" : undefined}
             style={{
               position:         "absolute",
               inset:            0,
-              opacity:          thermalOpacity,
-              WebkitMaskImage:  overlayMask,
-              maskImage:        overlayMask,
+              opacity:          isMobile ? undefined : thermalOpacity,
+              WebkitMaskImage:  isMobile ? undefined : overlayMask,
+              maskImage:        isMobile ? undefined : overlayMask,
               transition:       "opacity 150ms ease-out",
               pointerEvents:    "none",
             }}
@@ -339,7 +334,8 @@ export default function Hero() {
                   fill
                   priority={true}
                   sizes="100vw"
-                  style={{ objectFit: "cover", objectPosition: "center center" }}
+                  className="object-[72%_50%] md:object-[center_center]"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
             </motion.div>
@@ -396,7 +392,7 @@ export default function Hero() {
                         style={{
                           display:       "block",
                           fontFamily:    "var(--font-cormorant)",
-                          fontSize:      "clamp(4.5rem, 9vw, 10rem)",
+                          fontSize:      "clamp(3rem, 9vw, 10rem)",
                           fontWeight:    400,
                           fontStyle:     "normal",
                           lineHeight:    0.86,
