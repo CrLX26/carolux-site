@@ -217,9 +217,14 @@ export default function Stats() {
           }}
         >
 
-        {/* ── Video background ───────────────────────────────────────────── */}
+        {/* ── Video background ───────────────────────────────────────────────
+            Desktop scrubs frame-by-frame, so it gets the keyframe-dense scrub
+            file. Mobile just loops, so it gets the smaller mobile encode. `key`
+            forces a reload when isTouch resolves after mount (the src changes). */}
         <video
           ref={videoRef}
+          key={isTouch ? "mobile" : "desktop"}
+          src={isTouch ? "/videos/insulation-burst-bg2-mobile.mp4" : "/videos/insulation-burst-bg2-scrub.mp4"}
           preload="none"
           playsInline
           muted
@@ -232,9 +237,7 @@ export default function Stats() {
             zIndex:        0,
             pointerEvents: "none",
           }}
-        >
-          <source src="/videos/insulation-burst-bg2-scrub.mp4" type="video/mp4" />
-        </video>
+        />
 
         {/* Grain overlay — matches Hero grain exactly, eliminates Hero→Stats texture seam */}
         <div

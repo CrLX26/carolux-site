@@ -29,6 +29,14 @@ export default function Hero() {
   const [heroMousePos,   setHeroMousePos]   = useState(null);
   const [thermalOpacity, setThermalOpacity] = useState(0);
   const [parallax,       setParallax]       = useState({ x: 0, y: 0 });
+  // Mobile only: true while a scroll is in progress. The thermal sweep masks two
+  // full-screen image layers, which is cheap to animate but expensive to
+  // re-composite every frame as the page scrolls — it was the one thing causing
+  // scroll jank on the hero (profiled: removing it took max frame 50ms→17ms).
+  // So we drop the overlay entirely during active scroll and bring it back when
+  // the scroll settles. The small spotlight isn't the focus mid-scroll anyway.
+  const [scrolling, setScrolling] = useState(false);
+  const scrollingRef = useRef(false);
 
   // Width-based "is this a phone?" — the desktop thermal reveal is mouse-driven
   // and can't run on touch, so on mobile the SAME overlay is revealed by the CSS
@@ -193,6 +201,22 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", onWindowMouseMove);
   }, []);
 
+  // ── Mobile: pause the thermal sweep while scrolling ───────────────────────
+  // Flips `scrolling` true on the first scroll event and back to false ~160ms
+  // after scrolling stops. The ref guards against re-setting state on every
+  // event (one render per gesture, not per frame).
+  useEffect(() => {
+    if (!isMobile) return;
+    let t = null;
+    const onScroll = () => {
+      if (!scrollingRef.current) { scrollingRef.current = true; setScrolling(true); }
+      if (t) clearTimeout(t);
+      t = setTimeout(() => { scrollingRef.current = false; setScrolling(false); }, 160);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); if (t) clearTimeout(t); };
+  }, [isMobile]);
+
   // Cursor-centred mask for the thermal overlay
   const overlayMask = heroMousePos
     ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
@@ -347,6 +371,10 @@ export default function Hero() {
             inset:         0,
             zIndex:        20,
             pointerEvents: "none",
+            // Drop the whole masked overlay from compositing while scrolling on
+            // mobile (it returns the instant scrolling settles). Desktop is
+            // mouse-driven and unaffected.
+            display:       isMobile && scrolling ? "none" : undefined,
           }}
         >
           <div
