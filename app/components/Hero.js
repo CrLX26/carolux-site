@@ -77,6 +77,10 @@ export default function Hero() {
   const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
+    // Mobile is a static hero (no sticky tunnel, no cross-dissolve), so skip
+    // this scroll listener entirely — it would otherwise read layout every
+    // frame for nothing.
+    if (isMobile) { heroPanelOpacity.set(1); return; }
     let raf = null;
     const measure = () => {
       raf = null;
@@ -98,7 +102,7 @@ export default function Hero() {
       window.removeEventListener("resize", onScroll);
       if (raf !== null) cancelAnimationFrame(raf);
     };
-  }, [heroPanelOpacity]);
+  }, [heroPanelOpacity, isMobile]);
   // imageY removed — hero image fills sticky panel at all times (no lift at end of tunnel).
   // Alarm card — same scroll rate as heroContentY (2000px per progress unit).
   // Multi-input form: re-evaluates whenever scrollYProgress OR alarmStartMV changes,
@@ -132,6 +136,7 @@ export default function Hero() {
   // panel's bottom edge the instant the hero content block fully exits
   // through the panel's top edge.
   useEffect(() => {
+    if (isMobile) return; // alarm cards are desktop-only (scroll-tunnel bridge)
     const compute = () => {
       const sticky = stickyRef.current;
       const hcEl   = heroContentRef.current;
@@ -150,7 +155,7 @@ export default function Hero() {
     compute();
     window.addEventListener("resize", compute, { passive: true });
     return () => window.removeEventListener("resize", compute);
-  }, []);
+  }, [isMobile]);
 
   // ── Mouse tracking — drives parallax + thermal reveal ────────────────────
   useEffect(() => {
@@ -260,7 +265,13 @@ export default function Hero() {
     <div
       id="home"
       ref={heroRef}
-      style={{ minHeight: "calc(274vh - 300px)", position: "relative" }}
+      style={{
+        // Desktop: tall scroll tunnel the sticky panel pins inside.
+        // Mobile: a normal full-screen hero that scrolls away naturally — no
+        // tunnel, no pinning (the pinned tunnel read as "the page won't scroll").
+        minHeight: isMobile ? "100svh" : "calc(274vh - 300px)",
+        position: "relative",
+      }}
     >
       {/* Inner sticky viewport — pins while outer scrolls.
           zIndex: 2 keeps Hero above the Stats panel during their brief
@@ -269,16 +280,17 @@ export default function Hero() {
       <motion.div
         ref={stickyRef}
         style={{
-          position:   "sticky",
-          top:        navHeight,
-          height:     "100svh",
-          minHeight:  "720px",
+          // Mobile: in normal flow, fills one screen, scrolls away. No pin.
+          position:   isMobile ? "relative" : "sticky",
+          top:        isMobile ? undefined : navHeight,
+          height:     isMobile ? "auto" : "100svh",
+          minHeight:  isMobile ? "100svh" : "720px",
           overflow:   "clip",
           display:    "flex",
           alignItems: "center",
           background: "#faf8f5",
           zIndex:     2,
-          opacity:    heroPanelOpacity,
+          opacity:    isMobile ? 1 : heroPanelOpacity,
         }}
       >
         {/* Grain overlay */}
@@ -411,7 +423,7 @@ export default function Hero() {
                 inset:     0,
                 display:   "flex",
                 alignItems: "center",
-                y:         heroContentY,
+                y:         isMobile ? 0 : heroContentY,
               }}
             >
               <div
@@ -604,6 +616,7 @@ export default function Hero() {
                 textAlign:     "center",
                 pointerEvents: "none",
                 y:             alarmY,
+                display:       isMobile ? "none" : undefined, // desktop scroll bridge only
               }}
             >
               <p
@@ -677,6 +690,7 @@ export default function Hero() {
             textAlign:     "center",
             pointerEvents: "none",
             y:             alarmY,
+            display:       isMobile ? "none" : undefined, // desktop scroll bridge only
           }}
         >
           <p
@@ -733,7 +747,7 @@ export default function Hero() {
           style={{
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
-            y:       heroContentY,
+            y:       isMobile ? 0 : heroContentY,
           }}
         >
           {/* Eyebrow */}
