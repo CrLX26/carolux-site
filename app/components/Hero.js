@@ -329,6 +329,7 @@ export default function Hero() {
               alt=""
               fill
               priority={true}
+              quality={65}
               sizes="100vw"
               // Mobile centers the house (it sits on the right of the photo) on the
               // roof apex; md+ keeps the original desktop framing untouched.
@@ -407,7 +408,8 @@ export default function Hero() {
                   src="/images/house-thermal4.webp"
                   alt=""
                   fill
-                  priority={true}
+                  loading="lazy"
+                  quality={65}
                   sizes="100vw"
                   className="object-[72%_50%] md:object-[center_center]"
                   style={{ objectFit: "cover" }}
