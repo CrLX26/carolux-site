@@ -198,6 +198,63 @@ export default function Hero() {
     ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
     : "none";
 
+  // ── Thermal copy colours — split by surface ────────────────────────────────
+  // DESKTOP: the mouse-revealed thermal text lands over the dark left fill
+  //   (#0d0d0d gradient), where warm orange reads cleanly. UNCHANGED — these
+  //   values are byte-identical to the originals.
+  // MOBILE: the .thermal-sweep re-centres the house, so the letters land on the
+  //   glowing-hot part of the thermal image. Orange-on-orange (same hue + same
+  //   lightness) washes out. The copy goes white-hot instead: max lightness
+  //   contrast against any hot zone, reads as the hottest point in frame, stays
+  //   inside the cream brand palette. A warm-dark halo detaches it from lighter
+  //   hot patches the way the alarm card's existing dark glow already does.
+  // Mobile thermal casing, shared by every hero + alert element:
+  //  - MGLOW: an 8-layer near-black glow. The first two layers are ultra-tight
+  //    and fully opaque, acting as an outline that hugs each glyph; the rest are
+  //    a soft falloff that separates the copy from the hot image.
+  //  - MSTROKE: a 0.6px stroke painted BEHIND the fill (paint-order: stroke fill)
+  //    so it borders glyphs without thinning even thin body strokes.
+  const MGLOW = "0 0 1px rgba(8,6,4,1), 0 0 2px rgba(8,6,4,1), 0 0 4px rgba(8,6,4,0.95), 0 0 8px rgba(8,6,4,0.88), 0 1px 10px rgba(8,6,4,0.8), 0 0 22px rgba(8,6,4,0.65), 0 0 44px rgba(8,6,4,0.48), 0 0 70px rgba(8,6,4,0.34)";
+  const MSTROKE = "0.6px rgba(8,6,4,0.92)";
+  const T = isMobile
+    ? {
+        eyebrow:          "#ffd9a0",
+        line:             "#ffd9a0",
+        head1:            "#faf8f5",
+        head2:            "#faf8f5",
+        subtext:          "#ffe9d2",
+        secondary:        "#ffe9d2",
+        badge:            "#ffd9a0",
+        alarmLabel:       "#ffd9a0",
+        alarmMain:        "#faf8f5",
+        headShadow:       MGLOW,
+        copyShadow:       MGLOW,
+        subShadow:        MGLOW,
+        subStroke:        MSTROKE,
+        alarmLabelShadow: MGLOW,
+        alarmMainShadow:  MGLOW,
+        alarmStroke:      MSTROKE,
+      }
+    : {
+        eyebrow:          "#ff6644",
+        line:             "#ff4400",
+        head1:            "#ff4400",
+        head2:            "#ff8800",
+        subtext:          "#ffaa44",
+        secondary:        "#ffcc44",
+        badge:            "#ff8833",
+        alarmLabel:       "#cc7733",
+        alarmMain:        "#ff4400",
+        headShadow:       undefined,
+        copyShadow:       undefined,
+        subShadow:        undefined,
+        subStroke:        undefined,
+        // Desktop alert keeps its original dark glow, byte-identical, no stroke.
+        alarmLabelShadow: "0 0 20px rgba(13,13,13,0.7), 0 0 50px rgba(13,13,13,0.4)",
+        alarmMainShadow:  "0 0 32px rgba(13,13,13,0.8), 0 0 80px rgba(13,13,13,0.5)",
+        alarmStroke:      undefined,
+      };
+
   return (
     // Outer scroll tunnel — 167vh gives 67vh of actual scroll travel
     <div
@@ -368,7 +425,7 @@ export default function Hero() {
                     marginBottom: "2.5rem",
                   }}
                 >
-                  <div style={{ width: "32px", height: "1px", background: "#ff4400", flexShrink: 0 }} />
+                  <div style={{ width: "32px", height: "1px", background: T.line, flexShrink: 0 }} />
                   <p
                     style={{
                       fontFamily:    "var(--font-dm-sans)",
@@ -376,7 +433,10 @@ export default function Hero() {
                       fontWeight:    500,
                       letterSpacing: "0.26em",
                       textTransform: "uppercase",
-                      color:         "#ff6644",
+                      color:         T.eyebrow,
+                      textShadow:    T.copyShadow,
+                      WebkitTextStroke: T.subStroke,
+                      paintOrder:    T.subStroke ? "stroke fill" : undefined,
                       margin:        0,
                     }}
                   >
@@ -397,7 +457,10 @@ export default function Hero() {
                           fontStyle:     "normal",
                           lineHeight:    0.86,
                           letterSpacing: "-0.03em",
-                          color:         i === 1 ? "#ff8800" : "#ff4400",
+                          color:         i === 1 ? T.head2 : T.head1,
+                          textShadow:    T.headShadow,
+                          WebkitTextStroke: T.subStroke,
+                          paintOrder:    T.subStroke ? "stroke fill" : undefined,
                         }}
                       >
                         {line}
@@ -412,7 +475,10 @@ export default function Hero() {
                     fontFamily:   "var(--font-dm-sans)",
                     fontSize:     "clamp(1rem, 1.3vw, 1.125rem)",
                     lineHeight:   1.72,
-                    color:        "#ffaa44",
+                    color:        T.subtext,
+                    textShadow:   T.subShadow,
+                    WebkitTextStroke: T.subStroke,
+                    paintOrder:   T.subStroke ? "stroke fill" : undefined,
                     maxWidth:     "400px",
                     marginBottom: "2.75rem",
                   }}
@@ -453,13 +519,16 @@ export default function Hero() {
                     style={{
                       display:       "inline-flex",
                       alignItems:    "center",
-                      color:         "#ffcc44",
+                      color:         T.secondary,
                       fontFamily:    "var(--font-dm-sans)",
                       fontWeight:    400,
                       fontSize:      "14px",
                       letterSpacing: "0.02em",
                       padding:       "15px 20px",
                       whiteSpace:    "nowrap",
+                      textShadow:    T.copyShadow,
+                      WebkitTextStroke: T.subStroke,
+                      paintOrder:    T.subStroke ? "stroke fill" : undefined,
                     }}
                   >
                     {HERO.secondaryCta}
@@ -484,7 +553,10 @@ export default function Hero() {
                           fontFamily: "var(--font-cormorant)",
                           fontSize:   "14px",
                           fontStyle:  "normal",
-                          color:      "#ff8833",
+                          color:      T.badge,
+                          textShadow: T.copyShadow,
+                          WebkitTextStroke: T.subStroke,
+                          paintOrder: T.subStroke ? "stroke fill" : undefined,
                           flexShrink: 0,
                           lineHeight: 1,
                           minWidth:   "20px",
@@ -497,7 +569,10 @@ export default function Hero() {
                           fontFamily:    "var(--font-dm-sans)",
                           fontSize:      "13px",
                           fontWeight:    500,
-                          color:         "#ff8833",
+                          color:         T.badge,
+                          textShadow:    T.copyShadow,
+                          WebkitTextStroke: T.subStroke,
+                          paintOrder:    T.subStroke ? "stroke fill" : undefined,
                           letterSpacing: "0.07em",
                           textTransform: "uppercase",
                         }}
@@ -532,10 +607,12 @@ export default function Hero() {
                   fontWeight:    700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
-                  color:         "#cc7733",
+                  color:         T.alarmLabel,
                   margin:        "0 0 clamp(0.75rem, 1.8vh, 1.5rem)",
                   lineHeight:    1,
-                  textShadow:    "0 0 20px rgba(13,13,13,0.7), 0 0 50px rgba(13,13,13,0.4)",
+                  textShadow:    T.alarmLabelShadow,
+                  WebkitTextStroke: T.alarmStroke,
+                  paintOrder:    T.alarmStroke ? "stroke fill" : undefined,
                 }}
               >
                 {HERO.secondaryPre}
@@ -548,9 +625,11 @@ export default function Hero() {
                   fontStyle:     "normal",
                   lineHeight:    0.9,
                   letterSpacing: "-0.02em",
-                  color:         "#ff4400",
+                  color:         T.alarmMain,
                   margin:        "0 0 clamp(2rem, 4vh, 3rem)",
-                  textShadow:    "0 0 32px rgba(13,13,13,0.8), 0 0 80px rgba(13,13,13,0.5)",
+                  textShadow:    T.alarmMainShadow,
+                  WebkitTextStroke: T.alarmStroke,
+                  paintOrder:    T.alarmStroke ? "stroke fill" : undefined,
                 }}
               >
                 {HERO.secondaryMain}
@@ -562,10 +641,12 @@ export default function Hero() {
                   fontWeight:    700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
-                  color:         "#cc7733",
+                  color:         T.alarmLabel,
                   margin:        0,
                   lineHeight:    1,
-                  textShadow:    "0 0 20px rgba(13,13,13,0.7), 0 0 50px rgba(13,13,13,0.4)",
+                  textShadow:    T.alarmLabelShadow,
+                  WebkitTextStroke: T.alarmStroke,
+                  paintOrder:    T.alarmStroke ? "stroke fill" : undefined,
                 }}
               >
                 {HERO.secondaryPost}
