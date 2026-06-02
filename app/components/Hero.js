@@ -753,11 +753,9 @@ export default function Hero() {
           }}
         >
           {/* Eyebrow */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.05 }}
-            style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "2.5rem" }}
+          <div
+            className="hero-rise"
+            style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "2.5rem", animationDelay: "0.05s" }}
           >
             <div style={{ width: "32px", height: "1px", background: "#4a90a4", flexShrink: 0 }} />
             <p
@@ -773,13 +771,14 @@ export default function Hero() {
             >
               {HERO.eyebrow}
             </p>
-          </motion.div>
+          </div>
 
-          {/* Headline — clip-path line reveal on page load */}
+          {/* Headline — clip-path line reveal on page load (CSS, no JS gate) */}
           <h1 style={{ margin: "0 0 2.25rem", padding: 0 }}>
             {HERO.headline.map((line, i) => (
               <div key={line} style={{ clipPath: "inset(0 -9999px)", lineHeight: 0.86 }}>
-                <motion.span
+                <span
+                  className="hero-line"
                   style={{
                     display:       "block",
                     fontFamily:    "var(--font-cormorant)",
@@ -789,22 +788,18 @@ export default function Hero() {
                     lineHeight:    0.86,
                     letterSpacing: "-0.03em",
                     color:         "#1a2b3c",
+                    animationDelay: `${0.12 + i * 0.1}s`,
                   }}
-                  initial={{ y: "112%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1.1, ease: EASE, delay: 0.12 + i * 0.1 }}
                 >
                   {line}
-                </motion.span>
+                </span>
               </div>
             ))}
           </h1>
 
           {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.52 }}
+          <p
+            className="hero-rise"
             style={{
               fontFamily:   "var(--font-dm-sans)",
               fontSize:     "clamp(1rem, 1.3vw, 1.125rem)",
@@ -812,22 +807,22 @@ export default function Hero() {
               color:        "#3d5060",
               maxWidth:     "400px",
               marginBottom: "2.75rem",
+              animationDelay: "0.52s",
             }}
           >
             {HERO.subheading}
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.62 }}
+          <div
+            className="hero-rise"
             style={{
               display:      "flex",
               flexWrap:     "wrap",
               alignItems:   "center",
               gap:          "0.75rem",
               marginBottom: "3rem",
+              animationDelay: "0.62s",
             }}
           >
             <a
@@ -871,13 +866,11 @@ export default function Hero() {
             >
               {HERO.secondaryCta}
             </a>
-          </motion.div>
+          </div>
 
           {/* Trust badges */}
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.82 }}
+          <ul
+            className="hero-fade"
             style={{
               display:       "flex",
               flexDirection: "column",
@@ -885,6 +878,7 @@ export default function Hero() {
               listStyle:     "none",
               padding:       0,
               margin:        0,
+              animationDelay: "0.82s",
             }}
           >
             {TRUST_BADGES.map((badge, i) => (
@@ -916,15 +910,13 @@ export default function Hero() {
                 </span>
               </li>
             ))}
-          </motion.ul>
+          </ul>
 
         </motion.div>
 
         {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.6 }}
+        <div
+          className="hero-fade"
           style={{
             position:      "absolute",
             bottom:        "2.5rem",
@@ -934,6 +926,7 @@ export default function Hero() {
             flexDirection: "column",
             alignItems:    "center",
             gap:           "8px",
+            animationDelay: "1.4s",
           }}
         >
           <span
@@ -950,18 +943,16 @@ export default function Hero() {
           >
             Scroll
           </span>
-          <motion.div
+          <div
             aria-hidden="true"
+            className="hero-pulse"
             style={{
               width:      "1px",
               height:     "36px",
               background: "rgba(26,26,26,0.15)",
-              originY:    0,
             }}
-            animate={{ scaleY: [0.1, 1, 0.1] }}
-            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
           />
-        </motion.div>
+        </div>
 
       </motion.div>
     </div>
