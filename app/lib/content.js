@@ -82,6 +82,13 @@ export const SERVICES = [
       "A wet or open crawl space drives up your energy bills, causes wood rot, and pulls humid air into your living space. We encapsulate your crawl space with a heavy-duty vapor barrier and insulate the perimeter walls, keeping moisture out and conditioned air in. Every job includes a full inspection, drainage assessment, and attention to building code — no shortcuts, no surprises.",
     cta: "Get a Free Crawl Space Quote",
   },
+  {
+    number: "03",
+    title: "Fiberglass Batt Insulation",
+    description:
+      "Hand-fitted fiberglass batt set snug between your crawl space floor joists — no gaps, no slumping, no air slipping through. It steadies the floors above, softens sound between levels, and keeps conditioned air where it belongs. Tony and Juan cut and place every piece themselves.",
+    cta: "Get a Batt Quote",
+  },
 ];
 
 export const WHY_US = [
@@ -164,3 +171,76 @@ export const REVIEWS = [
     text: "These guys are the real deal. Owner-operated means something — Juan walked me through every step and answered every question. No upsell, no pressure. My house is noticeably more comfortable upstairs now.",
   },
 ];
+
+export const PROCESS = {
+  eyebrow: "How We Work",
+  title: "Four steps. No surprises.",
+  steps: [
+    {
+      step: "01",
+      title: "Assessment",
+      description:
+        "We measure your existing R-values and inspect the attic and crawl space ourselves. The plan starts with what's actually up there, not a guess from the driveway.",
+    },
+    {
+      step: "02",
+      title: "Recommendations",
+      description:
+        "You get a clear, written scope the same day — what we'll do, why it matters, and the exact price you'll pay. No pressure, no upsell.",
+    },
+    {
+      step: "03",
+      title: "Installation",
+      description:
+        "Tony and Juan do the work. We air seal first where it counts, then insulate to the R-49 level the Department of Energy recommends for North Carolina.",
+    },
+    {
+      step: "04",
+      title: "Clean-Up & Walkthrough",
+      description:
+        "We leave the space cleaner than we found it and walk the finished job with you, so you see exactly what changed and why it will hold up.",
+    },
+  ],
+};
+
+export const OWNERS = {
+  eyebrow: "Owner-Operated",
+  title: "The two people doing the work",
+  intro:
+    "Hire Carolux and you get the owners, not a rotating crew you have never met. The person who walked your home is the person standing in your attic, and the one who picks up when you call.",
+  people: [
+    {
+      name: "Tony Kermis",
+      role: "Co-Owner · Licensed NC Home Inspector",
+      photo: "/images/tony-profile-1.png",
+      bio: "A licensed North Carolina home inspector, Tony reads a house the way few insulation crews can. He knows where the heat is escaping before the first bag goes in.",
+    },
+    {
+      name: "Juan Gonzalez",
+      role: "Co-Owner · Operations & Customer Care",
+      photo: "/images/juan-profile-1.png",
+      bio: "Juan runs the schedule, the follow-through, and the part most contractors drop: keeping you in the loop from the first call to the final walkthrough.",
+    },
+  ],
+};
+
+export const SERVICE_AREA = {
+  eyebrow: "Service Area",
+  title: "Serving Charlotte & beyond",
+  note: "Don't see your town? Give us a call. If you're near the metro, chances are we cover you.",
+  cities: [
+    "Charlotte",
+    "Huntersville",
+    "Pineville",
+    "Matthews",
+    "Mint Hill",
+    "Concord",
+    "Harrisburg",
+    "Belmont",
+    "Cramerton",
+    "Gastonia",
+    "Lowell",
+    "Mount Holly",
+    "Stanley",
+  ],
+};

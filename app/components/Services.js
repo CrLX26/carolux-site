@@ -15,12 +15,12 @@ export default function Services() {
   return (
     <section id="services" style={sectionStyle(C.cream)}>
       <div style={containerStyle}>
-        <SectionHeading title="Two services. Done right." maxWidth="22ch" />
+        <SectionHeading title="Three services. Done right." maxWidth="24ch" />
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 380px), 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
             gap: "clamp(20px, 3vw, 40px)",
             marginTop: "clamp(48px, 7vh, 88px)",
           }}
