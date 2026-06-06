@@ -300,7 +300,7 @@ export default function Stats() {
               // a second row instead of shrinking. Height is content-driven and
               // anchored to the bottom so the second row grows upward.
               gridTemplateColumns: "repeat(auto-fit, minmax(clamp(150px, 22vw, 230px), 1fr))",
-              alignItems:          "center",
+              alignItems:          "start",
               justifyItems:        "center",
               rowGap:              "clamp(20px, 3vh, 36px)",
               paddingBottom:       "clamp(24px, 5vh, 64px)",
