@@ -94,13 +94,44 @@ export default function Stats() {
     [120,  75,   18,   0],
   );
 
-  // ── Desktop: rAF video scrub + cumulative scroll-driven stat reveals ──────
+  // ── Desktop: capability-gated. ───────────────────────────────────────────
+  // Per-frame video seeking (the scrub) is smooth on Chromium but stutters on
+  // Firefox and weak hardware. So: Chromium → rAF scrub; Firefox / reduced-motion
+  // / low-memory → plain autoplay-loop (no seeking). Stat reveals stay
+  // scroll-driven in BOTH paths, so the section reads the same either way.
   useEffect(() => {
     if (isTouch) return;
     const video = videoRef.current;
-    // The element ships with preload="none" so it never competes with the hero
-    // on mobile first-load. Desktop needs the frames to scrub, so eagerly load
-    // here (after mount, desktop has the bandwidth and the scrub depends on it).
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isFirefox      = /firefox/i.test(navigator.userAgent);
+    const lowMemory      = typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4;
+    const canScrub       = !prefersReduced && !isFirefox && !lowMemory;
+
+    const revealStats = (v) => {
+      statRefs.forEach((ref, i) => {
+        if (!ref.current) return;
+        const { opacity, y } = getStatStyle(v, WINDOWS[i]);
+        ref.current.style.opacity   = String(opacity);
+        ref.current.style.transform = `translateY(${y}px)`;
+      });
+    };
+
+    // ── Fallback (Firefox / reduced-motion / low-memory): autoplay loop, no
+    //    per-frame seeking — kills the scroll stutter. Stats still reveal on scroll.
+    if (!canScrub) {
+      if (video) {
+        video.loop    = true;
+        video.preload = "auto";
+        video.play().catch(() => {});
+      }
+      const unsub = scrollYProgress.on("change", revealStats);
+      return () => unsub();
+    }
+
+    // ── Scrub path (Chromium) ──
+    // preload="none" in markup keeps it from competing with the hero on first
+    // load; desktop eagerly loads here because the scrub depends on the frames.
     if (video) {
       video.preload = "auto";
       video.load();
@@ -130,15 +161,9 @@ export default function Stats() {
     rafId = requestAnimationFrame(tick);
 
     // Scroll listener: scrub video + drive each stat's transform/opacity.
-    // Stats reveal cumulatively — each enters once and remains visible.
     const unsubscribe = scrollYProgress.on("change", (v) => {
       targetTime = v * 7;
-      statRefs.forEach((ref, i) => {
-        if (!ref.current) return;
-        const { opacity, y } = getStatStyle(v, WINDOWS[i]);
-        ref.current.style.opacity   = String(opacity);
-        ref.current.style.transform = `translateY(${y}px)`;
-      });
+      revealStats(v);
     });
 
     return () => {
