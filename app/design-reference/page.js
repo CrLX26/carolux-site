@@ -708,7 +708,7 @@ export default function DesignReference() {
                 <div>
                   <p style={{ fontFamily: "var(--font-dm-sans)", fontSize: "11px", color: "rgba(26,43,60,0.62)", letterSpacing: "0.15em", textTransform: "uppercase", margin: "0 0 4px" }}>clamp(14px, 1.2vw, 16px) · weight 400 · lh 1.72 — Subheading</p>
                   <p style={{ fontFamily: "var(--font-dm-sans)", fontSize: "clamp(14px, 1.2vw, 16px)", lineHeight: 1.72, color: "rgba(26,26,26,0.55)", margin: 0, maxWidth: "440px" }}>
-                    Tony and Juan show up to every job. You get the owners on the phone, the owners doing the work, and a 1-year guarantee on everything we touch.
+                    Tony and Juan show up to every job. You get the owners on the phone, the owners doing the work, and a 2-year guarantee on everything we touch.
                   </p>
                 </div>
                 <div>
@@ -806,7 +806,7 @@ export default function DesignReference() {
 
             <DemoCard label="Trust Badge List" source="tresmares">
               <ul style={{ display: "flex", flexDirection: "column", gap: "10px", listStyle: "none", padding: 0, margin: 0 }}>
-                {["Both owners on every job", "Licensed & Insured in NC", "1-Year workmanship guarantee", "Free same-week estimates"].map((badge, i) => (
+                {["Both owners on every job", "2-Year workmanship guarantee", "Free same-week estimates"].map((badge, i) => (
                   <li key={badge} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "13px", fontStyle: "italic", color: "#4a90a4", flexShrink: 0, minWidth: "20px", lineHeight: 1 }}>
                       {String(i + 1).padStart(2, "0")}
@@ -1031,7 +1031,7 @@ export default function DesignReference() {
             {/* ── Badge / chip ─────────────────────────────────────────── */}
             <DemoCard label="Badge / Chip  ·  border-radius 9999px, color #aaaaaa" source="tresmares">
               <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
-                {["New", "Beta", "Residential", "Free Estimate", "Licensed & Insured"].map(label => (
+                {["New", "Beta", "Residential", "Free Estimate"].map(label => (
                   <span key={label} style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -1335,7 +1335,7 @@ export default function DesignReference() {
               <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
                 {[
                   { title: "47%", sub: "Avg. Energy Savings", badge: "Verified", badgeColor: "#aad902" },
-                  { title: "1-Year", sub: "Workmanship Guarantee", badge: "Carolux Promise", badgeColor: "#4a90a4" },
+                  { title: "2-Year", sub: "Workmanship Guarantee", badge: "Carolux Promise", badgeColor: "#4a90a4" },
                 ].map(({ title, sub, badge, badgeColor }) => (
                   <div key={title} style={{ background: "#1d1d1d", border: "1px solid #4b5563", borderRadius: "8px", padding: "24px 20px", width: "180px" }}>
                     <p style={{ fontFamily: "var(--font-jakarta)", fontSize: "36px", fontWeight: 700, color: "#ffffff", letterSpacing: "-0.03em", lineHeight: 1, margin: "0 0 6px" }}>{title}</p>
