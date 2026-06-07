@@ -229,6 +229,25 @@ export default function BeforeAfter() {
                 >
                   {p.caption}
                 </p>
+                {p.location && (
+                  <p
+                    style={{
+                      margin: "8px 0 0",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "7px",
+                      fontFamily: "var(--font-label)",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      color: C.teal,
+                    }}
+                  >
+                    <span aria-hidden="true" style={{ width: "5px", height: "5px", borderRadius: "50%", background: C.teal }} />
+                    {p.location}
+                  </p>
+                )}
               </div>
             </Reveal>
           ))}
