@@ -114,6 +114,11 @@ export default function Footer() {
           maxWidth: "1200px",
           margin: "0 auto",
           padding: "20px clamp(24px, 6vw, 80px)",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "10px 24px",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         <p
@@ -127,6 +132,7 @@ export default function Footer() {
         >
           &copy; {COMPANY.year} {COMPANY.name}. All rights reserved.
         </p>
+        <FootLink href="/privacy-policy">Privacy Policy</FootLink>
       </div>
     </footer>
   );
