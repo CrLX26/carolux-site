@@ -303,3 +303,96 @@ export const SERVICE_AREA = {
     "Stanley",
   ],
 };
+
+// Privacy Policy — VERBATIM from Carolux_Privacy_Policy.pdf (Last Updated June 3, 2026).
+// Do not paraphrase legal text. Em dashes here are original to the document.
+export const PRIVACY_POLICY = {
+  org: "Carolux Insulation LLC",
+  title: "Privacy Policy & Messaging Terms and Conditions",
+  lastUpdated: "June 3, 2026",
+  sections: [
+    {
+      heading: "1. Who We Are",
+      body: [
+        "Carolux Insulation LLC is a residential insulation contractor serving the Charlotte, NC metro area. We provide blown-in attic insulation, crawl space batt insulation, vapor barrier installation, and air sealing services to homeowners. This Privacy Policy explains how we collect, use, and protect your information when you visit our website or contact us about our services.",
+      ],
+    },
+    {
+      heading: "2. Information We Collect",
+      body: [
+        "When you submit a contact or estimate request form on our website, we collect: your name, email address, phone number, property address, and information about your insulation needs. When we visit your property for an estimate, we may take photos of your attic, crawl space, or exterior for documentation and quality control purposes.",
+      ],
+    },
+    {
+      heading: "3. How We Use Your Information",
+      body: ["We use the information you provide to:"],
+      list: [
+        "Respond to your estimate or service requests",
+        "Schedule and confirm appointments",
+        "Communicate with you about your job before, during, and after completion",
+        "Send text messages if you have opted in to SMS communications",
+        "Improve our services",
+      ],
+      after: [
+        "We do not sell, rent, or share your personal information with third parties for marketing purposes.",
+      ],
+    },
+    {
+      heading: "4. Text Message (SMS) Communications",
+      body: [
+        "If you provide your phone number and consent to receive text messages, we may send you appointment confirmations, job scheduling updates, estimate follow-ups, and service-related communications. Message and data rates may apply. You can opt out at any time by replying STOP to any text message. Reply HELP for assistance. Message frequency varies based on your service interaction.",
+      ],
+    },
+    {
+      heading: "5. Job-Site Photos",
+      body: [
+        "Job-site photos showing only insulation, attic, or crawl space conditions — with no identifying personal property or people — may be used in our portfolio or marketing materials unless you opt out. You may opt out by notifying us in writing at team@caroluxinsulation.com.",
+      ],
+    },
+    {
+      heading: "6. Cookies and Analytics",
+      body: [
+        "Our website uses cookies and analytics tools to understand how visitors use our site and to improve your experience. This may include analytics data collected by our website platform and Google Analytics. You can control cookie settings through your browser settings.",
+      ],
+    },
+    {
+      heading: "7. Data Security",
+      body: [
+        "We take reasonable steps to protect your information. We store customer information in password-protected systems and limit access to authorized personnel only.",
+      ],
+    },
+    {
+      heading: "8. Your Rights",
+      body: [
+        "You may contact us at any time to request access to, correction of, or deletion of your personal information by emailing team@caroluxinsulation.com or calling (704) 228-2729.",
+      ],
+    },
+    {
+      heading: "9. Changes to This Policy",
+      body: [
+        "We may update this policy as our practices change. The 'last updated' date at the top of this document reflects the most recent version.",
+      ],
+    },
+    {
+      heading: "Data Sharing",
+      body: ["The following disclosures are required for SMS messaging compliance:"],
+      list: [
+        "Customer data is not shared with 3rd parties for promotional or marketing purposes.",
+        "Mobile opt-in and consent are never shared with anyone for any purpose. Any information sharing that may be mentioned elsewhere in this policy excludes mobile opt-in data.",
+      ],
+    },
+  ],
+  messagingTerms: {
+    heading: "Carolux Insulation Messaging Terms and Conditions",
+    items: [
+      "The messaging program consists of general conversational messaging to answer questions and provide support to customers.",
+      "You can cancel the SMS service at any time. Just text 'STOP' to the phone number from which you received messages. After you send the SMS message 'STOP' to us, we will send you an SMS message to confirm that you have been unsubscribed. After this, you will no longer receive SMS messages from us. If you want to join again, just sign up as you did the first time and we will start sending SMS messages to you again.",
+      "If you are experiencing issues with the messaging program you can reply with the keyword HELP for more assistance, or you can get help directly at team@caroluxinsulation.com.",
+      "Carriers are not liable for delayed or undelivered messages.",
+      "As always, message and data rates may apply for any messages sent to you from us and to us from you. Message frequency will vary based on communication needs. If you have any questions about your text plan or data plan, it is best to contact your wireless provider.",
+      "If you have any questions regarding privacy, please read our privacy policy contained in the rest of this document/page.",
+    ],
+  },
+  disclaimer:
+    "This policy does not constitute legal advice. Carolux Insulation LLC recommends periodic review by a qualified attorney.",
+};
