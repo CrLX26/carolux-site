@@ -100,16 +100,18 @@ export default function Contact() {
           >
             {COMPANY.phone}
           </Cta>
-          <Cta
-            href={COMPANY.smsHref}
-            variant="outline"
-            onDark
-            arrow={false}
-            leadingIcon={<ChatIcon />}
-            ringColor={C.cream}
-          >
-            Text Us
-          </Cta>
+          {COMPANY.smsEnabled && (
+            <Cta
+              href={COMPANY.smsHref}
+              variant="outline"
+              onDark
+              arrow={false}
+              leadingIcon={<ChatIcon />}
+              ringColor={C.cream}
+            >
+              Text Us
+            </Cta>
+          )}
           <Cta
             href={COMPANY.emailHref}
             variant="outline"

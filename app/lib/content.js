@@ -4,10 +4,12 @@ export const COMPANY = {
   phoneHref: "tel:7042282729",
   email: "team@caroluxinsulation.com",
   emailHref: "mailto:team@caroluxinsulation.com",
-  // TODO(sms): PLACEHOLDER — points to the main line for now. Replace smsHref/smsPhone
-  // with the dedicated SMS-capable number once confirmed before relying on it live.
+  // SMS: the texting number IS the main line (correct). The "Text Us" button stays
+  // HIDDEN until the business's SMS compliance registration (A2P/10DLC) is approved.
+  // When approved, set smsEnabled: true — that's the only change needed to reveal it.
   smsPhone: "(704) 228-2729",
   smsHref: "sms:7042282729",
+  smsEnabled: false,
   instagram: "https://instagram.com/caroluxinsulation",
   serviceArea: "Charlotte & Gastonia, NC",
   owners: "Tony Kermis and Juan Gonzalez",
