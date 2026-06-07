@@ -8,8 +8,9 @@
 **Framework:** Next.js 16.2.6 (App Router, Turbopack)
 **Repo:** https://github.com/CrLX26/carolux-site.git
 **Local path:** `H:\Claude Code Folders\Carolux Pro Website\carolux-site`
-**Dev server:** `npm run dev` → http://localhost:3000
-**Current branch:** `mobile-fixes` (pushed to GitHub, NOT merged to main)
+**Dev server:** `npm run dev` → http://localhost:3000  (⚠️ NEVER `vercel dev` — it's ~13× slower and feels janky; if the site is sluggish locally, check that the process on :3000 is `next dev`, not `vercel dev`)
+**Production:** `main` auto-deploys to Vercel. All work through the growth-levers batch + the Firefox scrub fallback is **merged and live**.
+**Workflow:** branch off `main`, merge back via PR (a couple of direct merges to `main` have been used when explicitly requested). Two parallel worktrees exist — this one (`carolux-site`, design/front-end) and `carolux-seo` (SEO session, branch `seo-foundation`). Stay in your lane; SEO owns `schema.js`, `sitemap.js`, `robots.js`, `layout.js` metadata, FAQ.
 
 ---
 
@@ -19,20 +20,30 @@
 | Route | File | Status |
 |---|---|---|
 | `/` | `app/page.js` | Complete, renders all sections |
+| `/privacy-policy` | `app/privacy-policy/page.js` | Complete — **server-rendered** legal page (indexable, no client JS), brand-styled, own metadata/canonical. Content is **verbatim** in `content.js` → `PRIVACY_POLICY` (from the official PDF, Last Updated June 3, 2026). Footer links to it. |
 | `/design-reference` | `app/design-reference/page.js` | Complete, internal tool only |
 
 ### Components (all in `app/components/`)
+All sections are fully designed/built (the old "unstyled placeholder" notes are obsolete). Page order in `app/page.js`: Hero → Stats → Estimator → Services → BeforeAfter → Process → WhyUs → Packages → Owners → Reviews → ServiceArea → Contact → Footer.
+
 | Component | Status | Notes |
 |---|---|---|
 | `Nav.js` | Complete | **DO NOT TOUCH** — user hard constraint |
-| `Hero.js` | Complete | Desktop + mobile fixed. See Known Issues for remaining verification |
-| `Stats.js` | Complete | Desktop scroll-scrub + mobile autoplay/IntersectionObserver |
-| `Services.js` | Complete | Static section |
-| `WhyUs.js` | Complete | Static section |
+| `Hero.js` | Complete | Scroll tunnel + thermal reveal (desktop) / static image (mobile) |
+| `Stats.js` | Complete | Chromium scroll-scrub video; **Firefox / reduced-motion / ≤4GB RAM fall back to autoplay-loop** (no per-frame seeking — that stutters). Mobile autoplay + IntersectionObserver |
+| `Estimator.js` | Complete | Savings calculator (bill-based, EPA/DOE formula). ⚠️ email capture is a STUB — goes nowhere yet (`TODO(lead-capture)` in content.js) |
+| `Services.js` | Complete | 3 services incl. Fiberglass Batt |
+| `BeforeAfter.js` | Complete | Drag-to-compare slider (ported from carolux-tools), navy band |
+| `Process.js` | Complete | 4-step "How We Work" |
+| `WhyUs.js` | Complete | 4 pillars incl. "Inspector-Grade Diagnosis" |
 | `Packages.js` | Complete | 3-column pricing cards |
-| `Reviews.js` | Complete | 3 customer reviews |
+| `Owners.js` | Complete | Tony & Juan real photos. **Tony = "former" NC home inspector, never "licensed"** |
+| `Reviews.js` | Complete | 3 reviews — **PLACEHOLDER copy, not real** |
+| `ServiceArea.js` | Complete | 13-city flowing list |
 | `Contact.js` | Complete | Contact form section |
-| `Footer.js` | Complete | Footer with links |
+| `Footer.js` | Complete | Footer with NAP + links |
+| `SmoothScroll.js` | Complete | Lenis smooth-scroll wrapper |
+| `sectionKit.js` | — | Shared design kit: brand tokens `C`, `Reveal`, `SectionHeading`, `LiftCard`, `Cta`, icons. Lower-page sections import from here |
 
 ### Supporting Files
 | File | Purpose |
@@ -121,12 +132,12 @@ Thermal Gold:   #ffcc00  — thermal highlight
 
 ### Typography (Google Fonts, loaded in layout.js via `next/font/google`)
 ```
-CSS Variable          Font                  Role
---font-dm-sans        DM Sans               Body, UI, labels, CTAs
---font-cormorant      Cormorant Garamond    Display headlines, italic bridge text, badge counters
---font-jakarta        Plus Jakarta Sans     Stat numbers only
+CSS Variable          Font (actual)         Role
+--font-cormorant      Gloock                Display headlines, serif numerals, stat numbers
+--font-dm-sans        Manrope               Body, UI, CTAs
+--font-label          Jost                  Uppercase tracked labels / eyebrows
 ```
-No font files in `public/fonts/` — all loaded from Google Fonts at build time via Next.js font optimization.
+Note: the CSS var names are legacy aliases (they don't match the actual font names). Actual fonts are **Gloock / Manrope / Jost** — these are the brand's committed identity; preserve them. No font files in `public/fonts/` — all via `next/font/google`.
 
 ### Key Design Patterns Borrowed
 - **Tresmares Capital** (`C:\Users\jcx20\.claude\skills\tresmarescapital-design`): Scroll tunnel, Framer Motion page-enter animations, staggered clip-path headline reveal, eyebrow label style, grain overlay, edge fades, 4px spacing grid, EASE constant `[0.16, 1, 0.3, 1]`
@@ -155,13 +166,16 @@ No font files in `public/fonts/` — all loaded from Google Fonts at build time 
 ### NOT installed
 - `three` / Three.js — not installed. Canvas glow in design-reference is CSS-only approximation.
 
-### AI Skills / Plugins (global — `C:\Users\jcx20\.claude\`)
+### AI Skills / Plugins
 ```
-skills/tresmarescapital-design   — Tresmares Capital design system (colors, typography, motion, components)
-skills/sweepingcorp-design       — SweepingCorp design system
-plugins/cache/impeccable         — Impeccable UI/UX plugin (craft, shape, audit, polish, animate etc.)
-plugins/cache/ui-ux-pro-max-skill — UI/UX Pro Max plugin (50+ styles, 161 color palettes, accessibility rules)
+plugins/cache/impeccable          — Impeccable UI/UX plugin (global; craft, shape, audit, polish, animate…)
+plugins/cache/ui-ux-pro-max-skill — UI/UX Pro Max plugin (global)
 ```
+**Moved out of global:** `tresmarescapital-design` and `sweepingcorp-design` now live in
+`H:\Claude Code Folders\skillui-output\` (NOT `~/.claude/skills/`) — they were auto-activating
+in every project. Reference copies are also in this repo's `design-refs/`. Generate new design
+skills with `npx skillui --url <site> --out "H:\Claude Code Folders\skillui-output" --mode ultra`,
+then move the output into the specific project that needs it (never global).
 
 ### Project-level skills (`H:\Claude Code Folders\Carolux Pro Website\carolux-site\.claude\skills\`)
 ```
@@ -184,8 +198,16 @@ Also in `public/` (loose, legacy): various `.png` screenshots, `D2 UP.png`, `D8 
 
 ### Videos (`public/videos/`)
 ```
-insulation-burst-bg-scrub.mp4   — Main stats video (desktop scroll-scrubbed)
-insulation-burst-bg.mp4         — Alt video (not currently used)
+insulation-burst-bg2-scrub.mp4   — Stats video, desktop scroll-scrub (~6.6MB)
+insulation-burst-bg2-mobile.mp4  — Stats video, mobile autoplay-loop (~2.7MB; also used by the Firefox/low-power fallback)
+(older insulation-burst-bg*.mp4 files are legacy/unused; some untracked)
+```
+
+### Owner photos & before/after (`public/images/`)
+```
+tony-profile-1.png / juan-profile-1.png   — owner headshots (Owners.js) — ~1.9MB each, could be downscaled
+attic-before-2.png / attic-after-2.png    — Before/After slider, attic pair
+crawlspace-before.jpg / crawlspace-after.png — Before/After slider, crawl space pair
 ```
 
 ### Fonts
@@ -193,23 +215,26 @@ No files in `public/fonts/` — Google Fonts loaded via `next/font/google`.
 
 ---
 
-## Git State
+## Git State (as of 2026-06-06)
+
+`main` is current and live. It contains: mobile-fixes, design-polish (owners/process/
+service-area/3rd service/stats-align), the growth-levers batch (estimator, before/after,
+conversion copy, legal fixes), and the Firefox scrub fallback.
 
 ```
-main branch:         3 commits
-mobile-fixes branch: 5 commits — current working branch, pushed to GitHub
+main                         — production, deployed. HEAD: cb5c1da (merge: Firefox scrub fallback)
+design-polish                — merged (legacy)
+growth-levers-experiment     — merged via PR #1 (can be deleted on GitHub)
+perf-scrub-firefox-fallback  — merged directly (can be deleted on GitHub)
+mobile-fixes                 — old, merged-equivalent (legacy)
+seo-foundation               — the SEO session's branch (separate worktree)
 ```
 
-### Commit history (mobile-fixes, newest first):
-```
-22573e9  docs: update CLAUDE.md with complete project state
-3fab8e6  fix: mobile hero layout — headline overflow and bridge text wrapping
-42b2ed1  fix: show hero image on mobile — remove hidden md:block, add text-contrast scrim
-0ab8fdf  Clean up .gitignore line endings
-37a3a8f  Initial commit — Carolux Pro website
-```
+`app/design-reference/` **is now committed** and lives on `main` (the old "untracked" note is obsolete).
 
-**Important:** `app/design-reference/` is **untracked** (listed as `??` in git status). It exists on disk and works at `/design-reference` in dev but has NOT been committed to any branch.
+**Loose ends:** `public/images/1000029061BEFORE.png` & `1000029074AFTER.png` show as deleted in the
+working tree (unstaged, unexplained) — investigate before committing that deletion. Junk files
+(`*OLD.webp`, `* - Copy.webp`, `house-normal6.af`, extra big videos) remain untracked on purpose.
 
 ---
 
@@ -272,23 +297,27 @@ See "Mobile Fixes Applied" table above.
 
 ---
 
-## Next Task
+## Open Tasks / Backlog
 
-**Test on a real phone, then merge to main.**
+- **Lead-capture email backend** — Estimator email field is a stub (goes nowhere). Wire to a
+  form service (Resend / Formspree / Web3Forms) or an API route. See `TODO(lead-capture)`.
+- **Before/after captions** — confirm whether those photos are real Carolux jobs before adding
+  a city caption (honesty rule, same as the placeholder reviews).
+- **Reviews** — replace placeholder reviews with real ones (the "$80 power bill" line is a
+  placeholder dollar-savings claim that violates the no-specific-$ rule; it goes when reviews are real).
+- **Growth-levers backlog** (see `GROWTH-LEVERS-PLAN.md`): guarantee seal by CTAs, honest urgency,
+  **Insured** trust bar (insured, NOT licensed), click-to-text, referral.
+- **SEO lane** (coordinate, don't build here): FAQ + schema, per-city pages, meta description.
+- **Perf, if needed:** if Firefox is still janky after the fallback, re-encode the scrub video
+  keyframe-dense + smaller. Owner photos are 1.9MB PNG sources — could be downscaled.
 
-1. Start dev server: `npm run dev`
-2. Expose with localtunnel: `npx localtunnel --port 3000`
-3. Open on phone, enter the IP shown on the loca.lt page as the password
-4. Verify all items in the "needs real-phone verification" list above
-5. If everything looks good:
-   ```bash
-   # On GitHub: open a PR from mobile-fixes → main and merge
-   # Or locally:
-   git checkout main
-   git merge mobile-fixes
-   git push origin main
-   ```
-6. **Do NOT merge to main without user review.**
+## Hard content rules (see also memory: legal-tony-and-licensing)
+
+- **Tony = "former" NC home inspector. NEVER "licensed."** Company is **insured, NOT licensed**
+  (NC doesn't require a license at our job sizes). Trust signals say "Insured" only.
+- Never the word **"mold"** (use "biological growth" / wood rot / moisture).
+- Never promise **specific dollar savings** — percentages + source (DOE/ENERGY STAR), "results vary."
+- **2-year** guarantee everywhere (not 1-year). No negative competitor mentions.
 
 ---
 
@@ -327,8 +356,8 @@ Sidebar with 8 sections. All interactive demos (click-to-copy, ripple, char repl
 # 1. Navigate to project
 cd "H:\Claude Code Folders\Carolux Pro Website\carolux-site"
 
-# 2. Confirm branch
-git branch       # should show * mobile-fixes
+# 2. Confirm branch (main is production; create a feature branch for new work)
+git branch
 git status
 
 # 3. Start dev server
