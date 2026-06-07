@@ -4,6 +4,12 @@ export const COMPANY = {
   phoneHref: "tel:7042282729",
   email: "team@caroluxinsulation.com",
   emailHref: "mailto:team@caroluxinsulation.com",
+  // SMS: the texting number IS the main line (correct). The "Text Us" button stays
+  // HIDDEN until the business's SMS compliance registration (A2P/10DLC) is approved.
+  // When approved, set smsEnabled: true — that's the only change needed to reveal it.
+  smsPhone: "(704) 228-2729",
+  smsHref: "sms:7042282729",
+  smsEnabled: false,
   instagram: "https://instagram.com/caroluxinsulation",
   serviceArea: "Charlotte & Gastonia, NC",
   owners: "Tony Kermis and Juan Gonzalez",
@@ -271,12 +277,14 @@ export const BEFORE_AFTER = {
     {
       label: "Attic Insulation",
       caption: "Blown-in attic insulation + air sealing",
+      location: "Ballantyne, Charlotte NC",
       before: "/images/attic-before-2.png",
       after: "/images/attic-after-2.png",
     },
     {
       label: "Crawl Space",
       caption: "Vapor barrier + crawl space insulation",
+      location: "Matthews, NC",
       before: "/images/crawlspace-before.jpg",
       after: "/images/crawlspace-after.png",
     },
