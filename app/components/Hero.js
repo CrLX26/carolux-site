@@ -112,19 +112,24 @@ export default function Hero() {
       // Cache the hero's absolute document offset + viewport height so the scroll
       // handler never calls getBoundingClientRect() (that forces a layout/reflow
       // every frame — the main cause of mobile scroll jank). Re-cache on resize.
-      let heroTop = 0;
+      let pinStart = 0;
       let vh = window.innerHeight || 1;
       const cache = () => {
         const el = heroRef.current;
         if (!el) return;
-        heroTop = el.getBoundingClientRect().top + window.scrollY;
+        const header = document.querySelector("header");
+        const nh = header ? header.getBoundingClientRect().height : 0;
+        // Scroll position at which the panel begins pinning, so `s` is 0 at the
+        // top (was subtracting the hero's doc offset, which made s negative at
+        // rest and pushed the text down ~nav-height).
+        pinStart = el.getBoundingClientRect().top + window.scrollY - nh;
         vh = window.innerHeight || 1;
       };
       const mMeasure = () => {
         mraf = null;
-        // Cheap: scrollY only against the cached offset (no per-frame layout read).
-        const s = window.scrollY - heroTop; // px scrolled into the hero
-        const u = s / vh;                   // ...in viewport units
+        // Cheap: scrollY only against the cached pin-start (no per-frame layout read).
+        const s = Math.max(0, window.scrollY - pinStart); // px scrolled into the pin
+        const u = s / vh;                                 // ...in viewport units
         // Phase 1-4: hero text rises and fades. Vertical placement is handled by
         // the panel layout (auto margins center it but never clip the top under
         // the nav; paddingBottom keeps the CTA above the bottom bar) — no lift.
@@ -533,7 +538,7 @@ export default function Hero() {
                   position:     "relative",
                   paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
                   paddingRight: "clamp(1.5rem, 3vw, 3rem)",
-                  marginTop:    isMobile ? "auto" : undefined,
+                  marginTop:    isMobile ? "clamp(10px, 2.2vh, 22px)" : undefined,
                   marginBottom: isMobile ? "auto" : undefined,
                 }}
               >
@@ -850,9 +855,10 @@ export default function Hero() {
           style={{
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
-            // Mobile: auto margins center the block when it fits, but collapse on
-            // overflow so the top never slides under the nav.
-            marginTop:    isMobile ? "auto" : undefined,
+            // Mobile: top-align with a small gap below the nav (fixed marginTop so
+            // the top never clips), marginBottom auto eats leftover space. This
+            // keeps the block snug under the header so the CTA fits on first load.
+            marginTop:    isMobile ? "clamp(10px, 2.2vh, 22px)" : undefined,
             marginBottom: isMobile ? "auto" : undefined,
             y:       isMobile ? mobileContentY : heroContentY,
             opacity: isMobile ? mobileContentOpacity : undefined,
