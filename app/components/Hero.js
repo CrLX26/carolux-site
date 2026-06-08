@@ -25,6 +25,7 @@ export default function Hero() {
   const stickyRef      = useRef(null); // inner sticky panel (mouse-coord anchor)
   const heroContentRef = useRef(null); // hero content block — measured for alarmY
   const alarmCardRef   = useRef(null); // alarm card block  — measured for alarmY
+  const mobileThermalRef = useRef(null); // mobile thermal layer — scroll-driven opacity
 
   const [heroMousePos,   setHeroMousePos]   = useState(null);
   const [thermalOpacity, setThermalOpacity] = useState(0);
@@ -198,6 +199,41 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", onWindowMouseMove);
   }, []);
 
+  // ── Mobile: scroll-driven thermal reveal ─────────────────────────────────
+  // Replaces the old auto time-loop. The house warms from normal (at the top)
+  // to FULL thermal as the hero scrolls out, so the hero always EXITS fully
+  // thermal — and MobileAlert below opens on that same thermal house at the same
+  // crop, making the handoff seamless (no purple→cream line, no blank-cream gap).
+  useEffect(() => {
+    if (!isMobile) return;
+    const layer = mobileThermalRef.current;
+    if (!layer) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      layer.style.opacity = "0";
+      return;
+    }
+    let raf = null;
+    const render = () => {
+      raf = null;
+      const el = heroRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      // 0 at the top (normal house) → 1 by the time the hero is ~70% scrolled out.
+      const p = Math.max(0, Math.min(1, -rect.top / (vh * 0.7)));
+      layer.style.opacity = String(p);
+    };
+    const onScroll = () => { if (raf === null) raf = requestAnimationFrame(render); };
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf !== null) cancelAnimationFrame(raf);
+    };
+  }, [isMobile]);
+
   // Cursor-centred mask for the thermal overlay
   const overlayMask = heroMousePos
     ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
@@ -363,11 +399,14 @@ export default function Hero() {
           }}
         >
           <div
-            className={isMobile ? "thermal-crossfade" : undefined}
+            ref={mobileThermalRef}
             style={{
               position:         "absolute",
               inset:            0,
-              opacity:          isMobile ? undefined : thermalOpacity,
+              // Mobile: opacity is scroll-driven (see effect below) — starts at 0
+              // (normal house) and ramps to full thermal as the hero scrolls out.
+              // Desktop: unchanged, mouse-driven thermalOpacity + spotlight mask.
+              opacity:          isMobile ? 0 : thermalOpacity,
               WebkitMaskImage:  isMobile ? undefined : overlayMask,
               maskImage:        isMobile ? undefined : overlayMask,
               transition:       "opacity 150ms ease-out",
