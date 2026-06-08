@@ -25,20 +25,21 @@ export const NAV_LINKS = [
 ];
 
 export const HERO = {
-  eyebrow: "Owner-Operated · Greater Charlotte",
+  eyebrow: "Hot Upstairs? High Bills? · Greater Charlotte",
   headline: ["The owners", "do the work.", "Every job."],
   subheading:
-    "Two owners, on every job. Tony reads the house — he's a former NC home inspector. Juan runs the schedule, the updates, and the follow-through.",
-  primaryCta: "Book a Free In-Home Estimate",
+    "Two owners on every job. Tony's a former NC home inspector; Juan runs the schedule and the follow-through. The person who reads your attic is the one who fixes it.",
+  primaryCta: "Book Your Free Estimate",
   secondaryCta: "Call (704) 228-2729",
-  secondaryPre:  "Most homes are",
-  secondaryMain: "Losing Money",
-  secondaryPost: "through their attic. Every single month.",
+  secondaryPre:  "Your attic could be",
+  secondaryMain: "Quietly Costing You",
+  secondaryPost: "money. Every single month.",
 };
 
 export const TRUST_BADGES = [
   "Both owners on every job",
-  "Air sealing always included",
+  "Air sealing on every full install",
+  "Fully insured",
   "2-Year workmanship guarantee",
 ];
 
@@ -68,17 +69,22 @@ export const STATS = [
     prefix: "",
     countTo: 100,
     suffix: "%+",
-    label: "ROI at resale",
-    source: "Cost vs. Value Report",
+    label: "Typical ROI at resale",
+    source: "Remodeling 2016 Cost vs. Value",
   },
 ];
+
+// Shown beneath the stat numbers. Keeps the brand promise that every figure is
+// an average, never a guarantee (legal + honesty rule).
+export const STATS_CAVEAT =
+  "Figures are EPA, DOE and industry averages, not a guarantee. Every home is different; your results vary by HVAC system, usage, and the condition of your home.";
 
 export const SERVICES = [
   {
     number: "01",
     title: "Blown-In Attic Insulation",
     description:
-      "We install fiberglass or cellulose blown-in insulation in your attic, filling every gap and cavity to reach the R-49 level recommended by the Department of Energy for North Carolina. Before we blow a single bag, we seal all air leaks — around light fixtures, plumbing penetrations, and top plates — because insulation without air sealing is money left on the table. Proper air sealing and insulation can save up to ~15% on heating and cooling (EPA ENERGY STAR), though every home is different.",
+      "We install fiberglass or cellulose blown-in insulation in your attic, filling every gap and cavity to reach the R-49 level recommended by the Department of Energy for North Carolina. On every full install, before we blow a single bag, we seal the air leaks (around light fixtures, plumbing penetrations, and top plates) because insulation without air sealing is money left on the table. Proper air sealing and insulation can save up to ~15% on heating and cooling (EPA ENERGY STAR), though every home is different.",
     cta: "Get a Free Attic Assessment",
   },
   {
@@ -106,9 +112,9 @@ export const WHY_US = [
   },
   {
     roman: "II",
-    title: "Air Sealing Always Included",
+    title: "Air Sealing, Not Upsold",
     description:
-      "Every insulation job includes thorough air sealing at no extra charge. It's the step most companies skip — but it's what actually drives lasting energy savings.",
+      "We include air sealing on every full installation, at no extra charge. Most contractors skip it or charge extra. It's the highest-impact step in the job, and the one that separates a real upgrade from a temporary fix.",
   },
   {
     roman: "III",
@@ -255,7 +261,7 @@ export const ESTIMATOR = {
   ],
   resultLabel: "Estimated annual savings",
   tenYearLabel: "Roughly this much over 10 years",
-  cta: "Get Your Free Same-Day Estimate",
+  cta: "Book Your Free Estimate",
   emailPrompt: "Want it in writing? Leave your email and we'll send a personalized breakdown.",
   emailPlaceholder: "you@email.com",
   emailCta: "Email me my estimate",
@@ -266,6 +272,37 @@ export const ESTIMATOR = {
   billMax: 600,
   source:
     "Estimate based on EPA ENERGY STAR and U.S. Department of Energy figures for the North Carolina climate. Every home is different; actual savings vary by HVAC system, usage, and the condition of your home.",
+};
+
+// Contact / final CTA. The form has NO backend — on submit it composes a prefilled
+// email to team@ via mailto (works today). Upgrade to a form service when the
+// lead-capture backend is decided. See TODO(lead-capture).
+export const CONTACT = {
+  eyebrow: "Free, No-Obligation",
+  title: "Get your free estimate",
+  intro:
+    "Tell us what's going on up top and an owner gets back to you, usually within a few hours. No call centers, no runaround.",
+  form: {
+    nameLabel: "Name",
+    namePlaceholder: "Your name",
+    phoneLabel: "Phone",
+    phonePlaceholder: "(704) 000-0000",
+    addressLabel: "Property address",
+    addressPlaceholder: "Street, city",
+    messageLabel: "What's going on up there?",
+    messagePlaceholder: "Hot upstairs, high bills, drafty rooms, crawl space moisture...",
+    submit: "Send My Request",
+    fallbackNote:
+      "This opens your email app with the details filled in, ready to send. Prefer to talk? Call or email us directly.",
+  },
+  // Risk-reversal, repeated right at the ask. "Fully insured" never "licensed".
+  reassurance: [
+    "2-Year workmanship guarantee",
+    "No-pressure, same-day written quote",
+    "An owner replies, usually within hours",
+    "Fully insured",
+  ],
+  serving: "Serving Charlotte, Gastonia & the surrounding Piedmont",
 };
 
 export const BEFORE_AFTER = {

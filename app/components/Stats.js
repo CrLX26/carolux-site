@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useSyncExternalStore } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { STATS } from "../lib/content";
+import { STATS, STATS_CAVEAT } from "../lib/content";
 
 // Identical grain to Hero — ensures seamless texture across the Hero→Stats boundary
 const GRAIN_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E")`;
@@ -15,6 +15,17 @@ function subscribePointer(cb) {
 }
 const getPointerSnapshot      = () => window.matchMedia("(pointer: coarse)").matches;
 const getPointerServerSnapshot = () => false;
+
+// ── External store: narrow desktop (≤ 860px) → 2×2 instead of 4-across ────────
+// Replaces auto-fit, which over-creates columns on wide screens and clumps the
+// four stats to the left. Deterministic: 4-across when wide, 2×2 when narrow.
+function subscribeNarrow(cb) {
+  const mq = window.matchMedia("(max-width: 860px)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+const getNarrowSnapshot       = () => window.matchMedia("(max-width: 860px)").matches;
+const getNarrowServerSnapshot = () => false;
 
 // ── Cumulative reveal — entry windows only ────────────────────────────────────
 // Each tuple: [enterStart, enterEnd] in scroll progress 0→1.
@@ -51,6 +62,12 @@ export default function Stats() {
     subscribePointer,
     getPointerSnapshot,
     getPointerServerSnapshot,
+  );
+
+  const isNarrow = useSyncExternalStore(
+    subscribeNarrow,
+    getNarrowSnapshot,
+    getNarrowServerSnapshot,
   );
 
   // ── Nav height — used to close the gap between Hero releasing and Stats pinning ──
@@ -315,16 +332,19 @@ export default function Stats() {
             style={{
               position:            "absolute",
               bottom:              0,
-              left:                0,
-              right:               0,
+              // Centre a width-capped grid (translateX trick — left/right:0 would
+              // stretch the abs element and ignore maxWidth) so the four numbers
+              // stay evenly distributed and contained instead of clumping left.
+              left:                "50%",
+              transform:           "translateX(-50%)",
+              width:               "100%",
+              maxWidth:            "1100px",
               zIndex:              10,
               display:             "grid",
-              // auto-fit reflows the row to 2×2 when 4 numbers can't fit across
-              // (narrow windows / landscape phones), so the 4th stat is never
-              // clipped off the right edge. Numbers keep their size and drop to
-              // a second row instead of shrinking. Height is content-driven and
-              // anchored to the bottom so the second row grows upward.
-              gridTemplateColumns: "repeat(auto-fit, minmax(clamp(150px, 22vw, 230px), 1fr))",
+              // Deterministic columns: 4-across on desktop, 2×2 when the panel is
+              // narrow (≤860px / landscape phones), so the 4th stat is never
+              // clipped and the row never leaves empty tracks on the right.
+              gridTemplateColumns: isNarrow ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
               alignItems:          "start",
               justifyItems:        "center",
               rowGap:              "clamp(20px, 3vh, 36px)",
@@ -421,6 +441,24 @@ export default function Stats() {
                 )}
               </div>
             ))}
+
+            {/* Caveat — every figure is an average, not a guarantee */}
+            <p
+              style={{
+                gridColumn:    "1 / -1",
+                margin:        "clamp(8px, 1.5vh, 20px) auto 0",
+                maxWidth:      "70ch",
+                textAlign:     "center",
+                fontFamily:    "var(--font-dm-sans)",
+                fontSize:      "clamp(10px, 0.9vw, 12px)",
+                fontStyle:     "italic",
+                lineHeight:    1.6,
+                color:         "rgba(13,29,43,0.66)",
+                padding:       "0 clamp(16px, 4vw, 40px)",
+              }}
+            >
+              {STATS_CAVEAT}
+            </p>
           </div>
         )}
 
@@ -430,15 +468,24 @@ export default function Stats() {
             role="region"
             aria-label="Key statistics"
             style={{
-              position:            "absolute",
-              inset:               0,
-              zIndex:              10,
-              display:             "grid",
-              gridTemplateColumns: "1fr 1fr",
-              placeItems:          "center",
-              paddingBottom:       "clamp(48px, 8vh, 72px)",
+              position:       "absolute",
+              inset:          0,
+              zIndex:         10,
+              display:        "flex",
+              flexDirection:  "column",
+              justifyContent: "center",
+              alignItems:     "center",
+              paddingBottom:  "clamp(40px, 7vh, 64px)",
             }}
           >
+            <div
+              style={{
+                display:             "grid",
+                gridTemplateColumns: "1fr 1fr",
+                placeItems:          "center",
+                width:               "100%",
+              }}
+            >
             {STATS.map((stat, i) => (
               <div
                 key={i}
@@ -499,6 +546,24 @@ export default function Stats() {
                 </p>
               </div>
             ))}
+            </div>
+
+            {/* Caveat — every figure is an average, not a guarantee */}
+            <p
+              style={{
+                marginTop:  "clamp(20px, 3vh, 32px)",
+                maxWidth:   "34ch",
+                textAlign:  "center",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize:   "clamp(9px, 2.4vw, 11px)",
+                fontStyle:  "italic",
+                lineHeight: 1.55,
+                color:      "rgba(26,43,60,0.7)",
+                padding:    "0 clamp(16px, 6vw, 32px)",
+              }}
+            >
+              {STATS_CAVEAT}
+            </p>
           </div>
         )}
 
