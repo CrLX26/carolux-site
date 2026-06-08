@@ -49,13 +49,11 @@ export default function Hero() {
   // 1250 is the fallback (midpoint between desktop ~1200 and mobile ~1337).
   const alarmStartMV = useMotionValue(1250);
 
-  // ── Mobile scroll-tunnel parallax (Step 1) ────────────────────────────────
-  // Mobile gets a short scroll tunnel: the house pins (loop still running) while
-  // the text rises up and off and the house drifts down slightly. These are the
-  // mobile equivalents of the (locked) desktop heroContentY — separate values so
-  // the desktop scroll choreography is untouched. Driven by .set() in the effect.
+  // ── Mobile scroll tunnel ──────────────────────────────────────────────────
+  // Mobile gets a short scroll tunnel: the house pins (loop still running) and
+  // stays put while only the hero text rises and scrolls away. Separate value so
+  // the (locked) desktop heroContentY choreography is untouched.
   const mobileContentY = useMotionValue(0); // hero text rises up and off
-  const mobileHouseY   = useMotionValue(0); // house drifts down (parallax)
 
   // ── Scroll progress ───────────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
@@ -85,12 +83,11 @@ export default function Hero() {
   const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
-    // ── Mobile scroll-tunnel parallax (Step 1) ──────────────────────────────
+    // ── Mobile scroll tunnel ─────────────────────────────────────────────────
     // The hero is a short tunnel (outer 150svh, sticky panel 100svh → ~0.5 screen
-    // of pin). As you scroll: the text rises up and off (over the first 70% of
-    // the pin), and the house drifts down slightly. The thermal loop keeps
-    // running inside, untouched. transform-only = GPU-cheap. Panel opacity stays
-    // 1 on mobile (handled in the style), so this just sets the two transforms.
+    // of pin). The HOUSE stays put (pinned, no parallax) with its thermal loop
+    // running. Only the TEXT moves: it rises gently as you scroll (≈1.2× scroll
+    // speed) and scrolls away. transform-only = GPU-cheap; no per-frame layout.
     if (isMobile) {
       let mraf = null;
       // Cache the hero's absolute document offset + viewport height so the scroll
@@ -108,9 +105,7 @@ export default function Hero() {
         mraf = null;
         // Cheap: scrollY only, against the cached offset. No per-frame layout read.
         const p = Math.max(0, Math.min(1, (window.scrollY - heroTop) / (vh * 0.5)));
-        const textP = Math.min(1, p / 0.7); // text finishes rising at 70% of the pin
-        mobileContentY.set(-textP * vh * 0.82); // rise up and off the top
-        mobileHouseY.set(p * vh * 0.06);        // slight downward parallax drift
+        mobileContentY.set(-p * vh * 0.6); // text rises gently (≈1.2× scroll), then leaves
       };
       const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
       const onResize = () => { cache(); mMeasure(); };
@@ -145,7 +140,7 @@ export default function Hero() {
       window.removeEventListener("resize", onScroll);
       if (raf !== null) cancelAnimationFrame(raf);
     };
-    // MotionValues (heroPanelOpacity, mobileContentY, mobileHouseY) are stable refs.
+    // MotionValues (heroPanelOpacity, mobileContentY) are stable refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
   // imageY removed — hero image fills sticky panel at all times (no lift at end of tunnel).
@@ -359,10 +354,8 @@ export default function Hero() {
         <motion.div
           aria-hidden="true"
           style={{
-            position:   "absolute",
-            inset:      0,
-            y:          isMobile ? mobileHouseY : 0, // mobile parallax drift down
-            willChange: isMobile ? "transform" : undefined, // promote layer on mobile
+            position: "absolute",
+            inset:    0,
           }}
         >
           <div
@@ -441,10 +434,8 @@ export default function Hero() {
             {/* Thermal house image — mouse parallax, fills sticky panel */}
             <motion.div
               style={{
-                position:   "absolute",
-                inset:      0,
-                y:          isMobile ? mobileHouseY : 0, // match the normal house's mobile drift
-                willChange: isMobile ? "transform" : undefined,
+                position: "absolute",
+                inset:    0,
               }}
             >
               <div
