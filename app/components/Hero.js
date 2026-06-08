@@ -6,6 +6,7 @@ import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import { COMPANY, HERO, TRUST_BADGES } from "../lib/content";
 
 const EASE = [0.16, 1, 0.3, 1];
+const clamp01 = (n) => (n < 0 ? 0 : n > 1 ? 1 : n);
 
 // ── Thermal spotlight tuning ───────────────────────────────────────────────
 // Tell Claude which direction to adjust using plain English:
@@ -55,6 +56,22 @@ export default function Hero() {
   // the (locked) desktop heroContentY choreography is untouched.
   const mobileContentY = useMotionValue(0); // hero text rises up and off
   const mobileContentOpacity = useMotionValue(1); // hero text fades as it reaches the top
+  const mobileAtticOpacity = useMotionValue(0); // attic cross-fades in over the house (step 5)
+  const mobileExitCream = useMotionValue(0);    // cools to cream into Stats (step 6 tail)
+  const mWordRefs = useRef([]);                 // attic alert words (step 6)
+
+  // Attic alert word sequence (mobile) — the loss-aversion line, written word-by-word.
+  let mGi = 0;
+  const mPre  = HERO.secondaryPre.split(" ").map((w)  => ({ w, i: mGi++ }));
+  const mMain = HERO.secondaryMain.split(" ").map((w) => ({ w, i: mGi++ }));
+  const mPost = HERO.secondaryPost.split(" ").map((w) => ({ w, i: mGi++ }));
+  const mTotal = mGi;
+  const M_HALO = "0 0 2px rgba(0,0,0,0.85), 0 1px 14px rgba(0,0,0,0.8), 0 0 36px rgba(0,0,0,0.6)";
+  const mWordBase = { display: "inline-block", marginRight: "0.26em", opacity: 0, transform: "translateY(14px)", willChange: "opacity, transform" };
+  const renderMWords = (arr, style) =>
+    arr.map(({ w, i }) => (
+      <span key={i} ref={(el) => { mWordRefs.current[i] = el; }} style={{ ...mWordBase, ...style }}>{w}</span>
+    ));
 
   // ── Scroll progress ───────────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
@@ -104,11 +121,28 @@ export default function Hero() {
       };
       const mMeasure = () => {
         mraf = null;
-        // Cheap: scrollY only, against the cached offset. No per-frame layout read.
-        const p = Math.max(0, Math.min(1, (window.scrollY - heroTop) / (vh * 0.5)));
-        mobileContentY.set(-p * vh * 0.6); // text rises gently (≈1.2× scroll), then leaves
-        // Text fades out once its last line nears the top (p 0.5 → 0.85).
-        mobileContentOpacity.set(Math.max(0, Math.min(1, 1 - (p - 0.5) / 0.35)));
+        // Cheap: scrollY only against the cached offset (no per-frame layout read).
+        const s = window.scrollY - heroTop; // px scrolled into the hero
+        const u = s / vh;                   // ...in viewport units
+        // Phase 1-4: hero text rises (≈1.2× scroll) and fades near the top.
+        mobileContentY.set(-Math.min(1.2 * s, vh * 0.72));
+        mobileContentOpacity.set(clamp01(1 - (u - 0.25) / 0.20)); // fade u 0.25 → 0.45
+        // Phase 5: attic cross-fades IN over the (still-looping) house. u 0.50 → 0.80.
+        mobileAtticOpacity.set(clamp01((u - 0.50) / 0.30));
+        // Phase 6: alert line writes word-by-word over the attic. u 0.85 → 1.65.
+        const wStart = 0.85, step = (1.65 - 0.85) / Math.max(1, mTotal);
+        mWordRefs.current.forEach((el, i) => {
+          if (!el) return;
+          const a = wStart + i * step, b = a + step * 1.7;
+          let o, y;
+          if (u <= a) { o = 0; y = 14; }
+          else if (u >= b) { o = 1; y = 0; }
+          else { const t = (u - a) / (b - a); o = t; y = 14 * (1 - t); }
+          el.style.opacity = String(o);
+          el.style.transform = `translateY(${y}px)`;
+        });
+        // Tail: cool to cream and dissolve into the Stats burst. u 1.70 → 1.90.
+        mobileExitCream.set(clamp01((u - 1.70) / 0.20));
       };
       const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
       const onResize = () => { cache(); mMeasure(); };
@@ -310,10 +344,10 @@ export default function Hero() {
       ref={heroRef}
       style={{
         // Desktop: tall scroll tunnel the sticky panel pins inside.
-        // Mobile: a SHORT tunnel (150svh) — the panel pins for ~0.5 screen while
-        // the text rises and the house parallaxes, then releases. Kept short so
-        // the page still obviously scrolls.
-        minHeight: isMobile ? "150svh" : "calc(274vh - 300px)",
+        // Mobile: a tunnel (290svh ≈ 1.9 screens of pin) that sequences the whole
+        // intro — text rises+fades, attic cross-fades in over the house, then the
+        // alert line writes word-by-word, then cools to cream into Stats.
+        minHeight: isMobile ? "290svh" : "calc(274vh - 300px)",
         position: "relative",
       }}
     >
@@ -1002,6 +1036,84 @@ export default function Hero() {
             }}
           />
         </div>
+
+        {/* ── Mobile sequence: attic cross-fade + alert word-write (steps 5-6) ──
+            All inside the pinned panel so the house→attic cross-fade happens in
+            place (single scroll progress). Mobile only; desktop renders none. */}
+        {isMobile && (
+          <>
+            {/* Attic — cross-fades in over the (still-looping) house */}
+            <motion.div
+              aria-hidden="true"
+              style={{ position: "absolute", inset: 0, zIndex: 25, opacity: mobileAtticOpacity, pointerEvents: "none" }}
+            >
+              <Image
+                src="/images/attic-20260516_132823.jpg"
+                alt=""
+                fill
+                quality={65}
+                sizes="100vw"
+                loading="lazy"
+                className="object-[50%_45%]"
+                style={{ objectFit: "cover" }}
+              />
+              {/* Dark scrim for copy contrast */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "radial-gradient(ellipse 92% 66% at 50% 50%, rgba(6,5,4,0.82) 0%, rgba(6,5,4,0.55) 52%, rgba(6,5,4,0.4) 100%)",
+                }}
+              />
+              {/* Grain — matches the rest of the surface */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: GRAIN_BG,
+                  backgroundRepeat: "repeat",
+                  backgroundSize: "200px 200px",
+                  mixBlendMode: "overlay",
+                  opacity: 0.5,
+                }}
+              />
+            </motion.div>
+
+            {/* Alert line — writes word-by-word over the attic */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 30,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "0 clamp(1.5rem, 8vw, 3rem)",
+                pointerEvents: "none",
+              }}
+            >
+              <div style={{ maxWidth: "20ch" }}>
+                <p style={{ margin: 0, fontFamily: "var(--font-label)", fontSize: "clamp(0.8rem, 3.4vw, 1rem)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#ffc98f", textShadow: M_HALO }}>
+                  {renderMWords(mPre)}
+                </p>
+                <p style={{ margin: "clamp(0.7rem, 2vh, 1.25rem) 0", fontFamily: "var(--font-cormorant)", fontWeight: 400, fontSize: "clamp(3rem, 14vw, 5rem)", lineHeight: 0.92, letterSpacing: "-0.02em", color: "#fdf4e9", textShadow: M_HALO }}>
+                  {renderMWords(mMain)}
+                </p>
+                <p style={{ margin: 0, fontFamily: "var(--font-label)", fontSize: "clamp(0.8rem, 3.4vw, 1rem)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#ffc98f", textShadow: M_HALO }}>
+                  {renderMWords(mPost)}
+                </p>
+              </div>
+            </div>
+
+            {/* Cool to cream — dissolves the whole panel into the Stats burst */}
+            <motion.div
+              aria-hidden="true"
+              style={{ position: "absolute", inset: 0, zIndex: 35, background: "#faf8f5", opacity: mobileExitCream, pointerEvents: "none" }}
+            />
+          </>
+        )}
 
       </motion.div>
     </div>

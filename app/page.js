@@ -1,7 +1,6 @@
 import SmoothScroll from "./components/SmoothScroll";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
-import MobileAlert from "./components/MobileAlert";
 import Stats from "./components/Stats";
 import Estimator from "./components/Estimator";
 import Services from "./components/Services";
@@ -22,7 +21,6 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <MobileAlert />
         <Stats />
         <Estimator />
         <Services />
