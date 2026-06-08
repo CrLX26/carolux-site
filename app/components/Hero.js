@@ -77,10 +77,32 @@ export default function Hero() {
   const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
-    // Mobile is a static hero (no sticky tunnel, no cross-dissolve), so skip
-    // this scroll listener entirely — it would otherwise read layout every
-    // frame for nothing.
-    if (isMobile) { heroPanelOpacity.set(1); return; }
+    // ── Mobile: fade the WHOLE hero out as it scrolls away ──────────────────
+    // The thermal loop keeps running inside on its own timer (non-scroll-driven);
+    // this only fades the wrapper's opacity, which multiplies whatever the loop
+    // is painting. So the hero dims away cleanly no matter the loop phase — no
+    // purple→cream hard line into the alert below.
+    if (isMobile) {
+      let mraf = null;
+      const mMeasure = () => {
+        mraf = null;
+        const el = heroRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        const p = Math.max(0, Math.min(1, -rect.top / (vh * 0.85)));
+        heroPanelOpacity.set(1 - p);
+      };
+      const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
+      mMeasure();
+      window.addEventListener("scroll", mOnScroll, { passive: true });
+      window.addEventListener("resize", mOnScroll, { passive: true });
+      return () => {
+        window.removeEventListener("scroll", mOnScroll);
+        window.removeEventListener("resize", mOnScroll);
+        if (mraf !== null) cancelAnimationFrame(mraf);
+      };
+    }
     let raf = null;
     const measure = () => {
       raf = null;
@@ -290,7 +312,7 @@ export default function Hero() {
           alignItems: "center",
           background: "#faf8f5",
           zIndex:     2,
-          opacity:    isMobile ? 1 : heroPanelOpacity,
+          opacity:    heroPanelOpacity,
         }}
       >
         {/* Grain overlay */}
