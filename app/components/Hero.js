@@ -514,7 +514,12 @@ export default function Hero() {
                 position:  "absolute",
                 inset:     0,
                 display:   "flex",
-                alignItems: "center",
+                // Mirror the base content's layout exactly so normal + thermal
+                // text overlay perfectly (top-safe centering, reserved bottom bar).
+                flexDirection:  isMobile ? "column" : "row",
+                justifyContent: isMobile ? "flex-start" : undefined,
+                alignItems:     isMobile ? "stretch" : "center",
+                paddingBottom:  isMobile ? "80px" : undefined,
                 y:         isMobile ? mobileContentY : heroContentY,
                 opacity:   isMobile ? mobileContentOpacity : undefined,
                 willChange: "transform",
@@ -526,6 +531,8 @@ export default function Hero() {
                   position:     "relative",
                   paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
                   paddingRight: "clamp(1.5rem, 3vw, 3rem)",
+                  marginTop:    isMobile ? "auto" : undefined,
+                  marginBottom: isMobile ? "auto" : undefined,
                 }}
               >
                 {/* Eyebrow */}
