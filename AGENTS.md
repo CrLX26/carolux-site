@@ -84,7 +84,7 @@ the technology and AI vision for the company.
 **Key differentiators to communicate on the website:**
 - Owner-operated — an owner or directly supervised team member on every job
 - Tony's home inspector background — technical credibility
-- Air sealing included on new installs (most competitors skip it or charge extra)
+- Air sealing included at no extra charge on full installs (new installs & full removals); NOT auto-included on top-off/blow-over jobs — disclose. Never say "always included." Approved claim: "Air sealing included with every full insulation install, at no extra charge." (most competitors skip it or charge extra)
 - Americover vapor barriers — American-made with virgin resins, not hardware store poly
 - Insured — NOT licensed (NC doesn't require a license at our job sizes; never say "licensed")
 - 2-year workmanship guarantee on all work

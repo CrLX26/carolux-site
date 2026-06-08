@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useSyncExternalStore } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { STATS } from "../lib/content";
+import { STATS, STATS_CAVEAT } from "../lib/content";
 
 // Identical grain to Hero — ensures seamless texture across the Hero→Stats boundary
 const GRAIN_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E")`;
@@ -421,6 +421,24 @@ export default function Stats() {
                 )}
               </div>
             ))}
+
+            {/* Caveat — every figure is an average, not a guarantee */}
+            <p
+              style={{
+                gridColumn:    "1 / -1",
+                margin:        "clamp(8px, 1.5vh, 20px) auto 0",
+                maxWidth:      "70ch",
+                textAlign:     "center",
+                fontFamily:    "var(--font-dm-sans)",
+                fontSize:      "clamp(10px, 0.9vw, 12px)",
+                fontStyle:     "italic",
+                lineHeight:    1.6,
+                color:         "rgba(13,29,43,0.66)",
+                padding:       "0 clamp(16px, 4vw, 40px)",
+              }}
+            >
+              {STATS_CAVEAT}
+            </p>
           </div>
         )}
 
@@ -499,6 +517,25 @@ export default function Stats() {
                 </p>
               </div>
             ))}
+
+            {/* Caveat — every figure is an average, not a guarantee */}
+            <p
+              style={{
+                gridColumn: "1 / -1",
+                alignSelf:  "end",
+                margin:     "0 auto",
+                maxWidth:   "34ch",
+                textAlign:  "center",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize:   "clamp(9px, 2.4vw, 11px)",
+                fontStyle:  "italic",
+                lineHeight: 1.55,
+                color:      "rgba(26,43,60,0.7)",
+                padding:    "0 clamp(16px, 6vw, 32px)",
+              }}
+            >
+              {STATS_CAVEAT}
+            </p>
           </div>
         )}
 
