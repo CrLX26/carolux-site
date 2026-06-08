@@ -93,25 +93,34 @@ export default function Hero() {
     // 1 on mobile (handled in the style), so this just sets the two transforms.
     if (isMobile) {
       let mraf = null;
-      const mMeasure = () => {
-        mraf = null;
+      // Cache the hero's absolute document offset + viewport height so the scroll
+      // handler never calls getBoundingClientRect() (that forces a layout/reflow
+      // every frame — the main cause of mobile scroll jank). Re-cache on resize.
+      let heroTop = 0;
+      let vh = window.innerHeight || 1;
+      const cache = () => {
         const el = heroRef.current;
         if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const vh = window.innerHeight || 1;
-        // pin travel ≈ 0.5 screen; p: 0 at the top → 1 as the tunnel releases.
-        const p = Math.max(0, Math.min(1, -rect.top / (vh * 0.5)));
+        heroTop = el.getBoundingClientRect().top + window.scrollY;
+        vh = window.innerHeight || 1;
+      };
+      const mMeasure = () => {
+        mraf = null;
+        // Cheap: scrollY only, against the cached offset. No per-frame layout read.
+        const p = Math.max(0, Math.min(1, (window.scrollY - heroTop) / (vh * 0.5)));
         const textP = Math.min(1, p / 0.7); // text finishes rising at 70% of the pin
         mobileContentY.set(-textP * vh * 0.82); // rise up and off the top
         mobileHouseY.set(p * vh * 0.06);        // slight downward parallax drift
       };
       const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
+      const onResize = () => { cache(); mMeasure(); };
+      cache();
       mMeasure();
       window.addEventListener("scroll", mOnScroll, { passive: true });
-      window.addEventListener("resize", mOnScroll, { passive: true });
+      window.addEventListener("resize", onResize, { passive: true });
       return () => {
         window.removeEventListener("scroll", mOnScroll);
-        window.removeEventListener("resize", mOnScroll);
+        window.removeEventListener("resize", onResize);
         if (mraf !== null) cancelAnimationFrame(mraf);
       };
     }
@@ -350,9 +359,10 @@ export default function Hero() {
         <motion.div
           aria-hidden="true"
           style={{
-            position: "absolute",
-            inset:    0,
-            y:        isMobile ? mobileHouseY : 0, // mobile parallax drift down
+            position:   "absolute",
+            inset:      0,
+            y:          isMobile ? mobileHouseY : 0, // mobile parallax drift down
+            willChange: isMobile ? "transform" : undefined, // promote layer on mobile
           }}
         >
           <div
@@ -431,9 +441,10 @@ export default function Hero() {
             {/* Thermal house image — mouse parallax, fills sticky panel */}
             <motion.div
               style={{
-                position: "absolute",
-                inset:    0,
-                y:        isMobile ? mobileHouseY : 0, // match the normal house's mobile drift
+                position:   "absolute",
+                inset:      0,
+                y:          isMobile ? mobileHouseY : 0, // match the normal house's mobile drift
+                willChange: isMobile ? "transform" : undefined,
               }}
             >
               <div
@@ -466,6 +477,7 @@ export default function Hero() {
                 display:   "flex",
                 alignItems: "center",
                 y:         isMobile ? mobileContentY : heroContentY,
+                willChange: "transform",
               }}
             >
               <div
@@ -790,6 +802,7 @@ export default function Hero() {
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
             y:       isMobile ? mobileContentY : heroContentY,
+            willChange: "transform",
           }}
         >
           {/* Eyebrow */}
