@@ -25,11 +25,11 @@ export const NAV_LINKS = [
 ];
 
 export const HERO = {
-  eyebrow: "Charlotte's Insulation Experts",
+  eyebrow: "Owner-Operated · Greater Charlotte",
   headline: ["The owners", "do the work.", "Every job."],
   subheading:
-    "Tony and Juan show up to every job. You get the owners on the phone, the owners doing the work — one a former NC home inspector — and a 2-year guarantee on everything we touch.",
-  primaryCta: "Get a Free Estimate",
+    "Two owners, on every job. Tony reads the house — he's a former NC home inspector. Juan runs the schedule, the updates, and the follow-through.",
+  primaryCta: "Book a Free In-Home Estimate",
   secondaryCta: "Call (704) 228-2729",
   secondaryPre:  "Most homes are",
   secondaryMain: "Losing Money",
