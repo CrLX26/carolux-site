@@ -147,8 +147,9 @@ export default function Hero() {
           el.style.opacity = String(o);
           el.style.transform = `translateY(${y}px)`;
         });
-        // Tail: cool to cream and dissolve into the Stats burst. u 1.84 → 2.02.
-        mobileExitCream.set(clamp01((u - 1.84) / 0.18));
+        // Hold the finished attic + text on screen (u 1.80 → 2.20), THEN cool to
+        // cream and dissolve into the Stats burst (u 2.20 → 2.40).
+        mobileExitCream.set(clamp01((u - 2.20) / 0.20));
       };
       const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
       const onResize = () => { cache(); mMeasure(); };
@@ -350,10 +351,11 @@ export default function Hero() {
       ref={heroRef}
       style={{
         // Desktop: tall scroll tunnel the sticky panel pins inside.
-        // Mobile: a tunnel (310svh ≈ 2.1 screens of pin) that sequences the whole
+        // Mobile: a tunnel (350svh ≈ 2.5 screens of pin) that sequences the whole
         // intro — text rises+fades (lingering), attic cross-fades in over the
-        // house, the alert line writes word-by-word, then cools to cream into Stats.
-        minHeight: isMobile ? "310svh" : "calc(274vh - 300px)",
+        // house, the alert line writes word-by-word, the finished alert HOLDS on
+        // screen, then cools to cream into Stats.
+        minHeight: isMobile ? "350svh" : "calc(274vh - 300px)",
         position: "relative",
       }}
     >
