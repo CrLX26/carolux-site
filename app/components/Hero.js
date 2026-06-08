@@ -54,6 +54,7 @@ export default function Hero() {
   // stays put while only the hero text rises and scrolls away. Separate value so
   // the (locked) desktop heroContentY choreography is untouched.
   const mobileContentY = useMotionValue(0); // hero text rises up and off
+  const mobileContentOpacity = useMotionValue(1); // hero text fades as it reaches the top
 
   // ── Scroll progress ───────────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
@@ -106,6 +107,8 @@ export default function Hero() {
         // Cheap: scrollY only, against the cached offset. No per-frame layout read.
         const p = Math.max(0, Math.min(1, (window.scrollY - heroTop) / (vh * 0.5)));
         mobileContentY.set(-p * vh * 0.6); // text rises gently (≈1.2× scroll), then leaves
+        // Text fades out once its last line nears the top (p 0.5 → 0.85).
+        mobileContentOpacity.set(Math.max(0, Math.min(1, 1 - (p - 0.5) / 0.35)));
       };
       const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
       const onResize = () => { cache(); mMeasure(); };
@@ -468,6 +471,7 @@ export default function Hero() {
                 display:   "flex",
                 alignItems: "center",
                 y:         isMobile ? mobileContentY : heroContentY,
+                opacity:   isMobile ? mobileContentOpacity : undefined,
                 willChange: "transform",
               }}
             >
@@ -793,6 +797,7 @@ export default function Hero() {
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
             y:       isMobile ? mobileContentY : heroContentY,
+            opacity: isMobile ? mobileContentOpacity : undefined,
             willChange: "transform",
           }}
         >
