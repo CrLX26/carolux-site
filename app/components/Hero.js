@@ -472,7 +472,7 @@ export default function Hero() {
                         style={{
                           display:       "block",
                           fontFamily:    "var(--font-cormorant)",
-                          fontSize:      "clamp(3rem, 9vw, 10rem)",
+                          fontSize:      "clamp(3rem, 7vw, 7.5rem)",
                           fontWeight:    400,
                           fontStyle:     "normal",
                           lineHeight:    0.86,
@@ -782,7 +782,7 @@ export default function Hero() {
                   style={{
                     display:       "block",
                     fontFamily:    "var(--font-cormorant)",
-                    fontSize:      "clamp(3rem, 9vw, 10rem)",
+                    fontSize:      "clamp(3rem, 7vw, 7.5rem)",
                     fontWeight:    400,
                     fontStyle:     "normal",
                     lineHeight:    0.86,
