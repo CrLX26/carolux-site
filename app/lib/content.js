@@ -70,7 +70,7 @@ export const STATS = [
     countTo: 100,
     suffix: "%+",
     label: "Typical ROI at resale",
-    source: "Remodeling Cost vs. Value",
+    source: "Remodeling 2016 Cost vs. Value",
   },
 ];
 
