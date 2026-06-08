@@ -125,11 +125,10 @@ export default function Hero() {
         // Cheap: scrollY only against the cached offset (no per-frame layout read).
         const s = window.scrollY - heroTop; // px scrolled into the hero
         const u = s / vh;                   // ...in viewport units
-        // Phase 1-4: hero text rises and fades. `lift` nudges it up so the CTA
-        // clears the bottom bar (half the previous lift). Slower rise + later,
-        // longer fade so the text sits on screen a bit longer.
-        const lift = vh * 0.05;
-        mobileContentY.set(-lift - Math.min(1.0 * s, vh * 0.8));
+        // Phase 1-4: hero text rises and fades. Vertical placement is handled by
+        // the panel layout (auto margins center it but never clip the top under
+        // the nav; paddingBottom keeps the CTA above the bottom bar) — no lift.
+        mobileContentY.set(-Math.min(1.0 * s, vh * 0.8));
         mobileContentOpacity.set(clamp01(1 - (u - 0.42) / 0.24)); // fade u 0.42 → 0.66
         // Phase 5: attic cross-fades IN over the looping house, with a gentle
         // push-in (scale 1.08 → 1.0). u 0.66 → 0.94.
@@ -365,18 +364,23 @@ export default function Hero() {
       <motion.div
         ref={stickyRef}
         style={{
-          // Both: sticky panel pins inside the outer tunnel. Mobile uses a short
-          // tunnel (see outer minHeight) so it pins only ~0.5 screen.
-          position:   "sticky",
-          top:        navHeight,
-          height:     "100svh",
-          minHeight:  isMobile ? "100svh" : "720px",
-          overflow:   "clip",
-          display:    "flex",
-          alignItems: "center",
-          background: "#faf8f5",
-          zIndex:     2,
-          opacity:    isMobile ? 1 : heroPanelOpacity,
+          // Sticky panel pins inside the outer tunnel.
+          position:       "sticky",
+          top:            navHeight,
+          // Mobile: fit exactly the visible area below the nav, and lay the text
+          // out top-safe (auto margins center it when there's room but never push
+          // it under the nav). paddingBottom reserves the sticky bottom-bar space.
+          height:         isMobile ? `calc(100svh - ${navHeight}px)` : "100svh",
+          minHeight:      isMobile ? undefined : "720px",
+          overflow:       "clip",
+          display:        "flex",
+          flexDirection:  isMobile ? "column" : "row",
+          justifyContent: isMobile ? "flex-start" : undefined,
+          alignItems:     isMobile ? "stretch" : "center",
+          paddingBottom:  isMobile ? "80px" : undefined,
+          background:     "#faf8f5",
+          zIndex:         2,
+          opacity:        isMobile ? 1 : heroPanelOpacity,
         }}
       >
         {/* Grain overlay */}
@@ -837,6 +841,10 @@ export default function Hero() {
           style={{
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
+            // Mobile: auto margins center the block when it fits, but collapse on
+            // overflow so the top never slides under the nav.
+            marginTop:    isMobile ? "auto" : undefined,
+            marginBottom: isMobile ? "auto" : undefined,
             y:       isMobile ? mobileContentY : heroContentY,
             opacity: isMobile ? mobileContentOpacity : undefined,
             willChange: "transform",
