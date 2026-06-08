@@ -125,7 +125,10 @@ export default function Hero() {
         const s = window.scrollY - heroTop; // px scrolled into the hero
         const u = s / vh;                   // ...in viewport units
         // Phase 1-4: hero text rises (≈1.2× scroll) and fades near the top.
-        mobileContentY.set(-Math.min(1.2 * s, vh * 0.72));
+        // `lift` nudges the whole text block up at rest so the CTA clears the
+        // sticky mobile bottom bar. Applies to base + thermal text (same value).
+        const lift = vh * 0.1;
+        mobileContentY.set(-lift - Math.min(1.2 * s, vh * 0.72));
         mobileContentOpacity.set(clamp01(1 - (u - 0.25) / 0.20)); // fade u 0.25 → 0.45
         // Phase 5: attic cross-fades IN over the (still-looping) house. u 0.50 → 0.80.
         mobileAtticOpacity.set(clamp01((u - 0.50) / 0.30));
