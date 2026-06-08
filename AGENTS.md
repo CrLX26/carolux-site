@@ -73,9 +73,10 @@ or component code.**
 | Business Type | Residential Insulation Contractor |
 | Stage | Startup — building first client base |
 
-**Tony Kermis:** Licensed NC home inspector. Technical insulation expertise.
-Not technical with software. His background as a home inspector gives Carolux
-a technical edge most insulation companies lack — use this in copy.
+**Tony Kermis:** FORMER NC home inspector — NEVER describe him as "licensed" (he is
+not currently licensed; claiming so is a legal problem). Technical insulation
+expertise. Not technical with software. His former-inspector background gives Carolux
+a technical edge most insulation companies lack — use this in copy (always "former").
 
 **Juan Gonzalez:** Strong customer service and operations experience. Driving
 the technology and AI vision for the company.
@@ -85,6 +86,7 @@ the technology and AI vision for the company.
 - Tony's home inspector background — technical credibility
 - Air sealing included on new installs (most competitors skip it or charge extra)
 - Americover vapor barriers — American-made with virgin resins, not hardware store poly
+- Insured — NOT licensed (NC doesn't require a license at our job sizes; never say "licensed")
 - 2-year workmanship guarantee on all work
 - Free estimates, written same day
 - Transparent pricing — price quoted is price paid, no surprise charges
@@ -270,12 +272,11 @@ Optimization) dominance in the Charlotte NC residential insulation market.
 Mobile is not a scaled-down desktop. It is a completely separate design surface
 that requires its own decisions.
 
-**Current known issues (being fixed in mobile-fixes branch):**
-- Hero thermal effect and mouse tracking do not work on mobile (no mouse)
-- Hero image not loading on mobile — diagnose and fix (check: file size, path,
-  CSS container height, image format compatibility)
-- Stats.js mobile — verified working per session notes
-- Video: muted + playsInline + loop + .play().catch() implemented for iOS autoplay
+**Mobile status (mobile-fixes work is merged & live):**
+- Hero: mobile shows static image + headline; thermal/mouse effects are desktop-only (by design)
+- Hero image loads on mobile; Stats video autoplays/loops on mobile (muted + playsInline)
+- Stats: Chromium desktop scroll-scrubs the video; Firefox / reduced-motion / low-memory
+  fall back to a plain autoplay-loop (the per-frame seeking stutters there)
 
 **Mobile design principles:**
 - Strong static hero image with powerful headline does the work the desktop
@@ -302,24 +303,32 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current branches:**
-- main — production
-- mobile-fixes — mobile hero image and effects fixes (stashed, in progress)
+**Current state (2026-06-07):**
+- `main` — production, live. Contains all work to date: design polish, growth-levers
+  batch (estimator, before/after, conversion copy, legal fixes), privacy-policy page,
+  Firefox scrub fallback, and the copy-polish hero changes.
+- THREE active worktrees: `carolux-site` (design), `carolux-seo`/`seo-foundation` (SEO),
+  `carolux-copy`/`copy-polish` (wording). The design lane's active branch changes over
+  time (currently `hero-polish`). See memory: worktree-split for the full lane rules.
+- Legacy merged branches: mobile-fixes, design-polish, growth-levers-experiment,
+  conversion-text-buttons, perf-scrub-firefox-fallback, privacy-policy-page.
 
 ---
 
 ## CURRENT SITE STRUCTURE
 
-Components in app/:
-- Nav — navigation bar
-- Hero — hero section with thermal effect (desktop) / static (mobile TBD)
-- Stats — key statistics with burst insulation video scrub
-- Services — services offered (unstyled placeholder)
-- WhyUs — differentiators (unstyled placeholder)
-- Packages — pricing/packages section (unstyled placeholder)
-- Reviews — Google reviews (unstyled placeholder)
-- Contact — contact form (unstyled placeholder)
-- Footer — footer with NAP and links (unstyled placeholder)
+ALL sections are fully designed/built (the "unstyled placeholder" notes below are obsolete).
+See CLAUDE.md for the authoritative, current component list. Page order in app/page.js:
+Hero → Stats → Estimator → Services → BeforeAfter → Process → WhyUs → Packages → Owners →
+Reviews → ServiceArea → Contact → Footer. Plus Nav, SmoothScroll, sectionKit (shared kit).
+Routes: `/` and `/privacy-policy` (server-rendered legal page) and `/design-reference` (internal).
+
+Components in app/components/:
+- Nav, Hero, Stats (Chromium scroll-scrub video; Firefox/low-power fallback to autoplay-loop)
+- Estimator (savings calc; email capture is a STUB — no backend yet)
+- Services (3 services), BeforeAfter (drag slider), Process, WhyUs (4 pillars), Packages
+- Owners (real Tony & Juan photos — Tony = FORMER inspector), Reviews (PLACEHOLDER copy),
+  ServiceArea (13 cities), Contact (Text Us button gated behind smsEnabled), Footer, SmoothScroll
 
 Content data: app/lib/content.js
 Schema data: app/lib/schema.js
@@ -535,9 +544,12 @@ Four absolutely-positioned divs with cream-to-transparent gradients on all four 
 
 ---
 
-### SECTIONS WITH NO VISUAL EFFECTS
+### (OBSOLETE NOTE) SECTIONS WITH NO VISUAL EFFECTS
 
-**Services, WhyUs, Packages, Reviews, Contact, Footer** are currently bare semantic HTML — no Tailwind classes, no Framer Motion, no CSS transitions, no interaction states. These sections are unstyled placeholders. All visual design and animation work for them remains to be done.
+This note is out of date. Services, WhyUs, Packages, Reviews, Contact, and Footer are
+now FULLY designed and built on the shared sectionKit (Reveal animations, brand tokens,
+LiftCard, Cta, etc.), along with the newer sections (Estimator, BeforeAfter, Process,
+Owners, ServiceArea). Nothing on the page is an unstyled placeholder anymore.
 
 ---
 

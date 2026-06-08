@@ -1,5 +1,25 @@
 # Growth-Levers Plan — Carolux Site
 
+## Backlog status snapshot (2026-06-07) — the in-app task list does NOT survive /clear, so it's mirrored here
+- ✅ DONE & LIVE: hero copy fixes, Why-Us pillar IV (inspector), Service-01 savings honesty,
+  legal fixes (Tony "former" / Insured-not-licensed), Owners section, Process, ServiceArea,
+  3rd service (Fiberglass Batt), Estimator (email = STUB), Before/After slider (+ Ballantyne/
+  Matthews captions), Firefox scrub fallback, Privacy Policy page, Text Us button (gated).
+- ⏸️ ON HOLD: Lead-capture email backend — user still exploring the concept; estimator email
+  stays a stub. Don't finalize yet.
+- 🔄 BLOCKED: Click-to-text "Text Us" button — BUILT but gated behind `COMPANY.smsEnabled`
+  (false). Number is the main line (correct). Blocked on the business's SMS compliance
+  (A2P/10DLC) registration. To go live: set smsEnabled: true in content.js.
+- ⬜ TODO (mine, no blockers): guarantee seal near CTAs; honest urgency line;
+  Insured trust bar (say "Insured" only); referral "refer a neighbor".
+- ⬜ TODO (SEO lane — coordinate, don't build here): FAQ + schema, per-city pages,
+  meta descriptions, add /privacy-policy to sitemap.
+- 🧹 Housekeeping: delete merged branches on GitHub (growth-levers-experiment,
+  perf-scrub-firefox-fallback, privacy-policy-page, conversion-text-buttons).
+
+---
+
+
 Branch: `growth-levers-experiment` (off `design-polish`)
 Goal: apply Alex Hormozi growth levers for higher conversion + engagement.
 Styling: all visual/style decisions go through the **impeccable** skill, on the existing
