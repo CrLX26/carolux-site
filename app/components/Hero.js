@@ -49,6 +49,14 @@ export default function Hero() {
   // 1250 is the fallback (midpoint between desktop ~1200 and mobile ~1337).
   const alarmStartMV = useMotionValue(1250);
 
+  // ── Mobile scroll-tunnel parallax (Step 1) ────────────────────────────────
+  // Mobile gets a short scroll tunnel: the house pins (loop still running) while
+  // the text rises up and off and the house drifts down slightly. These are the
+  // mobile equivalents of the (locked) desktop heroContentY — separate values so
+  // the desktop scroll choreography is untouched. Driven by .set() in the effect.
+  const mobileContentY = useMotionValue(0); // hero text rises up and off
+  const mobileHouseY   = useMotionValue(0); // house drifts down (parallax)
+
   // ── Scroll progress ───────────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -77,11 +85,12 @@ export default function Hero() {
   const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
-    // ── Mobile: fade the WHOLE hero out as it scrolls away ──────────────────
-    // The thermal loop keeps running inside on its own timer (non-scroll-driven);
-    // this only fades the wrapper's opacity, which multiplies whatever the loop
-    // is painting. So the hero dims away cleanly no matter the loop phase — no
-    // purple→cream hard line into the alert below.
+    // ── Mobile scroll-tunnel parallax (Step 1) ──────────────────────────────
+    // The hero is a short tunnel (outer 150svh, sticky panel 100svh → ~0.5 screen
+    // of pin). As you scroll: the text rises up and off (over the first 70% of
+    // the pin), and the house drifts down slightly. The thermal loop keeps
+    // running inside, untouched. transform-only = GPU-cheap. Panel opacity stays
+    // 1 on mobile (handled in the style), so this just sets the two transforms.
     if (isMobile) {
       let mraf = null;
       const mMeasure = () => {
@@ -90,8 +99,11 @@ export default function Hero() {
         if (!el) return;
         const rect = el.getBoundingClientRect();
         const vh = window.innerHeight || 1;
-        const p = Math.max(0, Math.min(1, -rect.top / (vh * 0.85)));
-        heroPanelOpacity.set(1 - p);
+        // pin travel ≈ 0.5 screen; p: 0 at the top → 1 as the tunnel releases.
+        const p = Math.max(0, Math.min(1, -rect.top / (vh * 0.5)));
+        const textP = Math.min(1, p / 0.7); // text finishes rising at 70% of the pin
+        mobileContentY.set(-textP * vh * 0.82); // rise up and off the top
+        mobileHouseY.set(p * vh * 0.06);        // slight downward parallax drift
       };
       const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
       mMeasure();
@@ -124,7 +136,9 @@ export default function Hero() {
       window.removeEventListener("resize", onScroll);
       if (raf !== null) cancelAnimationFrame(raf);
     };
-  }, [heroPanelOpacity, isMobile]);
+    // MotionValues (heroPanelOpacity, mobileContentY, mobileHouseY) are stable refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
   // imageY removed — hero image fills sticky panel at all times (no lift at end of tunnel).
   // Alarm card — same scroll rate as heroContentY (2000px per progress unit).
   // Multi-input form: re-evaluates whenever scrollYProgress OR alarmStartMV changes,
@@ -289,9 +303,10 @@ export default function Hero() {
       ref={heroRef}
       style={{
         // Desktop: tall scroll tunnel the sticky panel pins inside.
-        // Mobile: a normal full-screen hero that scrolls away naturally — no
-        // tunnel, no pinning (the pinned tunnel read as "the page won't scroll").
-        minHeight: isMobile ? "100svh" : "calc(274vh - 300px)",
+        // Mobile: a SHORT tunnel (150svh) — the panel pins for ~0.5 screen while
+        // the text rises and the house parallaxes, then releases. Kept short so
+        // the page still obviously scrolls.
+        minHeight: isMobile ? "150svh" : "calc(274vh - 300px)",
         position: "relative",
       }}
     >
@@ -302,17 +317,18 @@ export default function Hero() {
       <motion.div
         ref={stickyRef}
         style={{
-          // Mobile: in normal flow, fills one screen, scrolls away. No pin.
-          position:   isMobile ? "relative" : "sticky",
-          top:        isMobile ? undefined : navHeight,
-          height:     isMobile ? "auto" : "100svh",
+          // Both: sticky panel pins inside the outer tunnel. Mobile uses a short
+          // tunnel (see outer minHeight) so it pins only ~0.5 screen.
+          position:   "sticky",
+          top:        navHeight,
+          height:     "100svh",
           minHeight:  isMobile ? "100svh" : "720px",
           overflow:   "clip",
           display:    "flex",
           alignItems: "center",
           background: "#faf8f5",
           zIndex:     2,
-          opacity:    heroPanelOpacity,
+          opacity:    isMobile ? 1 : heroPanelOpacity,
         }}
       >
         {/* Grain overlay */}
@@ -336,6 +352,7 @@ export default function Hero() {
           style={{
             position: "absolute",
             inset:    0,
+            y:        isMobile ? mobileHouseY : 0, // mobile parallax drift down
           }}
         >
           <div
@@ -416,6 +433,7 @@ export default function Hero() {
               style={{
                 position: "absolute",
                 inset:    0,
+                y:        isMobile ? mobileHouseY : 0, // match the normal house's mobile drift
               }}
             >
               <div
@@ -447,7 +465,7 @@ export default function Hero() {
                 inset:     0,
                 display:   "flex",
                 alignItems: "center",
-                y:         isMobile ? 0 : heroContentY,
+                y:         isMobile ? mobileContentY : heroContentY,
               }}
             >
               <div
@@ -771,7 +789,7 @@ export default function Hero() {
           style={{
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
-            y:       isMobile ? 0 : heroContentY,
+            y:       isMobile ? mobileContentY : heroContentY,
           }}
         >
           {/* Eyebrow */}
