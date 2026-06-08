@@ -42,6 +42,7 @@ export default function MobileAlert() {
 
   const outerRef     = useRef(null); // scroll tunnel — drives progress
   const imgRef       = useRef(null); // thermal image wrapper — Ken Burns
+  const enterRef     = useRef(null); // cream overlay fading OUT on entry
   const exitRef      = useRef(null); // cream overlay fading IN on exit
   const wordRefs     = useRef([]);
 
@@ -61,8 +62,9 @@ export default function MobileAlert() {
     // Reduced motion: show everything statically, skip the scroll choreography.
     if (reduce) {
       els.forEach((el) => { if (el) { el.style.opacity = "1"; el.style.transform = "none"; } });
-      if (imgRef.current)  imgRef.current.style.transform = "scale(1.05)";
-      if (exitRef.current) exitRef.current.style.opacity  = "0";
+      if (imgRef.current)   imgRef.current.style.transform = "scale(1.1)";
+      if (enterRef.current) enterRef.current.style.opacity = "0";
+      if (exitRef.current)  exitRef.current.style.opacity  = "0";
       return;
     }
 
@@ -78,12 +80,12 @@ export default function MobileAlert() {
       const travel = rect.height - vh;
       const p = travel > 0 ? clamp01(-rect.top / travel) : 0;
 
-      // Ken Burns on the thermal image (starts at the hero's scale for continuity)
-      if (imgRef.current) imgRef.current.style.transform = `scale(${1 + 0.12 * p})`;
+      // Ken Burns on the thermal image
+      if (imgRef.current) imgRef.current.style.transform = `scale(${1.08 + 0.16 * p})`;
 
-      // Cream cross-fade OUT into cream(Stats). No entry fade — the hero exits
-      // full thermal and we open on that same thermal house, so entry is seamless.
-      if (exitRef.current) exitRef.current.style.opacity = String(clamp01((p - 0.82) / 0.16));
+      // Cream cross-fades: in from cream(hero), out into cream(Stats)
+      if (enterRef.current) enterRef.current.style.opacity = String(1 - clamp01(p / 0.16));
+      if (exitRef.current)  exitRef.current.style.opacity  = String(clamp01((p - 0.82) / 0.16));
 
       // Word-by-word reveal
       els.forEach((wEl, i) => {
@@ -153,7 +155,7 @@ export default function MobileAlert() {
         }}
       >
         {/* Thermal house — the brand's signature heat-vision look, full bleed */}
-        <div ref={imgRef} style={{ position: "absolute", inset: 0, transform: "scale(1)", willChange: "transform" }}>
+        <div ref={imgRef} style={{ position: "absolute", inset: 0, transform: "scale(1.08)", willChange: "transform" }}>
           <Image
             src="/images/house-thermal4.webp"
             alt=""
@@ -161,7 +163,7 @@ export default function MobileAlert() {
             quality={65}
             sizes="100vw"
             loading="lazy"
-            className="object-[72%_50%]"
+            className="object-center"
             style={{ objectFit: "cover" }}
           />
         </div>
@@ -266,9 +268,9 @@ export default function MobileAlert() {
           </p>
         </div>
 
-        {/* Cream cross-fade OUT — dissolves the thermal panel into the cream Stats
-            section below. (No entry fade: we open continuous on the hero's thermal.) */}
-        <div ref={exitRef} aria-hidden="true" style={{ position: "absolute", inset: 0, background: "#faf8f5", opacity: 0, zIndex: 9, pointerEvents: "none" }} />
+        {/* Cream cross-fades — enter from the cream hero, exit into cream Stats */}
+        <div ref={enterRef} aria-hidden="true" style={{ position: "absolute", inset: 0, background: "#faf8f5", opacity: 1, zIndex: 8, pointerEvents: "none" }} />
+        <div ref={exitRef}  aria-hidden="true" style={{ position: "absolute", inset: 0, background: "#faf8f5", opacity: 0, zIndex: 9, pointerEvents: "none" }} />
       </div>
     </section>
   );
