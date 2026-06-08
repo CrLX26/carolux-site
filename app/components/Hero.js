@@ -57,6 +57,7 @@ export default function Hero() {
   const mobileContentY = useMotionValue(0); // hero text rises up and off
   const mobileContentOpacity = useMotionValue(1); // hero text fades as it reaches the top
   const mobileAtticOpacity = useMotionValue(0); // attic cross-fades in over the house (step 5)
+  const mobileAtticScale = useMotionValue(1.08); // attic push-in (scale 1.08 → 1.0)
   const mobileExitCream = useMotionValue(0);    // cools to cream into Stats (step 6 tail)
   const mWordRefs = useRef([]);                 // attic alert words (step 6)
 
@@ -124,16 +125,19 @@ export default function Hero() {
         // Cheap: scrollY only against the cached offset (no per-frame layout read).
         const s = window.scrollY - heroTop; // px scrolled into the hero
         const u = s / vh;                   // ...in viewport units
-        // Phase 1-4: hero text rises (≈1.2× scroll) and fades near the top.
-        // `lift` nudges the whole text block up at rest so the CTA clears the
-        // sticky mobile bottom bar. Applies to base + thermal text (same value).
-        const lift = vh * 0.1;
-        mobileContentY.set(-lift - Math.min(1.2 * s, vh * 0.72));
-        mobileContentOpacity.set(clamp01(1 - (u - 0.25) / 0.20)); // fade u 0.25 → 0.45
-        // Phase 5: attic cross-fades IN over the (still-looping) house. u 0.50 → 0.80.
-        mobileAtticOpacity.set(clamp01((u - 0.50) / 0.30));
-        // Phase 6: alert line writes word-by-word over the attic. u 0.85 → 1.65.
-        const wStart = 0.85, step = (1.65 - 0.85) / Math.max(1, mTotal);
+        // Phase 1-4: hero text rises and fades. `lift` nudges it up so the CTA
+        // clears the bottom bar (half the previous lift). Slower rise + later,
+        // longer fade so the text sits on screen a bit longer.
+        const lift = vh * 0.05;
+        mobileContentY.set(-lift - Math.min(1.0 * s, vh * 0.8));
+        mobileContentOpacity.set(clamp01(1 - (u - 0.42) / 0.24)); // fade u 0.42 → 0.66
+        // Phase 5: attic cross-fades IN over the looping house, with a gentle
+        // push-in (scale 1.08 → 1.0). u 0.66 → 0.94.
+        const atticP = clamp01((u - 0.66) / 0.28);
+        mobileAtticOpacity.set(atticP);
+        mobileAtticScale.set(1.08 - 0.08 * atticP);
+        // Phase 6: alert line writes word-by-word over the attic. u 1.00 → 1.80.
+        const wStart = 1.0, step = (1.8 - 1.0) / Math.max(1, mTotal);
         mWordRefs.current.forEach((el, i) => {
           if (!el) return;
           const a = wStart + i * step, b = a + step * 1.7;
@@ -144,8 +148,8 @@ export default function Hero() {
           el.style.opacity = String(o);
           el.style.transform = `translateY(${y}px)`;
         });
-        // Tail: cool to cream and dissolve into the Stats burst. u 1.70 → 1.90.
-        mobileExitCream.set(clamp01((u - 1.70) / 0.20));
+        // Tail: cool to cream and dissolve into the Stats burst. u 1.84 → 2.02.
+        mobileExitCream.set(clamp01((u - 1.84) / 0.18));
       };
       const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
       const onResize = () => { cache(); mMeasure(); };
@@ -347,10 +351,10 @@ export default function Hero() {
       ref={heroRef}
       style={{
         // Desktop: tall scroll tunnel the sticky panel pins inside.
-        // Mobile: a tunnel (290svh ≈ 1.9 screens of pin) that sequences the whole
-        // intro — text rises+fades, attic cross-fades in over the house, then the
-        // alert line writes word-by-word, then cools to cream into Stats.
-        minHeight: isMobile ? "290svh" : "calc(274vh - 300px)",
+        // Mobile: a tunnel (310svh ≈ 2.1 screens of pin) that sequences the whole
+        // intro — text rises+fades (lingering), attic cross-fades in over the
+        // house, the alert line writes word-by-word, then cools to cream into Stats.
+        minHeight: isMobile ? "310svh" : "calc(274vh - 300px)",
         position: "relative",
       }}
     >
@@ -1050,16 +1054,19 @@ export default function Hero() {
               aria-hidden="true"
               style={{ position: "absolute", inset: 0, zIndex: 25, opacity: mobileAtticOpacity, pointerEvents: "none" }}
             >
-              <Image
-                src="/images/attic-20260516_132823.jpg"
-                alt=""
-                fill
-                quality={65}
-                sizes="100vw"
-                loading="lazy"
-                className="object-[50%_45%]"
-                style={{ objectFit: "cover" }}
-              />
+              {/* Push-in: image starts slightly scaled and settles as it fades in */}
+              <motion.div style={{ position: "absolute", inset: 0, scale: mobileAtticScale, willChange: "transform" }}>
+                <Image
+                  src="/images/attic-20260516_132823.jpg"
+                  alt=""
+                  fill
+                  quality={65}
+                  sizes="100vw"
+                  loading="lazy"
+                  className="object-[50%_45%]"
+                  style={{ objectFit: "cover" }}
+                />
+              </motion.div>
               {/* Dark scrim for copy contrast */}
               <div
                 style={{
