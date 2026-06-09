@@ -33,6 +33,13 @@ html.lenis body {
   opacity: 0;
   animation: thermal-crossfade 9s ease-in-out infinite;
   will-change: opacity;
+  /* Force a single cached GPU layer. The continuous opacity loop then composites
+     one flattened texture (thermal image + copy) instead of re-rasterizing the
+     full-bleed image + 8-layer text-shadows every frame — the dominant scroll
+     cost measured via scripts/perf.mjs. contain bounds the paint region. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout paint;
 }
 
 @keyframes thermal-crossfade {
@@ -68,3 +75,9 @@ html.lenis body {
   .hero-rise, .hero-fade, .hero-line { animation: none; opacity: 1; transform: none; }
   .hero-pulse { animation: none; }
 }
+
+/* ── Mobile alert heat glow (MobileAlert.js .ma-heat) ────────────────────────
+   Gentle living heat pulse behind the thermal copy. Pure opacity, GPU-friendly. */
+@keyframes ma-heat { 0%, 100% { opacity: 0.34; } 50% { opacity: 0.62; } }
+.ma-heat { animation: ma-heat 5s ease-in-out infinite; will-change: opacity; }
+@media (prefers-reduced-motion: reduce) { .ma-heat { animation: none; opacity: 0.42; } }

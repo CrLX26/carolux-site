@@ -6,6 +6,7 @@ import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import { COMPANY, HERO, TRUST_BADGES } from "../lib/content";
 
 const EASE = [0.16, 1, 0.3, 1];
+const clamp01 = (n) => (n < 0 ? 0 : n > 1 ? 1 : n);
 
 // ── Thermal spotlight tuning ───────────────────────────────────────────────
 // Tell Claude which direction to adjust using plain English:
@@ -49,6 +50,32 @@ export default function Hero() {
   // 1250 is the fallback (midpoint between desktop ~1200 and mobile ~1337).
   const alarmStartMV = useMotionValue(1250);
 
+  // ── Mobile scroll tunnel ──────────────────────────────────────────────────
+  // Mobile gets a short scroll tunnel: the house pins (loop still running) and
+  // stays put while only the hero text rises and scrolls away. Separate value so
+  // the (locked) desktop heroContentY choreography is untouched.
+  const mobileContentY = useMotionValue(0); // hero text rises up and off
+  const mobileContentOpacity = useMotionValue(1); // hero text fades as it reaches the top
+  const mobileAtticOpacity = useMotionValue(0); // attic cross-fades in over the house (step 5)
+  const mobileAtticScale = useMotionValue(1.08); // attic push-in (scale 1.08 → 1.0)
+  const vidARef = useRef(null);                  // sun-sky loop — crossfade copy A
+  const vidBRef = useRef(null);                  // sun-sky loop — crossfade copy B
+  const mobileExitCream = useMotionValue(0);    // cools to cream into Stats (step 6 tail)
+  const mWordRefs = useRef([]);                 // attic alert words (step 6)
+
+  // Attic alert word sequence (mobile) — the loss-aversion line, written word-by-word.
+  let mGi = 0;
+  const mPre  = HERO.secondaryPre.split(" ").map((w)  => ({ w, i: mGi++ }));
+  const mMain = HERO.secondaryMain.split(" ").map((w) => ({ w, i: mGi++ }));
+  const mPost = HERO.secondaryPost.split(" ").map((w) => ({ w, i: mGi++ }));
+  const mTotal = mGi;
+  const M_HALO = "0 0 2px rgba(0,0,0,0.85), 0 1px 14px rgba(0,0,0,0.8), 0 0 36px rgba(0,0,0,0.6)";
+  const mWordBase = { display: "inline-block", marginRight: "0.26em", opacity: 0, transform: "translateY(14px)", willChange: "opacity, transform" };
+  const renderMWords = (arr, style) =>
+    arr.map(({ w, i }) => (
+      <span key={i} ref={(el) => { mWordRefs.current[i] = el; }} style={{ ...mWordBase, ...style }}>{w}</span>
+    ));
+
   // ── Scroll progress ───────────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -77,10 +104,75 @@ export default function Hero() {
   const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
-    // Mobile is a static hero (no sticky tunnel, no cross-dissolve), so skip
-    // this scroll listener entirely — it would otherwise read layout every
-    // frame for nothing.
-    if (isMobile) { heroPanelOpacity.set(1); return; }
+    // ── Mobile scroll tunnel ─────────────────────────────────────────────────
+    // The hero is a short tunnel (outer 150svh, sticky panel 100svh → ~0.5 screen
+    // of pin). The HOUSE stays put (pinned, no parallax) with its thermal loop
+    // running. Only the TEXT moves: it rises gently as you scroll (≈1.2× scroll
+    // speed) and scrolls away. transform-only = GPU-cheap; no per-frame layout.
+    if (isMobile) {
+      let mraf = null;
+      // Cache the hero's absolute document offset + viewport height so the scroll
+      // handler never calls getBoundingClientRect() (that forces a layout/reflow
+      // every frame — the main cause of mobile scroll jank). Re-cache on resize.
+      let pinStart = 0;
+      let vh = window.innerHeight || 1;
+      const cache = () => {
+        const el = heroRef.current;
+        if (!el) return;
+        const header = document.querySelector("header");
+        const nh = header ? header.getBoundingClientRect().height : 0;
+        // Scroll position at which the panel begins pinning, so `s` is 0 at the
+        // top (was subtracting the hero's doc offset, which made s negative at
+        // rest and pushed the text down ~nav-height).
+        pinStart = el.getBoundingClientRect().top + window.scrollY - nh;
+        vh = window.innerHeight || 1;
+      };
+      const mMeasure = () => {
+        mraf = null;
+        // Cheap: scrollY only against the cached pin-start (no per-frame layout read).
+        const s = Math.max(0, window.scrollY - pinStart); // px scrolled into the pin
+        const u = s / vh;                                 // ...in viewport units
+        // Phase 1-4: hero text rises and fades. Vertical placement is handled by
+        // the panel layout (auto margins center it but never clip the top under
+        // the nav; paddingBottom keeps the CTA above the bottom bar) — no lift.
+        mobileContentY.set(-Math.min(1.25 * s, vh * 1.0));
+        // Fade only once the text has physically risen most of the way off the top
+        // (it rises 1.25× scroll, so by u≈0.55 the block is high on screen). Holding
+        // the fade until here keeps the copy fully legible while it's still in view.
+        mobileContentOpacity.set(clamp01(1 - (u - 0.55) / 0.25)); // fade u 0.55 → 0.80
+        // Phase 5: house cross-fades into the sun-sky video AFTER the text has
+        // cleared (not over it), with a gentle push-in (scale 1.08 → 1.0). u 0.80 → 1.00.
+        const atticP = clamp01((u - 0.80) / 0.20);
+        mobileAtticOpacity.set(atticP);
+        mobileAtticScale.set(1.08 - 0.08 * atticP);
+        // Phase 6: alert line writes word-by-word over the attic. u 1.00 → 1.80.
+        const wStart = 1.0, step = (1.8 - 1.0) / Math.max(1, mTotal);
+        mWordRefs.current.forEach((el, i) => {
+          if (!el) return;
+          const a = wStart + i * step, b = a + step * 1.7;
+          let o, y;
+          if (u <= a) { o = 0; y = 14; }
+          else if (u >= b) { o = 1; y = 0; }
+          else { const t = (u - a) / (b - a); o = t; y = 14 * (1 - t); }
+          el.style.opacity = String(o);
+          el.style.transform = `translateY(${y}px)`;
+        });
+        // Hold the finished attic + text on screen (u 1.80 → 2.20), THEN cool to
+        // cream and dissolve into the Stats burst (u 2.20 → 2.40).
+        mobileExitCream.set(clamp01((u - 2.20) / 0.20));
+      };
+      const mOnScroll = () => { if (mraf === null) mraf = requestAnimationFrame(mMeasure); };
+      const onResize = () => { cache(); mMeasure(); };
+      cache();
+      mMeasure();
+      window.addEventListener("scroll", mOnScroll, { passive: true });
+      window.addEventListener("resize", onResize, { passive: true });
+      return () => {
+        window.removeEventListener("scroll", mOnScroll);
+        window.removeEventListener("resize", onResize);
+        if (mraf !== null) cancelAnimationFrame(mraf);
+      };
+    }
     let raf = null;
     const measure = () => {
       raf = null;
@@ -102,7 +194,9 @@ export default function Hero() {
       window.removeEventListener("resize", onScroll);
       if (raf !== null) cancelAnimationFrame(raf);
     };
-  }, [heroPanelOpacity, isMobile]);
+    // MotionValues (heroPanelOpacity, mobileContentY) are stable refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
   // imageY removed — hero image fills sticky panel at all times (no lift at end of tunnel).
   // Alarm card — same scroll rate as heroContentY (2000px per progress unit).
   // Multi-input form: re-evaluates whenever scrollYProgress OR alarmStartMV changes,
@@ -198,6 +292,54 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", onWindowMouseMove);
   }, []);
 
+  // ── Mobile: sun-sky video loop with a crossfade into itself ───────────────
+  // The video plays on a loop (not scroll-driven). To hide the end→start seam,
+  // two copies are stacked: as the playing copy nears its end, the other starts
+  // from 0 and they crossfade (CSS opacity transition), so the wrap is a dissolve.
+  // Only one copy plays at a time except during the brief crossfade.
+  useEffect(() => {
+    if (!isMobile) return;
+    const a = vidARef.current, b = vidBRef.current;
+    if (!a || !b) return;
+    const FADE = 1.0; // seconds of crossfade at the loop seam
+    let active = a, idle = b, crossing = false;
+    [a, b].forEach((v) => { v.muted = true; v.playsInline = true; });
+    a.style.opacity = "1";
+    b.style.opacity = "0";
+    a.currentTime = 0;
+    a.play().catch(() => {});
+
+    const onTime = () => {
+      if (crossing || !active.duration) return;
+      if (active.duration - active.currentTime <= FADE) {
+        crossing = true;
+        idle.currentTime = 0;
+        idle.play().catch(() => {});
+        active.style.opacity = "0"; // CSS transition dissolves end → start
+        idle.style.opacity = "1";
+      }
+    };
+    const onEnded = () => {
+      active.pause();
+      active.style.opacity = "0";
+      idle.style.opacity = "1";
+      const tmp = active; active = idle; idle = tmp;
+      crossing = false;
+    };
+    [a, b].forEach((v) => {
+      v.addEventListener("timeupdate", onTime);
+      v.addEventListener("ended", onEnded);
+    });
+    return () => {
+      [a, b].forEach((v) => {
+        v.removeEventListener("timeupdate", onTime);
+        v.removeEventListener("ended", onEnded);
+        v.pause();
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
+
   // Cursor-centred mask for the thermal overlay
   const overlayMask = heroMousePos
     ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
@@ -267,9 +409,11 @@ export default function Hero() {
       ref={heroRef}
       style={{
         // Desktop: tall scroll tunnel the sticky panel pins inside.
-        // Mobile: a normal full-screen hero that scrolls away naturally — no
-        // tunnel, no pinning (the pinned tunnel read as "the page won't scroll").
-        minHeight: isMobile ? "100svh" : "calc(274vh - 300px)",
+        // Mobile: a tunnel (350svh ≈ 2.5 screens of pin) that sequences the whole
+        // intro — text rises+fades (lingering), attic cross-fades in over the
+        // house, the alert line writes word-by-word, the finished alert HOLDS on
+        // screen, then cools to cream into Stats.
+        minHeight: isMobile ? "350svh" : "calc(274vh - 300px)",
         position: "relative",
       }}
     >
@@ -280,17 +424,23 @@ export default function Hero() {
       <motion.div
         ref={stickyRef}
         style={{
-          // Mobile: in normal flow, fills one screen, scrolls away. No pin.
-          position:   isMobile ? "relative" : "sticky",
-          top:        isMobile ? undefined : navHeight,
-          height:     isMobile ? "auto" : "100svh",
-          minHeight:  isMobile ? "100svh" : "720px",
-          overflow:   "clip",
-          display:    "flex",
-          alignItems: "center",
-          background: "#faf8f5",
-          zIndex:     2,
-          opacity:    isMobile ? 1 : heroPanelOpacity,
+          // Sticky panel pins inside the outer tunnel.
+          position:       "sticky",
+          top:            navHeight,
+          // Mobile: fit exactly the visible area below the nav, and lay the text
+          // out top-safe (auto margins center it when there's room but never push
+          // it under the nav). paddingBottom reserves the sticky bottom-bar space.
+          height:         isMobile ? `calc(100svh - ${navHeight}px)` : "100svh",
+          minHeight:      isMobile ? undefined : "720px",
+          overflow:       "clip",
+          display:        "flex",
+          flexDirection:  isMobile ? "column" : "row",
+          justifyContent: isMobile ? "flex-start" : undefined,
+          alignItems:     isMobile ? "stretch" : "center",
+          paddingBottom:  isMobile ? "80px" : undefined,
+          background:     "#faf8f5",
+          zIndex:         2,
+          opacity:        isMobile ? 1 : heroPanelOpacity,
         }}
       >
         {/* Grain overlay */}
@@ -305,6 +455,10 @@ export default function Hero() {
             backgroundSize:  "200px 200px",
             mixBlendMode:    "multiply",
             opacity:         0.55,
+            // Cache as its own layer so the blend composites against cached
+            // neighbours instead of re-rastering the full backdrop each frame.
+            transform:       "translateZ(0)",
+            willChange:      "transform",
           }}
         />
 
@@ -424,8 +578,21 @@ export default function Hero() {
                 position:  "absolute",
                 inset:     0,
                 display:   "flex",
-                alignItems: "center",
-                y:         isMobile ? 0 : heroContentY,
+                // Mirror the base content's layout exactly so normal + thermal
+                // text overlay perfectly (top-safe centering, reserved bottom bar).
+                flexDirection:  isMobile ? "column" : "row",
+                justifyContent: isMobile ? "flex-start" : undefined,
+                alignItems:     isMobile ? "stretch" : "center",
+                paddingBottom:  isMobile ? "80px" : undefined,
+                y:         isMobile ? mobileContentY : heroContentY,
+                opacity:   isMobile ? mobileContentOpacity : undefined,
+                // Promote to its own GPU layer so the heavy thermal text-shadows
+                // rasterize once and scroll = transform+opacity on the compositor
+                // (no per-frame re-raster). transform is owned by framer (y), so
+                // backfaceVisibility forces the layer without fighting it.
+                willChange: "transform, opacity",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
               }}
             >
               <div
@@ -434,6 +601,8 @@ export default function Hero() {
                   position:     "relative",
                   paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
                   paddingRight: "clamp(1.5rem, 3vw, 3rem)",
+                  marginTop:    isMobile ? "clamp(10px, 2.2vh, 22px)" : undefined,
+                  marginBottom: isMobile ? "auto" : undefined,
                 }}
               >
                 {/* Eyebrow */}
@@ -749,7 +918,17 @@ export default function Hero() {
           style={{
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
-            y:       isMobile ? 0 : heroContentY,
+            // Mobile: top-align with a small gap below the nav (fixed marginTop so
+            // the top never clips), marginBottom auto eats leftover space. This
+            // keeps the block snug under the header so the CTA fits on first load.
+            marginTop:    isMobile ? "clamp(10px, 2.2vh, 22px)" : undefined,
+            marginBottom: isMobile ? "auto" : undefined,
+            y:       isMobile ? mobileContentY : heroContentY,
+            opacity: isMobile ? mobileContentOpacity : undefined,
+            // Promote: headline + shadows rasterize once, scroll is composite-only.
+            willChange: "transform, opacity",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
           }}
         >
           {/* Eyebrow */}
@@ -953,6 +1132,107 @@ export default function Hero() {
             }}
           />
         </div>
+
+        {/* ── Mobile sequence: attic cross-fade + alert word-write (steps 5-6) ──
+            All inside the pinned panel so the house→attic cross-fade happens in
+            place (single scroll progress). Mobile only; desktop renders none. */}
+        {isMobile && (
+          <>
+            {/* Attic — cross-fades in over the (still-looping) house */}
+            <motion.div
+              aria-hidden="true"
+              // Keep this layer composited even at opacity 0. Otherwise the browser
+              // builds the layer (two 1080p videos + scrim + blend-mode grain) the
+              // first frame opacity leaves 0 — a one-frame paint spike that read as a
+              // "catch/stick" at the seam. willChange + translateZ promotes it up front.
+              // Opaque sky backdrop (avg colour of the clip). The two stacked video
+              // copies dip to ~75% combined opacity during their crossfade seam, so
+              // without this the house/thermal beneath bleeds ~25% through for ~1s
+              // each loop. The backdrop fades in WITH the video (shares this layer's
+              // opacity), so the house→video cross-fade is unchanged.
+              style={{ position: "absolute", inset: 0, zIndex: 25, background: "#7d8ca0", opacity: mobileAtticOpacity, pointerEvents: "none", willChange: "opacity", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+            >
+              {/* Push-in: video starts slightly scaled and settles as it fades in.
+                  Two stacked copies loop with a crossfade into themselves at the
+                  seam (driven by the effect above). */}
+              <motion.div style={{ position: "absolute", inset: 0, scale: mobileAtticScale, willChange: "transform" }}>
+                {/* Framing: sun sits ~37% across / ~34% down in the source.
+                    object-position:37% centres it horizontally; the modest zoom +
+                    slight up-shift lifts the sun above the alert copy (its glow
+                    bottom meets the text top) while keeping clouds in frame.
+                    Tunables: SCALE / Y% here, and object-position X on the videos. */}
+                <div style={{ position: "absolute", inset: 0, transform: "translateY(-3%) scale(1.2)", transformOrigin: "center center", willChange: "transform" }}>
+                  <video
+                    ref={vidARef}
+                    src="/alert-sky.mp4"
+                    muted
+                    playsInline
+                    preload="auto"
+                    aria-hidden="true"
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 50%", opacity: 1, transition: "opacity 1s linear", pointerEvents: "none" }}
+                  />
+                  <video
+                    ref={vidBRef}
+                    src="/alert-sky.mp4"
+                    muted
+                    playsInline
+                    preload="auto"
+                    aria-hidden="true"
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 50%", opacity: 0, transition: "opacity 1s linear", pointerEvents: "none" }}
+                  />
+                </div>
+              </motion.div>
+              {/* Scrim removed — the sky reads bright. The alert copy keeps its own
+                  dark halo (M_HALO) for legibility, so no full-frame darkening. */}
+              {/* Grain — matches the rest of the surface */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: GRAIN_BG,
+                  backgroundRepeat: "repeat",
+                  backgroundSize: "200px 200px",
+                  mixBlendMode: "overlay",
+                  opacity: 0.5,
+                }}
+              />
+            </motion.div>
+
+            {/* Alert line — writes word-by-word over the attic */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 30,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "0 clamp(1.5rem, 8vw, 3rem)",
+                pointerEvents: "none",
+              }}
+            >
+              <div style={{ maxWidth: "20ch" }}>
+                <p style={{ margin: 0, fontFamily: "var(--font-label)", fontSize: "clamp(0.8rem, 3.4vw, 1rem)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#ffc98f", textShadow: M_HALO }}>
+                  {renderMWords(mPre)}
+                </p>
+                <p style={{ margin: "clamp(0.7rem, 2vh, 1.25rem) 0", fontFamily: "var(--font-cormorant)", fontWeight: 400, fontSize: "clamp(3rem, 14vw, 5rem)", lineHeight: 0.92, letterSpacing: "-0.02em", color: "#fdf4e9", textShadow: M_HALO }}>
+                  {renderMWords(mMain)}
+                </p>
+                <p style={{ margin: 0, fontFamily: "var(--font-label)", fontSize: "clamp(0.8rem, 3.4vw, 1rem)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#ffc98f", textShadow: M_HALO }}>
+                  {renderMWords(mPost)}
+                </p>
+              </div>
+            </div>
+
+            {/* Cool to cream — dissolves the whole panel into the Stats burst */}
+            <motion.div
+              aria-hidden="true"
+              style={{ position: "absolute", inset: 0, zIndex: 35, background: "#faf8f5", opacity: mobileExitCream, pointerEvents: "none", willChange: "opacity", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+            />
+          </>
+        )}
 
       </motion.div>
     </div>
