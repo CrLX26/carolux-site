@@ -135,11 +135,14 @@ export default function Hero() {
         // Phase 1-4: hero text rises and fades. Vertical placement is handled by
         // the panel layout (auto margins center it but never clip the top under
         // the nav; paddingBottom keeps the CTA above the bottom bar) — no lift.
-        mobileContentY.set(-Math.min(1.0 * s, vh * 0.8));
-        mobileContentOpacity.set(clamp01(1 - (u - 0.42) / 0.24)); // fade u 0.42 → 0.66
-        // Phase 5: attic cross-fades IN over the looping house, with a gentle
-        // push-in (scale 1.08 → 1.0). u 0.66 → 0.94.
-        const atticP = clamp01((u - 0.66) / 0.28);
+        mobileContentY.set(-Math.min(1.25 * s, vh * 1.0));
+        // Fade only once the text has physically risen most of the way off the top
+        // (it rises 1.25× scroll, so by u≈0.55 the block is high on screen). Holding
+        // the fade until here keeps the copy fully legible while it's still in view.
+        mobileContentOpacity.set(clamp01(1 - (u - 0.55) / 0.25)); // fade u 0.55 → 0.80
+        // Phase 5: house cross-fades into the sun-sky video AFTER the text has
+        // cleared (not over it), with a gentle push-in (scale 1.08 → 1.0). u 0.80 → 1.00.
+        const atticP = clamp01((u - 0.80) / 0.20);
         mobileAtticOpacity.set(atticP);
         mobileAtticScale.set(1.08 - 0.08 * atticP);
         // Phase 6: alert line writes word-by-word over the attic. u 1.00 → 1.80.
@@ -1125,7 +1128,11 @@ export default function Hero() {
             {/* Attic — cross-fades in over the (still-looping) house */}
             <motion.div
               aria-hidden="true"
-              style={{ position: "absolute", inset: 0, zIndex: 25, opacity: mobileAtticOpacity, pointerEvents: "none" }}
+              // Keep this layer composited even at opacity 0. Otherwise the browser
+              // builds the layer (two 1080p videos + scrim + blend-mode grain) the
+              // first frame opacity leaves 0 — a one-frame paint spike that read as a
+              // "catch/stick" at the seam. willChange + translateZ promotes it up front.
+              style={{ position: "absolute", inset: 0, zIndex: 25, opacity: mobileAtticOpacity, pointerEvents: "none", willChange: "opacity", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
             >
               {/* Push-in: video starts slightly scaled and settles as it fades in.
                   Two stacked copies loop with a crossfade into themselves at the
@@ -1203,7 +1210,7 @@ export default function Hero() {
             {/* Cool to cream — dissolves the whole panel into the Stats burst */}
             <motion.div
               aria-hidden="true"
-              style={{ position: "absolute", inset: 0, zIndex: 35, background: "#faf8f5", opacity: mobileExitCream, pointerEvents: "none" }}
+              style={{ position: "absolute", inset: 0, zIndex: 35, background: "#faf8f5", opacity: mobileExitCream, pointerEvents: "none", willChange: "opacity", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
             />
           </>
         )}
