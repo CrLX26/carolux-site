@@ -213,11 +213,11 @@ export default function Hero() {
       // panel→Stats dissolve above (which kicks in at top ≈ ALERT_TOP_START).
       const vh = window.innerHeight || 1;
       const f = top / vh; // ~0.9+ below view → ~0.02 when dissolving
-      const skyT = clamp01((0.72 - f) / (0.72 - 0.46)); // sky in: f 0.72 → 0.46
+      const skyT = clamp01((0.82 - f) / (0.82 - 0.54)); // sky in: f 0.82 → 0.54 (as text clears)
       deskSkyOpacity.set(skyT);
       deskHaloOpacity.set(skyT * 0.9);
-      // Word-by-word drop across f 0.48 → 0.30 (after the sky is mostly in).
-      const wStartF = 0.48, wEndF = 0.30, stepF = (wStartF - wEndF) / Math.max(1, mTotal);
+      // Word-by-word drop across f 0.56 → 0.34 (just after the sky is mostly in).
+      const wStartF = 0.56, wEndF = 0.34, stepF = (wStartF - wEndF) / Math.max(1, mTotal);
       deskWordRefs.current.forEach((el, i) => {
         if (!el) return;
         const a = wStartF - i * stepF, b = a - stepF * 1.7; // descending f
@@ -503,7 +503,11 @@ export default function Hero() {
         // intro — text rises+fades (lingering), attic cross-fades in over the
         // house, the alert line writes word-by-word, the finished alert HOLDS on
         // screen, then cools to cream into Stats.
-        minHeight: isMobile ? "350svh" : "calc(274vh - 300px)",
+        // Desktop lengthened (was calc(274vh - 300px)) so the new alert phase —
+        // sky fade-in → word-by-word drop → brief hold → dissolve into Stats — has
+        // room to breathe. Hero visuals are driven by scrollYProgress FRACTIONS, so
+        // the hero sequence is identical; it just spans a little more scroll travel.
+        minHeight: isMobile ? "350svh" : "calc(380vh - 300px)",
         position: "relative",
       }}
     >
