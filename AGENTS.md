@@ -2,6 +2,8 @@
 ## Read this file at the start of every session. Every decision made here is permanent until explicitly changed.
 *Last updated: June 2026*
 
+> **🔗 Cross-project source of truth & doc map:** `D:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`. **Shared invariants — keep site copy consistent:** **2-year** warranty; **Tony = FORMER NC home inspector — never "licensed"**; company is **"insured," not "licensed"** (trust bar = "Insured" only); never the word **"mold"**; **no spray foam**; no exact-$ savings (% + "results vary" only); never knock competitors. Pricing truth = estimator code → `PRODUCTS.md` → pricing guide v5 ($1.50/$1.75/$1.95 all-in). Other projects' docs → the index.
+
 ---
 
 ## WHAT THIS PROJECT IS
