@@ -1145,7 +1145,12 @@ export default function Hero() {
               // builds the layer (two 1080p videos + scrim + blend-mode grain) the
               // first frame opacity leaves 0 — a one-frame paint spike that read as a
               // "catch/stick" at the seam. willChange + translateZ promotes it up front.
-              style={{ position: "absolute", inset: 0, zIndex: 25, opacity: mobileAtticOpacity, pointerEvents: "none", willChange: "opacity", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+              // Opaque sky backdrop (avg colour of the clip). The two stacked video
+              // copies dip to ~75% combined opacity during their crossfade seam, so
+              // without this the house/thermal beneath bleeds ~25% through for ~1s
+              // each loop. The backdrop fades in WITH the video (shares this layer's
+              // opacity), so the house→video cross-fade is unchanged.
+              style={{ position: "absolute", inset: 0, zIndex: 25, background: "#7d8ca0", opacity: mobileAtticOpacity, pointerEvents: "none", willChange: "opacity", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
             >
               {/* Push-in: video starts slightly scaled and settles as it fades in.
                   Two stacked copies loop with a crossfade into themselves at the
