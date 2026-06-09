@@ -60,6 +60,8 @@ export default function Hero() {
   const mobileAtticScale = useMotionValue(1.08); // attic push-in (scale 1.08 → 1.0)
   const vidARef = useRef(null);                  // sun-sky loop — crossfade copy A
   const vidBRef = useRef(null);                  // sun-sky loop — crossfade copy B
+  const vidADeskRef = useRef(null);              // DESKTOP sky-reveal loop — copy A
+  const vidBDeskRef = useRef(null);              // DESKTOP sky-reveal loop — copy B
   const mobileExitCream = useMotionValue(0);    // cools to cream into Stats (step 6 tail)
   const mWordRefs = useRef([]);                 // attic alert words (step 6)
 
@@ -340,9 +342,61 @@ export default function Hero() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
+  // ── Desktop: same crossfade-loop for the cursor-revealed sky layer ────────
+  // Desktop isn't GPU-constrained, so it gets its own always-playing sky loop
+  // (the mouse mask decides where it's visible). Separate refs so mobile is
+  // untouched. Identical seam-crossfade logic to the mobile loop above.
+  useEffect(() => {
+    if (isMobile) return;
+    const a = vidADeskRef.current, b = vidBDeskRef.current;
+    if (!a || !b) return;
+    const FADE = 1.0;
+    let active = a, idle = b, crossing = false;
+    [a, b].forEach((v) => { v.muted = true; v.playsInline = true; });
+    a.style.opacity = "1";
+    b.style.opacity = "0";
+    a.currentTime = 0;
+    a.play().catch(() => {});
+    const onTime = () => {
+      if (crossing || !active.duration) return;
+      if (active.duration - active.currentTime <= FADE) {
+        crossing = true;
+        idle.currentTime = 0;
+        idle.play().catch(() => {});
+        active.style.opacity = "0";
+        idle.style.opacity = "1";
+      }
+    };
+    const onEnded = () => {
+      active.pause();
+      active.style.opacity = "0";
+      idle.style.opacity = "1";
+      const tmp = active; active = idle; idle = tmp;
+      crossing = false;
+    };
+    [a, b].forEach((v) => {
+      v.addEventListener("timeupdate", onTime);
+      v.addEventListener("ended", onEnded);
+    });
+    return () => {
+      [a, b].forEach((v) => {
+        v.removeEventListener("timeupdate", onTime);
+        v.removeEventListener("ended", onEnded);
+        v.pause();
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
+
   // Cursor-centred mask for the thermal overlay
   const overlayMask = heroMousePos
     ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
+    : "none";
+
+  // Cursor-centred mask for the DESKTOP sky reveal — a wider, softer window than
+  // the thermal spotlight so the sky "opens up" around the pointer.
+  const skyMask = heroMousePos
+    ? `radial-gradient(circle ${Math.round(heroMousePos.radius * 1.7)}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 42%, transparent 100%)`
     : "none";
 
   // ── Thermal copy colours — split by surface ────────────────────────────────
@@ -846,6 +900,81 @@ export default function Hero() {
           </div>
         </motion.div>
         {/* ── End thermal overlay ──────────────────────────────────────────── */}
+
+        {/* ── DESKTOP sky reveal (mouse-driven) ────────────────────────────────
+            Desktop only. The cursor "opens" a soft window of bright sky over the
+            house (radial mask follows the pointer), a warm sun-bloom tracks the
+            pointer, and the sky parallaxes for depth. The video loops with a
+            crossfade-into-itself (desktop refs). Additive — sits above the thermal
+            overlay; does not touch any locked scroll value or any mobile code. */}
+        {!isMobile && (
+          <>
+            <motion.div
+              aria-hidden="true"
+              style={{
+                position:        "absolute",
+                inset:           0,
+                zIndex:          21,
+                pointerEvents:   "none",
+                opacity:         thermalOpacity,
+                transition:      "opacity 200ms ease-out",
+                WebkitMaskImage: skyMask,
+                maskImage:       skyMask,
+              }}
+            >
+              {/* Parallax wrapper — sky drifts opposite the cursor for depth */}
+              <div
+                style={{
+                  position:   "absolute",
+                  inset:      "-4%",
+                  transform:  `translate(${parallax.x * -0.6}px, ${parallax.y * -0.6}px) scale(1.08)`,
+                  transition: "transform 0.18s ease-out",
+                  willChange: "transform",
+                }}
+              >
+                <video
+                  ref={vidADeskRef}
+                  src="/alert-sky.mp4"
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-hidden="true"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 45%", opacity: 1, transition: "opacity 1s linear" }}
+                />
+                <video
+                  ref={vidBDeskRef}
+                  src="/alert-sky.mp4"
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-hidden="true"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 45%", opacity: 0, transition: "opacity 1s linear" }}
+                />
+              </div>
+            </motion.div>
+
+            {/* Warm sun bloom — tracks the pointer, screen-blended light */}
+            {heroMousePos && (
+              <div
+                aria-hidden="true"
+                style={{
+                  position:      "absolute",
+                  left:          heroMousePos.x,
+                  top:           heroMousePos.y,
+                  width:         "640px",
+                  height:        "640px",
+                  transform:     "translate(-50%, -50%)",
+                  zIndex:        22,
+                  pointerEvents: "none",
+                  opacity:       thermalOpacity * 0.9,
+                  transition:    "opacity 200ms ease-out",
+                  mixBlendMode:  "screen",
+                  background:    "radial-gradient(circle, rgba(255,247,230,0.95) 0%, rgba(255,234,196,0.55) 18%, rgba(255,210,150,0.22) 38%, transparent 68%)",
+                }}
+              />
+            )}
+          </>
+        )}
 
         {/* ── Alarm card — independent scroll, own alarmY MotionValue ─────────
             alarmStart is computed from live DOM heights so the card enters
