@@ -1151,28 +1151,29 @@ export default function Hero() {
                   Two stacked copies loop with a crossfade into themselves at the
                   seam (driven by the effect above). */}
               <motion.div style={{ position: "absolute", inset: 0, scale: mobileAtticScale, willChange: "transform" }}>
-                {/* Framing: the sun sits ~28% down in the source, but a landscape
-                    video in a portrait screen is height-fitted under cover, so
-                    object-position can't lift it. Zoom + shift down brings the sun
-                    to screen-centre (behind the alert copy). Tunables: SCALE / Y%. */}
-                <div style={{ position: "absolute", inset: 0, transform: "translateY(38%) scale(1.85)", transformOrigin: "center center", willChange: "transform" }}>
+                {/* Framing: sun sits ~37% across / ~34% down in the source.
+                    object-position:37% centres it horizontally; the modest zoom +
+                    slight up-shift lifts the sun above the alert copy (its glow
+                    bottom meets the text top) while keeping clouds in frame.
+                    Tunables: SCALE / Y% here, and object-position X on the videos. */}
+                <div style={{ position: "absolute", inset: 0, transform: "translateY(-3%) scale(1.2)", transformOrigin: "center center", willChange: "transform" }}>
                   <video
                     ref={vidARef}
-                    src="/sun-sky.mp4"
+                    src="/alert-sky.mp4"
                     muted
                     playsInline
                     preload="auto"
                     aria-hidden="true"
-                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", opacity: 1, transition: "opacity 1s linear", pointerEvents: "none" }}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 50%", opacity: 1, transition: "opacity 1s linear", pointerEvents: "none" }}
                   />
                   <video
                     ref={vidBRef}
-                    src="/sun-sky.mp4"
+                    src="/alert-sky.mp4"
                     muted
                     playsInline
                     preload="auto"
                     aria-hidden="true"
-                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", opacity: 0, transition: "opacity 1s linear", pointerEvents: "none" }}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 50%", opacity: 0, transition: "opacity 1s linear", pointerEvents: "none" }}
                   />
                 </div>
               </motion.div>

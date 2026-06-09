@@ -29,10 +29,11 @@ scroll tunnel + mouse thermal reveal.
 - Tunnel: outer `minHeight: 290→...→350svh` (mobile), sticky panel `calc(100svh - navHeight)` + `paddingBottom:80` so content is **top-safe** (auto/marginTop layout: text never clips under the nav, CTA clears the bottom bar). Scroll origin uses a cached **`pinStart`** so `s` starts at 0 at the top (do NOT reintroduce `scrollY - heroTop`, that pushed content down).
 - **Both** the base text and the **thermal replica text** use the SAME layout/`mobileContentY`/`mobileContentOpacity` so they overlay exactly (don't let them drift apart).
 
-**Sun-sky video (`public/sun-sky.mp4`, committed):**
-- It **loops on a timer** (NOT scroll-scrubbed). **Two stacked `<video>` copies** (`vidARef`/`vidBRef`) crossfade into each other at the seam (effect: "sun-sky video loop with a crossfade into itself") so the end→start wrap is a dissolve. Only one plays at a time except the ~1s crossfade.
-- ✅ **COMPRESSED 2026-06-09:** 13.7MB/2560×1440 → **2.18MB/1920×1080** (h264 `-crf 27 -preset slow`, lanczos, `+faststart`, no audio). Loop + crossfade verified intact via `vidcheck.mjs`/`mshot.mjs`. 1440p original preserved at `_masters/sun-sky-1440-master.mp4` (gitignored, NOT in `public/`/deploy).
-- The old attic placeholder `public/images/attic-20260516_132823.jpg` is committed but **now unused** (video replaced it). `attic-20260516_132829.jpg` is an unused spare.
+**Alert sky video (`public/alert-sky.mp4`, committed):**
+- It **loops on a timer** (NOT scroll-scrubbed). **Two stacked `<video>` copies** (`vidARef`/`vidBRef`) crossfade into each other at the seam (effect: "sky video loop with a crossfade into itself") so the end→start wrap is a dissolve. Only one plays at a time except the ~1s crossfade. Clip is short (4.8s).
+- ✅ **CURRENT VIDEO (2026-06-09):** `alert-sky.mp4` — bright sky w/ clouds + sun. Source 24MB/3840×2160/25fps → **1.19MB/1920×1080** (h264 `-crf 27 -preset slow`, lanczos, `+faststart`, no audio). 4K original preserved at `_masters/12718744_3840_2160_25fps.mp4` (gitignored, NOT deployed).
+- **Framing** (sun above the copy, glow touching text top, clouds in frame): videos use `object-position: 30% 50%` (horiz-centre the sun) wrapped in a framing div `transform: translateY(-3%) scale(1.2)`. Tune those two for sun position/zoom.
+- `public/sun-sky.mp4` (2.18MB, the previous centered-sun clip) is now **unused** but kept in case we revert. `_masters/sun-sky-1440-master.mp4` is its source.
 
 ### Tunable knobs (all in `Hero.js` `mMeasure`, mobile branch)
 The `u` thresholds above control timing (text fade window, cross-fade window, word pace, hold length, cool-to-cream). Tunnel height (`minHeight … svh`) must be ≥ the last threshold + buffer.
