@@ -76,6 +76,13 @@ html.lenis body {
   .hero-pulse { animation: none; }
 }
 
+/* ── Desktop alert cursor wisp (Hero.js .cloud-wisp) ─────────────────────────
+   Gentle drift + breathe so the cursor cloud feels alive even when the pointer
+   is still. Pure transform — GPU-friendly. */
+@keyframes cloud-wisp { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(16px, -9px) scale(1.07); } }
+.cloud-wisp { animation: cloud-wisp 8s ease-in-out infinite; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .cloud-wisp { animation: none; } }
+
 /* ── Mobile alert heat glow (MobileAlert.js .ma-heat) ────────────────────────
    Gentle living heat pulse behind the thermal copy. Pure opacity, GPU-friendly. */
 @keyframes ma-heat { 0%, 100% { opacity: 0.34; } 50% { opacity: 0.62; } }

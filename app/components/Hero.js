@@ -121,7 +121,8 @@ export default function Hero() {
   //   "start sooner / more gradual" → raise ALERT_TOP_START (begins higher up)
   //   "finish later"                → lower ALERT_TOP_END (toward / below 0)
   //
-  const ALERT_TOP_START = 190; // alert top this far down (px) → begin dissolve
+  const ALERT_TOP_START = 110; // alert top this far down (px) → begin dissolve
+                               // (lowered so the alert STICKS longer before Stats)
   const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
@@ -507,7 +508,7 @@ export default function Hero() {
         // sky fade-in → word-by-word drop → brief hold → dissolve into Stats — has
         // room to breathe. Hero visuals are driven by scrollYProgress FRACTIONS, so
         // the hero sequence is identical; it just spans a little more scroll travel.
-        minHeight: isMobile ? "350svh" : "calc(380vh - 300px)",
+        minHeight: isMobile ? "350svh" : "calc(480vh - 300px)",
         position: "relative",
       }}
     >
@@ -994,7 +995,10 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* SAVED sun-bloom halo — alert-phase cursor light (screen blend) */}
+            {/* Wispy cloud — alert-phase cursor effect (replaces the sun halo).
+                z-index 25 keeps it BELOW the words (z26), and it's soft + diffuse
+                so it never covers or washes out the copy. The SAVED sun halo lives
+                in design-refs/desktop-sky-halo-SAVED.md if we want it back. */}
             {heroMousePos && (
               <motion.div
                 aria-hidden="true"
@@ -1002,16 +1006,26 @@ export default function Hero() {
                   position:      "absolute",
                   left:          heroMousePos.x,
                   top:           heroMousePos.y,
-                  width:         "640px",
-                  height:        "640px",
+                  width:         "620px",
+                  height:        "360px",
                   transform:     "translate(-50%, -50%)",
                   zIndex:        25,
                   pointerEvents: "none",
                   opacity:       deskHaloOpacity,
                   mixBlendMode:  "screen",
-                  background:    "radial-gradient(circle, rgba(255,247,230,0.95) 0%, rgba(255,234,196,0.55) 18%, rgba(255,210,150,0.22) 38%, transparent 68%)",
                 }}
-              />
+              >
+                {/* Clumpy, heavily-blurred white puffs = a drifting wisp of cloud */}
+                <div
+                  className="cloud-wisp"
+                  style={{
+                    position:   "absolute",
+                    inset:      0,
+                    filter:     "blur(26px)",
+                    background: "radial-gradient(38% 52% at 30% 52%, rgba(255,255,255,0.5), transparent 72%), radial-gradient(46% 58% at 55% 42%, rgba(255,255,255,0.46), transparent 70%), radial-gradient(34% 46% at 73% 58%, rgba(255,255,255,0.42), transparent 72%), radial-gradient(28% 40% at 46% 66%, rgba(255,255,255,0.36), transparent 74%)",
+                  }}
+                />
+              </motion.div>
             )}
 
             {/* Alert line — drops in word-by-word over the sky */}
