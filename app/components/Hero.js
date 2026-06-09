@@ -1151,33 +1151,33 @@ export default function Hero() {
                   Two stacked copies loop with a crossfade into themselves at the
                   seam (driven by the effect above). */}
               <motion.div style={{ position: "absolute", inset: 0, scale: mobileAtticScale, willChange: "transform" }}>
-                <video
-                  ref={vidARef}
-                  src="/sun-sky.mp4"
-                  muted
-                  playsInline
-                  preload="auto"
-                  aria-hidden="true"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", opacity: 1, transition: "opacity 1s linear", pointerEvents: "none" }}
-                />
-                <video
-                  ref={vidBRef}
-                  src="/sun-sky.mp4"
-                  muted
-                  playsInline
-                  preload="auto"
-                  aria-hidden="true"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", opacity: 0, transition: "opacity 1s linear", pointerEvents: "none" }}
-                />
+                {/* Framing: the sun sits ~28% down in the source, but a landscape
+                    video in a portrait screen is height-fitted under cover, so
+                    object-position can't lift it. Zoom + shift down brings the sun
+                    to screen-centre (behind the alert copy). Tunables: SCALE / Y%. */}
+                <div style={{ position: "absolute", inset: 0, transform: "translateY(38%) scale(1.85)", transformOrigin: "center center", willChange: "transform" }}>
+                  <video
+                    ref={vidARef}
+                    src="/sun-sky.mp4"
+                    muted
+                    playsInline
+                    preload="auto"
+                    aria-hidden="true"
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", opacity: 1, transition: "opacity 1s linear", pointerEvents: "none" }}
+                  />
+                  <video
+                    ref={vidBRef}
+                    src="/sun-sky.mp4"
+                    muted
+                    playsInline
+                    preload="auto"
+                    aria-hidden="true"
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", opacity: 0, transition: "opacity 1s linear", pointerEvents: "none" }}
+                  />
+                </div>
               </motion.div>
-              {/* Dark scrim for copy contrast */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "radial-gradient(ellipse 92% 66% at 50% 50%, rgba(6,5,4,0.82) 0%, rgba(6,5,4,0.55) 52%, rgba(6,5,4,0.4) 100%)",
-                }}
-              />
+              {/* Scrim removed — the sky reads bright. The alert copy keeps its own
+                  dark halo (M_HALO) for legibility, so no full-frame darkening. */}
               {/* Grain — matches the rest of the surface */}
               <div
                 style={{
