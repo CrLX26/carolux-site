@@ -33,6 +33,13 @@ html.lenis body {
   opacity: 0;
   animation: thermal-crossfade 9s ease-in-out infinite;
   will-change: opacity;
+  /* Force a single cached GPU layer. The continuous opacity loop then composites
+     one flattened texture (thermal image + copy) instead of re-rasterizing the
+     full-bleed image + 8-layer text-shadows every frame — the dominant scroll
+     cost measured via scripts/perf.mjs. contain bounds the paint region. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout paint;
 }
 
 @keyframes thermal-crossfade {

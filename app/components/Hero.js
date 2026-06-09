@@ -455,6 +455,10 @@ export default function Hero() {
             backgroundSize:  "200px 200px",
             mixBlendMode:    "multiply",
             opacity:         0.55,
+            // Cache as its own layer so the blend composites against cached
+            // neighbours instead of re-rastering the full backdrop each frame.
+            transform:       "translateZ(0)",
+            willChange:      "transform",
           }}
         />
 
@@ -582,7 +586,13 @@ export default function Hero() {
                 paddingBottom:  isMobile ? "80px" : undefined,
                 y:         isMobile ? mobileContentY : heroContentY,
                 opacity:   isMobile ? mobileContentOpacity : undefined,
-                willChange: "transform",
+                // Promote to its own GPU layer so the heavy thermal text-shadows
+                // rasterize once and scroll = transform+opacity on the compositor
+                // (no per-frame re-raster). transform is owned by framer (y), so
+                // backfaceVisibility forces the layer without fighting it.
+                willChange: "transform, opacity",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
               }}
             >
               <div
@@ -915,7 +925,10 @@ export default function Hero() {
             marginBottom: isMobile ? "auto" : undefined,
             y:       isMobile ? mobileContentY : heroContentY,
             opacity: isMobile ? mobileContentOpacity : undefined,
-            willChange: "transform",
+            // Promote: headline + shadows rasterize once, scroll is composite-only.
+            willChange: "transform, opacity",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
           }}
         >
           {/* Eyebrow */}
