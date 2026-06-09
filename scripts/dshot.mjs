@@ -14,7 +14,7 @@ const spots = (args.length ? args : ["0.3,0.42", "0.55,0.5", "0.7,0.35"]).map((s
 
 mkdirSync(".shots", { recursive: true });
 const browser = await chromium.launch();
-const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, reducedMotion: "reduce" });
 const page = await ctx.newPage();
 await page.goto(url, { waitUntil: "domcontentloaded" });
 await page.waitForTimeout(2500);

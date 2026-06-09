@@ -77,6 +77,11 @@ export default function Hero() {
     arr.map(({ w, i }) => (
       <span key={i} ref={(el) => { mWordRefs.current[i] = el; }} style={{ ...mWordBase, ...style }}>{w}</span>
     ));
+  // Desktop alert words use separate DOM nodes/refs (revealed by scroll progress).
+  const renderDeskWords = (arr, style) =>
+    arr.map(({ w, i }) => (
+      <span key={i} ref={(el) => { deskWordRefs.current[i] = el; }} style={{ ...mWordBase, ...style }}>{w}</span>
+    ));
 
   // ── Scroll progress ───────────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
@@ -89,6 +94,20 @@ export default function Hero() {
   // -1100px clears the content block on all screen sizes.
   // Window [0.05, 0.60] keeps movement at ~1.7× scroll speed — natural, not frantic.
   const heroContentY      = useTransform(scrollYProgress, [0.05, 0.60],  [0, -1100]);
+
+  // ── Desktop alert phase (additive — does NOT change the locked values above) ──
+  // Once the hero text has cleared the top, a full-bleed sky video fades in over
+  // the house+thermal (covering them = "they fade to sky"), the loss-aversion
+  // line drops in word-by-word like mobile, and the existing panel→Stats dissolve
+  // carries the exit. The cursor spotlight flips for free: thermal shows while the
+  // sky is transparent (hero phase); the sky then covers it and the sun-bloom halo
+  // takes over (alert phase). Thresholds are desktop scrollYProgress (see scripts/
+  // dscroll.mjs: text clears ~0.30, old bridge ~0.40–0.58, dissolve ~0.60+).
+  // Driven by the desktop measure() loop off alarmCardRef's real on-screen
+  // position (reliable past the sticky pin, unlike scrollYProgress here).
+  const deskSkyOpacity  = useMotionValue(0);
+  const deskHaloOpacity = useMotionValue(0);
+  const deskWordRefs = useRef([]);
 
   // ── Hero → Stats cross-dissolve ───────────────────────────────────────────
   // Triggered by the ALERT text's real on-screen position (alarmCardRef), NOT a
@@ -186,6 +205,29 @@ export default function Hero() {
         (top - ALERT_TOP_END) / (ALERT_TOP_START - ALERT_TOP_END);
       const o = t * t * (3 - 2 * t); // smoothstep — gentle in/out, no hard edges
       heroPanelOpacity.set(o);
+
+      // ── Desktop alert phase, driven by the SAME reliable alarm-card position ──
+      // `top` is the alarm card's real distance from the viewport top (px); it
+      // descends as you scroll. Use it (in viewport fractions) to fade the sky in
+      // once the hero text has cleared, then drop the words — all before the
+      // panel→Stats dissolve above (which kicks in at top ≈ ALERT_TOP_START).
+      const vh = window.innerHeight || 1;
+      const f = top / vh; // ~0.9+ below view → ~0.02 when dissolving
+      const skyT = clamp01((0.72 - f) / (0.72 - 0.46)); // sky in: f 0.72 → 0.46
+      deskSkyOpacity.set(skyT);
+      deskHaloOpacity.set(skyT * 0.9);
+      // Word-by-word drop across f 0.48 → 0.30 (after the sky is mostly in).
+      const wStartF = 0.48, wEndF = 0.30, stepF = (wStartF - wEndF) / Math.max(1, mTotal);
+      deskWordRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const a = wStartF - i * stepF, b = a - stepF * 1.7; // descending f
+        let op, y;
+        if (f >= a) { op = 0; y = 18; }
+        else if (f <= b) { op = 1; y = 0; }
+        else { const tt = (a - f) / (a - b); op = tt; y = 18 * (1 - tt); }
+        el.style.opacity = String(op);
+        el.style.transform = `translateY(${y}px)`;
+      });
     };
     const onScroll = () => { if (raf === null) raf = requestAnimationFrame(measure); };
     measure();
@@ -391,12 +433,6 @@ export default function Hero() {
   // Cursor-centred mask for the thermal overlay
   const overlayMask = heroMousePos
     ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
-    : "none";
-
-  // Cursor-centred mask for the DESKTOP sky reveal — a wider, softer window than
-  // the thermal spotlight so the sky "opens up" around the pointer.
-  const skyMask = heroMousePos
-    ? `radial-gradient(circle ${Math.round(heroMousePos.radius * 1.7)}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 42%, transparent 100%)`
     : "none";
 
   // ── Thermal copy colours — split by surface ────────────────────────────────
@@ -841,7 +877,10 @@ export default function Hero() {
                 textAlign:     "center",
                 pointerEvents: "none",
                 y:             alarmY,
-                display:       isMobile ? "none" : undefined, // desktop scroll bridge only
+                // Replaced by the desktop sky + dropped words (the sky covers this
+                // region in the alert phase). Hidden so it can't double up with the
+                // new words during the cross-fade.
+                display:       "none",
               }}
             >
               <p
@@ -901,34 +940,32 @@ export default function Hero() {
         </motion.div>
         {/* ── End thermal overlay ──────────────────────────────────────────── */}
 
-        {/* ── DESKTOP sky reveal (mouse-driven) ────────────────────────────────
-            Desktop only. The cursor "opens" a soft window of bright sky over the
-            house (radial mask follows the pointer), a warm sun-bloom tracks the
-            pointer, and the sky parallaxes for depth. The video loops with a
-            crossfade-into-itself (desktop refs). Additive — sits above the thermal
-            overlay; does not touch any locked scroll value or any mobile code. */}
+        {/* ── DESKTOP alert phase: sky + dropped words + flipped spotlight ─────
+            Desktop only, additive. As the hero text clears the top, the full-bleed
+            sky fades in (deskSkyOpacity) OVER the house+thermal — so they "fade to
+            sky" without touching the locked image/thermal values. The loss-aversion
+            line drops in word-by-word (scroll-driven). The cursor spotlight flips:
+            thermal shows while the sky is transparent (hero phase), then the sky
+            covers it and the sun-bloom halo (SAVED effect) takes over. The existing
+            panel→Stats dissolve (heroPanelOpacity) carries the exit unchanged. */}
         {!isMobile && (
           <>
+            {/* Full-bleed sky — fades in over house + thermal */}
             <motion.div
               aria-hidden="true"
-              style={{
-                position:        "absolute",
-                inset:           0,
-                zIndex:          21,
-                pointerEvents:   "none",
-                opacity:         thermalOpacity,
-                transition:      "opacity 200ms ease-out",
-                WebkitMaskImage: skyMask,
-                maskImage:       skyMask,
-              }}
+              data-desk-sky="1"
+              style={{ position: "absolute", inset: 0, zIndex: 24, opacity: deskSkyOpacity, pointerEvents: "none", willChange: "opacity", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
             >
-              {/* Parallax wrapper — sky drifts opposite the cursor for depth */}
+              {/* Opaque sky backdrop so the video's crossfade-seam dip never reveals
+                  the house/thermal beneath (same fix as mobile). */}
+              <div style={{ position: "absolute", inset: 0, background: "#7d8ca0" }} />
+              {/* Gentle parallax for depth (sky drifts opposite the cursor) */}
               <div
                 style={{
                   position:   "absolute",
-                  inset:      "-4%",
-                  transform:  `translate(${parallax.x * -0.6}px, ${parallax.y * -0.6}px) scale(1.08)`,
-                  transition: "transform 0.18s ease-out",
+                  inset:      0,
+                  transform:  `translate(${parallax.x * -0.5}px, ${parallax.y * -0.5}px) scale(1.06)`,
+                  transition: "transform 0.2s ease-out",
                   willChange: "transform",
                 }}
               >
@@ -939,7 +976,7 @@ export default function Hero() {
                   playsInline
                   preload="auto"
                   aria-hidden="true"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 45%", opacity: 1, transition: "opacity 1s linear" }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 38%", opacity: 1, transition: "opacity 1s linear" }}
                 />
                 <video
                   ref={vidBDeskRef}
@@ -948,14 +985,14 @@ export default function Hero() {
                   playsInline
                   preload="auto"
                   aria-hidden="true"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "30% 45%", opacity: 0, transition: "opacity 1s linear" }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 38%", opacity: 0, transition: "opacity 1s linear" }}
                 />
               </div>
             </motion.div>
 
-            {/* Warm sun bloom — tracks the pointer, screen-blended light */}
+            {/* SAVED sun-bloom halo — alert-phase cursor light (screen blend) */}
             {heroMousePos && (
-              <div
+              <motion.div
                 aria-hidden="true"
                 style={{
                   position:      "absolute",
@@ -964,15 +1001,43 @@ export default function Hero() {
                   width:         "640px",
                   height:        "640px",
                   transform:     "translate(-50%, -50%)",
-                  zIndex:        22,
+                  zIndex:        25,
                   pointerEvents: "none",
-                  opacity:       thermalOpacity * 0.9,
-                  transition:    "opacity 200ms ease-out",
+                  opacity:       deskHaloOpacity,
                   mixBlendMode:  "screen",
                   background:    "radial-gradient(circle, rgba(255,247,230,0.95) 0%, rgba(255,234,196,0.55) 18%, rgba(255,210,150,0.22) 38%, transparent 68%)",
                 }}
               />
             )}
+
+            {/* Alert line — drops in word-by-word over the sky */}
+            <motion.div
+              style={{
+                position:       "absolute",
+                inset:          0,
+                zIndex:         26,
+                display:        "flex",
+                flexDirection:  "column",
+                alignItems:     "center",
+                justifyContent: "center",
+                textAlign:      "center",
+                padding:        "0 6vw",
+                pointerEvents:  "none",
+                opacity:        deskSkyOpacity,
+              }}
+            >
+              <div style={{ maxWidth: "24ch" }}>
+                <p style={{ margin: 0, fontFamily: "var(--font-label)", fontSize: "clamp(1rem, 1.8vw, 1.5rem)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#ffc98f", textShadow: M_HALO }}>
+                  {renderDeskWords(mPre)}
+                </p>
+                <p style={{ margin: "clamp(1rem, 2vh, 1.75rem) 0", fontFamily: "var(--font-cormorant)", fontWeight: 400, fontSize: "clamp(3rem, 6.5vw, 7rem)", lineHeight: 0.94, letterSpacing: "-0.02em", color: "#fdf4e9", textShadow: M_HALO }}>
+                  {renderDeskWords(mMain)}
+                </p>
+                <p style={{ margin: 0, fontFamily: "var(--font-label)", fontSize: "clamp(1rem, 1.8vw, 1.5rem)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#ffc98f", textShadow: M_HALO }}>
+                  {renderDeskWords(mPost)}
+                </p>
+              </div>
+            </motion.div>
           </>
         )}
 
@@ -991,6 +1056,9 @@ export default function Hero() {
             pointerEvents: "none",
             y:             alarmY,
             display:       isMobile ? "none" : undefined, // desktop scroll bridge only
+            // Kept mounted (drives the Hero→Stats dissolve via heroPanelOpacity) but
+            // invisible: the desktop sky + word-by-word drop now ARE the alert.
+            opacity:       isMobile ? undefined : 0,
           }}
         >
           <p
