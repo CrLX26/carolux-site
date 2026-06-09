@@ -31,7 +31,7 @@ scroll tunnel + mouse thermal reveal.
 
 **Sun-sky video (`public/sun-sky.mp4`, committed):**
 - It **loops on a timer** (NOT scroll-scrubbed). **Two stacked `<video>` copies** (`vidARef`/`vidBRef`) crossfade into each other at the seam (effect: "sun-sky video loop with a crossfade into itself") so the end→start wrap is a dissolve. Only one plays at a time except the ~1s crossfade.
-- ⚠️ **14MB / 2560×1440 — too heavy for production.** COMPRESS/downscale (720–1080p, lower bitrate) before going live. Offer to ffmpeg it.
+- ✅ **COMPRESSED 2026-06-09:** 13.7MB/2560×1440 → **2.18MB/1920×1080** (h264 `-crf 27 -preset slow`, lanczos, `+faststart`, no audio). Loop + crossfade verified intact via `vidcheck.mjs`/`mshot.mjs`. 1440p original preserved at `_masters/sun-sky-1440-master.mp4` (gitignored, NOT in `public/`/deploy).
 - The old attic placeholder `public/images/attic-20260516_132823.jpg` is committed but **now unused** (video replaced it). `attic-20260516_132829.jpg` is an unused spare.
 
 ### Tunable knobs (all in `Hero.js` `mMeasure`, mobile branch)
@@ -49,7 +49,7 @@ Use **Playwright iPhone emulation** instead (touch → `pointer:coarse` → Leni
 - Dev server: `npm run dev` (port 3000) — NEVER `vercel dev`. View mobile via DevTools device mode (set 412×820 for S25+) and **reload**.
 
 ### Pending / next steps
-- **Compress `sun-sky.mp4`** (biggest item) before production.
+- ~~Compress `sun-sky.mp4`~~ ✅ done 2026-06-09 (13.7MB→2.18MB, 1080p; loop verified).
 - Decide final alert background (sun-sky video vs attic) and clean up the unused attic images.
 - iPhone SE (568px, tiny) CTA sits ~14px under the bottom bar — minor; tighten mobile spacing if you care about it.
 - When approved on phone: **merge PR #4 → main** (production deploy).
