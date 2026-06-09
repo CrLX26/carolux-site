@@ -58,6 +58,7 @@ export default function Hero() {
   const mobileContentOpacity = useMotionValue(1); // hero text fades as it reaches the top
   const mobileAtticOpacity = useMotionValue(0); // attic cross-fades in over the house (step 5)
   const mobileAtticScale = useMotionValue(1.08); // attic push-in (scale 1.08 → 1.0)
+  const alertVideoRef = useRef(null);            // sun-sky video, scroll-scrubbed
   const mobileExitCream = useMotionValue(0);    // cools to cream into Stats (step 6 tail)
   const mWordRefs = useRef([]);                 // attic alert words (step 6)
 
@@ -114,6 +115,15 @@ export default function Hero() {
       // every frame — the main cause of mobile scroll jank). Re-cache on resize.
       let pinStart = 0;
       let vh = window.innerHeight || 1;
+      // Prime the sun-sky video for manual scrubbing (muted + inline so it can be
+      // controlled without a tap; load so frames are seekable).
+      const vid0 = alertVideoRef.current;
+      if (vid0) {
+        vid0.muted = true;
+        vid0.defaultMuted = true;
+        vid0.playsInline = true;
+        try { vid0.load(); vid0.pause(); } catch (e) { /* noop */ }
+      }
       const cache = () => {
         const el = heroRef.current;
         if (!el) return;
@@ -140,6 +150,15 @@ export default function Hero() {
         const atticP = clamp01((u - 0.66) / 0.28);
         mobileAtticOpacity.set(atticP);
         mobileAtticScale.set(1.08 - 0.08 * atticP);
+        // Scroll-scrub the sun-sky video across the alert's visible life (u 0.66 → 2.20).
+        const vid = alertVideoRef.current;
+        const dur = vid && vid.duration;
+        if (dur && !isNaN(dur)) {
+          const vp = clamp01((u - 0.66) / (2.20 - 0.66));
+          const t = vp * dur;
+          if (typeof vid.fastSeek === "function") vid.fastSeek(t);
+          else vid.currentTime = t;
+        }
         // Phase 6: alert line writes word-by-word over the attic. u 1.00 → 1.80.
         const wStart = 1.0, step = (1.8 - 1.0) / Math.max(1, mTotal);
         mWordRefs.current.forEach((el, i) => {
@@ -1077,17 +1096,17 @@ export default function Hero() {
               aria-hidden="true"
               style={{ position: "absolute", inset: 0, zIndex: 25, opacity: mobileAtticOpacity, pointerEvents: "none" }}
             >
-              {/* Push-in: image starts slightly scaled and settles as it fades in */}
+              {/* Push-in: video starts slightly scaled and settles as it fades in.
+                  Scroll-scrubbed (currentTime tied to scroll — see effect above). */}
               <motion.div style={{ position: "absolute", inset: 0, scale: mobileAtticScale, willChange: "transform" }}>
-                <Image
-                  src="/images/attic-20260516_132823.jpg"
-                  alt=""
-                  fill
-                  quality={65}
-                  sizes="100vw"
-                  loading="lazy"
-                  className="object-[50%_45%]"
-                  style={{ objectFit: "cover" }}
+                <video
+                  ref={alertVideoRef}
+                  src="/sun-sky.mp4"
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-hidden="true"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 50%", pointerEvents: "none" }}
                 />
               </motion.div>
               {/* Dark scrim for copy contrast */}
