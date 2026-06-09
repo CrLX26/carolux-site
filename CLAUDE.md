@@ -7,11 +7,13 @@
 ---
 
 ## 🔴 CURRENT HANDOFF — Mobile hero scroll sequence (branch `hero-polish`)
-*Updated 2026-06-08. Read this first. This block is the authoritative current state.*
+*Updated 2026-06-09. Read this first. This block is the authoritative current state.*
 
-**Worktree/lane:** design lane (`carolux-site`). **Branch:** `hero-polish`. **HEAD:** `b78c841`.
-**Git:** all work committed + pushed to `origin/hero-polish`. **PR #4** open (hero-polish → main),
-**preview only — NOT merged**. `main`/production untouched. Live Wix site untouched.
+**Worktree/lane:** design lane (`carolux-site`). **Branch:** `hero-polish` (kept active for ongoing work; synced to main).
+**Git:** ✅ **MERGED to `main` via PR #4 (2026-06-09)** — the whole mobile hero sequence is now on
+`main` and deploying to Vercel production. `hero-polish` was fast-forwarded to the merge commit and
+remains the active design-lane branch for continued work. Live Wix site still untouched (new site only
+goes live when the domain DNS is repointed to Vercel — merging to main just updates the Vercel deploy).
 **Preview URL (test on phone):** https://carolux-site-git-hero-polish-carolux.vercel.app
 
 ### What was built this session
@@ -33,7 +35,7 @@ scroll tunnel + mouse thermal reveal.
 - It **loops on a timer** (NOT scroll-scrubbed). **Two stacked `<video>` copies** (`vidARef`/`vidBRef`) crossfade into each other at the seam (effect: "sky video loop with a crossfade into itself") so the end→start wrap is a dissolve. Only one plays at a time except the ~1s crossfade. Clip is short (4.8s).
 - ✅ **CURRENT VIDEO (2026-06-09):** `alert-sky.mp4` — bright sky w/ clouds + sun. Source 24MB/3840×2160/25fps → **1.19MB/1920×1080** (h264 `-crf 27 -preset slow`, lanczos, `+faststart`, no audio). 4K original preserved at `_masters/12718744_3840_2160_25fps.mp4` (gitignored, NOT deployed).
 - **Framing** (sun above the copy, glow touching text top, clouds in frame): videos use `object-position: 30% 50%` (horiz-centre the sun) wrapped in a framing div `transform: translateY(-3%) scale(1.2)`. Tune those two for sun position/zoom.
-- `public/sun-sky.mp4` (2.18MB, the previous centered-sun clip) is now **unused** but kept in case we revert. `_masters/sun-sky-1440-master.mp4` is its source.
+- The previous `public/sun-sky.mp4` (centered-sun clip) was **removed** from the repo/deploy. Its source is still local-only at `_masters/sun-sky-1440-master.mp4` (gitignored) if we ever need it back.
 
 ### Tunable knobs (all in `Hero.js` `mMeasure`, mobile branch)
 The `u` thresholds above control timing (text fade window, cross-fade window, word pace, hold length, cool-to-cream). Tunnel height (`minHeight … svh`) must be ≥ the last threshold + buffer.
@@ -49,11 +51,17 @@ Use **Playwright iPhone emulation** instead (touch → `pointer:coarse` → Leni
 - Then `Read` the PNGs in `.shots/` to actually SEE the result. (`.shots/` is gitignored.)
 - Dev server: `npm run dev` (port 3000) — NEVER `vercel dev`. View mobile via DevTools device mode (set 412×820 for S25+) and **reload**.
 
+### Done this session (all on `main` now)
+- ✅ Compressed alert video, swapped to `alert-sky.mp4` (bright cloudy sky, sun centered above the copy).
+- ✅ Staged hero text fade + fixed the seam "catch" (attic layer pre-promotion).
+- ✅ GPU layer-promotion smoothness pass — locked 60fps (verify with `scripts/perf.mjs`).
+- ✅ Fixed house/thermal bleed-through at the video crossfade seam (opaque sky backdrop; verify with `scripts/bleedcheck.mjs`).
+- ✅ Removed the now-unused `public/sun-sky.mp4` from the repo/deploy.
+
 ### Pending / next steps
-- ~~Compress `sun-sky.mp4`~~ ✅ done 2026-06-09 (13.7MB→2.18MB, 1080p; loop verified).
-- Decide final alert background (sun-sky video vs attic) and clean up the unused attic images.
 - iPhone SE (568px, tiny) CTA sits ~14px under the bottom bar — minor; tighten mobile spacing if you care about it.
-- When approved on phone: **merge PR #4 → main** (production deploy).
+- Clean up the unused attic placeholder images in `public/images/` (no longer referenced).
+- Stray untracked `public/12398979_3840_2160_25fps.mp4` (4K leftover) — move out or use it.
 - Older backlog (other lanes / future): FAQ+schema (SEO lane), package pricing, real reviews (replace placeholders), estimator lead-capture backend.
 
 ### Don't break

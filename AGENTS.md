@@ -303,15 +303,17 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-08):**
-- 🔴 ACTIVE: branch `hero-polish` (design lane) — mobile hero scroll-sequence rebuild
-  (pinned tunnel: text rise/fade → house cross-fades into a looping sun-sky video →
-  word-by-word alert → cool to cream). **See CLAUDE.md "CURRENT HANDOFF" block — it is
-  authoritative.** Self-verify with the Playwright scripts in `scripts/`. PR #4 open,
-  preview-only, NOT merged. Production untouched.
+**Current state (2026-06-09):**
+- ✅ MERGED: the mobile hero scroll-sequence rebuild (pinned tunnel: text rise/fade →
+  house cross-fades into a looping bright sky video w/ centered sun → word-by-word
+  alert → cool to cream) is **merged to `main` via PR #4** and deploying to Vercel
+  production. **See CLAUDE.md "CURRENT HANDOFF" block — it is authoritative.**
+- 🔴 ACTIVE: branch `hero-polish` (design lane) — kept open for continued hero work,
+  fast-forwarded to the PR #4 merge so it's level with `main`. Self-verify with the
+  Playwright scripts in `scripts/` (`mshot`, `perf`, `vidcheck`, `bleedcheck`, …).
 - `main` — production, live. Contains all work to date: design polish, growth-levers
   batch (estimator, before/after, conversion copy, legal fixes), privacy-policy page,
-  Firefox scrub fallback, and the copy-polish hero changes.
+  Firefox scrub fallback, the copy-polish hero changes, and the mobile hero sequence.
 - THREE active worktrees: `carolux-site` (design), `carolux-seo`/`seo-foundation` (SEO),
   `carolux-copy`/`copy-polish` (wording). The design lane's active branch changes over
   time (currently `hero-polish`). See memory: worktree-split for the full lane rules.
