@@ -303,7 +303,12 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-07):**
+**Current state (2026-06-08):**
+- 🔴 ACTIVE: branch `hero-polish` (design lane) — mobile hero scroll-sequence rebuild
+  (pinned tunnel: text rise/fade → house cross-fades into a looping sun-sky video →
+  word-by-word alert → cool to cream). **See CLAUDE.md "CURRENT HANDOFF" block — it is
+  authoritative.** Self-verify with the Playwright scripts in `scripts/`. PR #4 open,
+  preview-only, NOT merged. Production untouched.
 - `main` — production, live. Contains all work to date: design polish, growth-levers
   batch (estimator, before/after, conversion copy, legal fixes), privacy-policy page,
   Firefox scrub fallback, and the copy-polish hero changes.

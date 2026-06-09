@@ -4,6 +4,63 @@
 
 # Carolux Pro Website — Session State
 
+---
+
+## 🔴 CURRENT HANDOFF — Mobile hero scroll sequence (branch `hero-polish`)
+*Updated 2026-06-08. Read this first. This block is the authoritative current state.*
+
+**Worktree/lane:** design lane (`carolux-site`). **Branch:** `hero-polish`. **HEAD:** `b78c841`.
+**Git:** all work committed + pushed to `origin/hero-polish`. **PR #4** open (hero-polish → main),
+**preview only — NOT merged**. `main`/production untouched. Live Wix site untouched.
+**Preview URL (test on phone):** https://carolux-site-git-hero-polish-carolux.vercel.app
+
+### What was built this session
+A complete **mobile-only** hero intro, sequenced as ONE pinned scroll tunnel inside `Hero.js`
+(the old separate `MobileAlert.js` was folded in and **deleted**). Desktop is 100% untouched —
+**every change is gated behind `isMobile` (max-width:767px)**; desktop still uses its original
+scroll tunnel + mouse thermal reveal.
+
+**The mobile sequence (all in `app/components/Hero.js`), driven by scroll units `u` (= scroll/viewport):**
+1. Hero loads normally (thermal house **time-loop** still runs — `.thermal-crossfade`).
+2. Hero **text rises** as you scroll (`mobileContentY`, ~1.0× scroll) and **fades** (`mobileContentOpacity`, u 0.42→0.66). House stays **pinned** (no parallax — user-locked).
+3. The **house cross-fades into a full-bleed sun-sky VIDEO** (`mobileAtticOpacity` u 0.66→0.94) with a push-in (`mobileAtticScale` 1.08→1.0).
+4. The loss-aversion line **writes word-by-word** over the video (`mWordRefs`, u 1.00→1.80) — `HERO.secondaryPre/Main/Post`, warm cream/amber.
+5. The finished alert **holds** (u 1.80→2.20), then **cools to cream** (`mobileExitCream` u 2.20→2.40) and dissolves into Stats.
+- Tunnel: outer `minHeight: 290→...→350svh` (mobile), sticky panel `calc(100svh - navHeight)` + `paddingBottom:80` so content is **top-safe** (auto/marginTop layout: text never clips under the nav, CTA clears the bottom bar). Scroll origin uses a cached **`pinStart`** so `s` starts at 0 at the top (do NOT reintroduce `scrollY - heroTop`, that pushed content down).
+- **Both** the base text and the **thermal replica text** use the SAME layout/`mobileContentY`/`mobileContentOpacity` so they overlay exactly (don't let them drift apart).
+
+**Sun-sky video (`public/sun-sky.mp4`, committed):**
+- It **loops on a timer** (NOT scroll-scrubbed). **Two stacked `<video>` copies** (`vidARef`/`vidBRef`) crossfade into each other at the seam (effect: "sun-sky video loop with a crossfade into itself") so the end→start wrap is a dissolve. Only one plays at a time except the ~1s crossfade.
+- ⚠️ **14MB / 2560×1440 — too heavy for production.** COMPRESS/downscale (720–1080p, lower bitrate) before going live. Offer to ffmpeg it.
+- The old attic placeholder `public/images/attic-20260516_132823.jpg` is committed but **now unused** (video replaced it). `attic-20260516_132829.jpg` is an unused spare.
+
+### Tunable knobs (all in `Hero.js` `mMeasure`, mobile branch)
+The `u` thresholds above control timing (text fade window, cross-fade window, word pace, hold length, cool-to-cream). Tunnel height (`minHeight … svh`) must be ≥ the last threshold + buffer.
+
+### Self-verification tooling (committed under `scripts/`, uses Playwright)
+The Claude_Preview MCP **throttles rAF and runs Lenis**, so scroll animations DON'T play there.
+Use **Playwright iPhone emulation** instead (touch → `pointer:coarse` → Lenis off, rAF runs like a real phone). Browsers are cached on this machine; `npm i -D playwright` if needed.
+- `node scripts/mshot.mjs 0 0.5 1 1.5 …` → screenshots at scroll positions (vh multiples) → `.shots/`
+- `node scripts/measure.mjs` → hero top-clearance vs nav across devices
+- `node scripts/s25.mjs` → Galaxy S25+ first-load fit (eyebrow→CTA) check
+- `node scripts/align.mjs` → confirms base vs thermal text overlay
+- `node scripts/vidcheck.mjs` → confirms the video loop/crossfade (currentTime advances on a timer)
+- Then `Read` the PNGs in `.shots/` to actually SEE the result. (`.shots/` is gitignored.)
+- Dev server: `npm run dev` (port 3000) — NEVER `vercel dev`. View mobile via DevTools device mode (set 412×820 for S25+) and **reload**.
+
+### Pending / next steps
+- **Compress `sun-sky.mp4`** (biggest item) before production.
+- Decide final alert background (sun-sky video vs attic) and clean up the unused attic images.
+- iPhone SE (568px, tiny) CTA sits ~14px under the bottom bar — minor; tighten mobile spacing if you care about it.
+- When approved on phone: **merge PR #4 → main** (production deploy).
+- Older backlog (other lanes / future): FAQ+schema (SEO lane), package pricing, real reviews (replace placeholders), estimator lead-capture backend.
+
+### Don't break
+- `Nav.js` locked. Desktop hero scroll values locked. All mobile work is `isMobile`-gated — keep it that way.
+- Legal: Tony = FORMER inspector (never "licensed"); company **insured, not licensed**; no "mold"; no specific $ savings; 2-yr guarantee.
+
+---
+
 **Project:** Carolux Insulation LLC marketing website
 **Framework:** Next.js 16.2.6 (App Router, Turbopack)
 **Repo:** https://github.com/CrLX26/carolux-site.git
