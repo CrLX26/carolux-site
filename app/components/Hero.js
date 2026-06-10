@@ -458,13 +458,15 @@ export default function Hero() {
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const EMPTY = "linear-gradient(#0000,#0000)";
+    const SOLID = "linear-gradient(#000,#000)";
+    el.style.opacity = "1";
     el.style.webkitMaskImage = EMPTY; // no thermal flash before the first frame
     el.style.maskImage = EMPTY;
     let W = window.innerWidth, H = window.innerHeight;
     const onResize = () => { W = window.innerWidth; H = window.innerHeight; };
     window.addEventListener("resize", onResize, { passive: true });
 
-    const T_NORMAL = 1700, T_IN = 2600, T_HOLD = 1500, T_OUT = 2000;
+    const T_NORMAL = 1700, T_IN = 2600, T_HOLD = 1700, T_OUT = 1900;
     const CYCLE = T_NORMAL + T_IN + T_HOLD + T_OUT;
     const rnd = (a, b) => a + Math.random() * (b - a);
     const easeIn = (p) => p * p;
@@ -473,11 +475,12 @@ export default function Hero() {
       holes = Array.from({ length: 3 }, () => ({ x: rnd(0.55, 0.86) * W, y: rnd(0.30, 0.72) * H, d: rnd(0, 0.16) }));
     };
     seed();
-    const cursor = () => {
-      const m = heroMousePosRef.current;
-      if (!m || m.radius <= 0.5) return null;
-      return `radial-gradient(circle ${m.radius.toFixed(0)}px at ${m.x.toFixed(0)}px ${m.y.toFixed(0)}px, #000 0%, #000 60%, transparent 100%)`;
-    };
+    // Cursor as a HOT window (reveals thermal): a black hole the mask lets through.
+    const hotHole = (m) => `radial-gradient(circle ${m.radius.toFixed(0)}px at ${m.x.toFixed(0)}px ${m.y.toFixed(0)}px, #000 0%, #000 60%, transparent 100%)`;
+    // Cursor as a COOL window (reveals normal): a TRANSPARENT hole punched into a
+    // solid mask — so the thermal is hidden under the pointer and the normal house
+    // + navy copy beneath show through. No mask-compositing needed.
+    const coolHole = (m) => `radial-gradient(circle ${(m.radius * 1.1).toFixed(0)}px at ${m.x.toFixed(0)}px ${m.y.toFixed(0)}px, transparent 0%, transparent 54%, #000 82%)`;
 
     let raf = null;
     const start = performance.now();
@@ -487,29 +490,37 @@ export default function Hero() {
       const idx = Math.floor(elapsed / CYCLE);
       if (idx !== lastCycle) { lastCycle = idx; seed(); }
       const c = elapsed % CYCLE;
-      const layers = [];
-      if (!reduce) {
-        if (c < T_NORMAL) {
-          // normal house
-        } else if (c < T_NORMAL + T_IN) {
-          const p = easeIn((c - T_NORMAL) / T_IN);
-          const Rmax = 2.0 * Math.hypot(W, H);
-          for (const h of holes) {
-            const pp = Math.max(0, (p - h.d) / (1 - h.d));
-            const r = pp * Rmax;
-            if (r > 0.5) layers.push(`radial-gradient(circle ${r.toFixed(0)}px at ${h.x.toFixed(0)}px ${h.y.toFixed(0)}px, #000 0%, #000 52%, transparent 100%)`);
-          }
-        } else if (c < T_NORMAL + T_IN + T_HOLD) {
-          layers.push("linear-gradient(#000,#000)"); // full thermal
-        } else {
-          const p = (c - T_NORMAL - T_IN - T_HOLD) / T_OUT; // wipe down → normal
-          const y = p * (H + 140);
-          layers.push(`linear-gradient(to bottom, #0000 ${(y - 140).toFixed(0)}px, #000 ${y.toFixed(0)}px)`);
+      const m = heroMousePosRef.current;
+      const hasCur = m && m.radius > 0.5;
+      let mask = EMPTY, opacity = 1;
+
+      if (reduce || c < T_NORMAL) {
+        // NORMAL: rest on the house; cursor opens a HOT window to thermal.
+        mask = hasCur ? hotHole(m) : EMPTY;
+      } else if (c < T_NORMAL + T_IN) {
+        // IN: house-biased holes grow to full thermal; cursor still adds heat.
+        const p = easeIn((c - T_NORMAL) / T_IN);
+        const Rmax = 2.0 * Math.hypot(W, H);
+        const ls = [];
+        for (const h of holes) {
+          const pp = Math.max(0, (p - h.d) / (1 - h.d));
+          const r = pp * Rmax;
+          if (r > 0.5) ls.push(`radial-gradient(circle ${r.toFixed(0)}px at ${h.x.toFixed(0)}px ${h.y.toFixed(0)}px, #000 0%, #000 52%, transparent 100%)`);
         }
+        if (hasCur) ls.push(hotHole(m));
+        mask = ls.length ? ls.join(",") : EMPTY;
+      } else if (c < T_NORMAL + T_IN + T_HOLD) {
+        // HOLD: full thermal; cursor opens a COOL window back to the normal house.
+        mask = hasCur ? coolHole(m) : SOLID;
+      } else {
+        // OUT: cool-fade dissolve — solid thermal fades uniformly back to normal
+        // (no wipe line). Cursor still opens a cool window during the fade.
+        const p = (c - T_NORMAL - T_IN - T_HOLD) / T_OUT;
+        const k = 1 - p;
+        opacity = k * k * (3 - 2 * k); // smooth ease toward 0
+        mask = hasCur ? coolHole(m) : SOLID;
       }
-      const cur = cursor();
-      if (cur) layers.push(cur);
-      const mask = layers.length ? layers.join(",") : EMPTY;
+      el.style.opacity = String(opacity);
       el.style.webkitMaskImage = mask;
       el.style.maskImage = mask;
       raf = requestAnimationFrame(tick);
@@ -728,9 +739,10 @@ export default function Hero() {
             style={{
               position:         "absolute",
               inset:            0,
-              // Desktop: opacity is full; the ambient-cycle rAF owns the maskImage
-              // (don't bind it here or React's frequent re-renders would clobber it).
-              opacity:          isMobile ? undefined : 1,
+              // Desktop: the ambient-cycle rAF owns BOTH maskImage and opacity (the
+              // cool-fade dissolve fades opacity) — don't bind them here or React's
+              // frequent re-renders (mouse parallax) would clobber the animation.
+              opacity:          isMobile ? undefined : undefined,
               maskRepeat:       isMobile ? undefined : "no-repeat",
               WebkitMaskRepeat: isMobile ? undefined : "no-repeat",
               transition:       "opacity 150ms ease-out",
@@ -1058,6 +1070,28 @@ export default function Hero() {
           </div>
         </motion.div>
         {/* ── End thermal overlay ──────────────────────────────────────────── */}
+
+        {/* Soft cursor glow — a gentle highlight that follows the pointer in BOTH
+            normal and thermal modes (the "+ glow always" part). Screen-blended,
+            low opacity, above the thermal overlay. Desktop only. */}
+        {!isMobile && heroMousePos && (
+          <div
+            aria-hidden="true"
+            style={{
+              position:      "absolute",
+              left:          heroMousePos.x,
+              top:           heroMousePos.y,
+              width:         "340px",
+              height:        "340px",
+              transform:     "translate(-50%, -50%)",
+              zIndex:        21,
+              pointerEvents: "none",
+              mixBlendMode:  "screen",
+              opacity:       0.45,
+              background:    "radial-gradient(circle, rgba(255,224,180,0.6) 0%, rgba(255,180,110,0.22) 32%, transparent 68%)",
+            }}
+          />
+        )}
 
         {/* ── DESKTOP alert phase: sky + dropped words + flipped spotlight ─────
             Desktop only, additive. As the hero text clears the top, the full-bleed
