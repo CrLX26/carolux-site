@@ -53,11 +53,14 @@ for (let i = 0; i < mults.length; i++) {
     const prog = Math.max(0, Math.min(1, (window.scrollY - top) / (h - window.innerHeight)));
     const sky = document.querySelector('[data-desk-sky]');
     const skyOp = sky ? getComputedStyle(sky).opacity : "n/a";
-    return { prog, skyOp, scrollY: window.scrollY, fprog: window.__heroProg };
+    const al = document.querySelector('[data-alarm]');
+    const alarmTop = al ? Math.round(al.getBoundingClientRect().top) : null;
+    const alarmF = al ? (al.getBoundingClientRect().top / window.innerHeight).toFixed(3) : "?";
+    return { prog, skyOp, scrollY: window.scrollY, alarmTop, alarmF };
   });
   const path = `.shots/ds_${String(i).padStart(2, "0")}_vh${mults[i]}.png`;
   await page.screenshot({ path });
-  console.log(`  vh*${mults[i]}  scrollY=${data.scrollY}  winProg=${data.prog.toFixed(3)}  framerProg=${(data.fprog ?? 0).toFixed(3)}  skyOp=${data.skyOp}`);
+  console.log(`  vh*${mults[i]}  scrollY=${data.scrollY}  winProg=${data.prog.toFixed(3)}  skyOp=${data.skyOp}  alarmTop=${data.alarmTop}px  alarmF=${data.alarmF}`);
 }
 await browser.close();
 console.log("done");

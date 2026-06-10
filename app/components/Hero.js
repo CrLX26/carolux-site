@@ -107,6 +107,8 @@ export default function Hero() {
   // position (reliable past the sticky pin, unlike scrollYProgress here).
   const deskSkyOpacity  = useMotionValue(0);
   const deskHaloOpacity = useMotionValue(0);
+  const deskWordsOpacity = useMotionValue(0); // alert words: fade in, fade out on exit
+  const deskWordsScale   = useMotionValue(1); // alert words: scale-down + fade exit
   const deskWordRefs = useRef([]);
 
   // ── Hero → Stats cross-dissolve ───────────────────────────────────────────
@@ -121,8 +123,8 @@ export default function Hero() {
   //   "start sooner / more gradual" → raise ALERT_TOP_START (begins higher up)
   //   "finish later"                → lower ALERT_TOP_END (toward / below 0)
   //
-  const ALERT_TOP_START = 110; // alert top this far down (px) → begin dissolve
-                               // (lowered so the alert STICKS longer before Stats)
+  const ALERT_TOP_START = 100; // alert top this far down (px) → begin dissolve
+                               // (after the word scale-down exit, which ends ~110px)
   const ALERT_TOP_END   = 20;  // alert reaches the top → fully dissolved (≈ unpin)
   const heroPanelOpacity = useMotionValue(1);
   useEffect(() => {
@@ -217,6 +219,12 @@ export default function Hero() {
       const skyT = clamp01((0.82 - f) / (0.82 - 0.54)); // sky in: f 0.82 → 0.54 (as text clears)
       deskSkyOpacity.set(skyT);
       deskHaloOpacity.set(skyT * 0.9);
+      // Exit: the words scale down and fade — "recede into the sky" — over a wide
+      // band (top 215→110px) that finishes BEFORE the panel→Stats dissolve begins
+      // (ALERT_TOP_START), so the scale-down reads distinctly, then Stats cools in.
+      const exitT = clamp01((215 - top) / (215 - 110));
+      deskWordsOpacity.set(skyT * (1 - exitT));
+      deskWordsScale.set(1 - 0.10 * exitT);
       // Word-by-word drop across f 0.56 → 0.34 (just after the sky is mostly in).
       const wStartF = 0.56, wEndF = 0.34, stepF = (wStartF - wEndF) / Math.max(1, mTotal);
       deskWordRefs.current.forEach((el, i) => {
@@ -493,6 +501,29 @@ export default function Hero() {
         alarmStroke:      undefined,
       };
 
+  // ── Fluid hero type + vertical rhythm ──────────────────────────────────────
+  // Desktop: bound font sizes by BOTH width and height — min(Xvw, Yvh) — so the
+  // text scales UP on large/high-res monitors (raised ceilings) yet SHRINKS to
+  // fit on short ones, and make the vertical margins height-relative so the whole
+  // block (eyebrow→headline→subhead→CTAs→badges) always fits in the panel
+  // (100svh − nav) without clipping or hiding under the header. Mobile keeps its
+  // existing, already-tuned values. Used by BOTH the base copy and the thermal
+  // replica so they stay perfectly overlaid.
+  const FS = isMobile
+    ? { eyebrow: "12px", head: "clamp(3rem, 7vw, 7.5rem)", sub: "clamp(1rem, 1.3vw, 1.125rem)", cta: "13px", ctaAlt: "14px", badgeNum: "14px", badge: "13px" }
+    : {
+        eyebrow: "clamp(11px, min(0.95vw, 1.5vh), 15px)",
+        head:    "clamp(2.5rem, min(6.4vw, 9.2vh), 10rem)",
+        sub:     "clamp(0.95rem, min(1.3vw, 2.1vh), 1.6rem)",
+        cta:     "clamp(12px, min(0.95vw, 1.6vh), 16px)",
+        ctaAlt:  "clamp(12px, min(1vw, 1.7vh), 16px)",
+        badgeNum:"clamp(12px, min(1vw, 1.7vh), 16px)",
+        badge:   "clamp(12px, min(0.95vw, 1.6vh), 15px)",
+      };
+  const MB = isMobile
+    ? { eyebrow: "2.5rem", head: "2.25rem", sub: "2.75rem", cta: "3rem" }
+    : { eyebrow: "clamp(0.9rem, 2.6vh, 2.5rem)", head: "clamp(0.9rem, 2.4vh, 2.25rem)", sub: "clamp(1rem, 2.8vh, 2.75rem)", cta: "clamp(1rem, 3vh, 3rem)" };
+
   return (
     // Outer scroll tunnel — 167vh gives 67vh of actual scroll travel
     <div
@@ -525,8 +556,12 @@ export default function Hero() {
           // Mobile: fit exactly the visible area below the nav, and lay the text
           // out top-safe (auto margins center it when there's room but never push
           // it under the nav). paddingBottom reserves the sticky bottom-bar space.
-          height:         isMobile ? `calc(100svh - ${navHeight}px)` : "100svh",
-          minHeight:      isMobile ? undefined : "720px",
+          // Desktop now also fits exactly below the nav (was 100svh + 720px min,
+          // which centred a fixed-size block that overflowed/clipped on short
+          // monitors and hid under the header). Fluid type (FS/MB tokens) keeps
+          // the whole block inside this height on every screen.
+          height:         `calc(100svh - ${navHeight}px)`,
+          minHeight:      undefined,
           overflow:       "clip",
           display:        "flex",
           flexDirection:  isMobile ? "column" : "row",
@@ -706,14 +741,14 @@ export default function Hero() {
                     display:      "flex",
                     alignItems:   "center",
                     gap:          "16px",
-                    marginBottom: "2.5rem",
+                    marginBottom: MB.eyebrow,
                   }}
                 >
                   <div style={{ width: "32px", height: "1px", background: T.line, flexShrink: 0 }} />
                   <p
                     style={{
                       fontFamily:    "var(--font-dm-sans)",
-                      fontSize:      "12px",
+                      fontSize:      FS.eyebrow,
                       fontWeight:    500,
                       letterSpacing: "0.26em",
                       textTransform: "uppercase",
@@ -729,14 +764,14 @@ export default function Hero() {
                 </div>
 
                 {/* Headline — thermal gradient fill */}
-                <div style={{ margin: "0 0 2.25rem", padding: 0 }}>
+                <div style={{ margin: `0 0 ${MB.head}`, padding: 0 }}>
                   {HERO.headline.map((line, i) => (
                     <div key={line} style={{ lineHeight: 0.86 }}>
                       <span
                         style={{
                           display:       "block",
                           fontFamily:    "var(--font-cormorant)",
-                          fontSize:      "clamp(3rem, 7vw, 7.5rem)",
+                          fontSize:      FS.head,
                           fontWeight:    400,
                           fontStyle:     "normal",
                           lineHeight:    0.86,
@@ -757,14 +792,14 @@ export default function Hero() {
                 <p
                   style={{
                     fontFamily:   "var(--font-dm-sans)",
-                    fontSize:     "clamp(1rem, 1.3vw, 1.125rem)",
+                    fontSize:     FS.sub,
                     lineHeight:   1.72,
                     color:        T.subtext,
                     textShadow:   T.subShadow,
                     WebkitTextStroke: T.subStroke,
                     paintOrder:   T.subStroke ? "stroke fill" : undefined,
                     maxWidth:     "400px",
-                    marginBottom: "2.75rem",
+                    marginBottom: MB.sub,
                   }}
                 >
                   {HERO.subheading}
@@ -777,7 +812,7 @@ export default function Hero() {
                     flexWrap:     "wrap",
                     alignItems:   "center",
                     gap:          "0.75rem",
-                    marginBottom: "3rem",
+                    marginBottom: MB.cta,
                   }}
                 >
                   <span
@@ -788,7 +823,7 @@ export default function Hero() {
                       color:         "#ffffff",
                       fontFamily:    "var(--font-dm-sans)",
                       fontWeight:    500,
-                      fontSize:      "13px",
+                      fontSize:      FS.cta,
                       letterSpacing: "0.06em",
                       textTransform: "uppercase",
                       padding:       "15px 36px",
@@ -806,7 +841,7 @@ export default function Hero() {
                       color:         T.secondary,
                       fontFamily:    "var(--font-dm-sans)",
                       fontWeight:    400,
-                      fontSize:      "14px",
+                      fontSize:      FS.ctaAlt,
                       letterSpacing: "0.02em",
                       padding:       "15px 20px",
                       whiteSpace:    "nowrap",
@@ -835,7 +870,7 @@ export default function Hero() {
                       <span
                         style={{
                           fontFamily: "var(--font-cormorant)",
-                          fontSize:   "14px",
+                          fontSize:   FS.badgeNum,
                           fontStyle:  "normal",
                           color:      T.badge,
                           textShadow: T.copyShadow,
@@ -851,7 +886,7 @@ export default function Hero() {
                       <span
                         style={{
                           fontFamily:    "var(--font-dm-sans)",
-                          fontSize:      "13px",
+                          fontSize:      FS.badge,
                           fontWeight:    500,
                           color:         T.badge,
                           textShadow:    T.copyShadow,
@@ -995,10 +1030,7 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Wispy cloud — alert-phase cursor effect (replaces the sun halo).
-                z-index 25 keeps it BELOW the words (z26), and it's soft + diffuse
-                so it never covers or washes out the copy. The SAVED sun halo lives
-                in design-refs/desktop-sky-halo-SAVED.md if we want it back. */}
+            {/* SAVED sun-bloom halo — alert-phase cursor light (screen blend) */}
             {heroMousePos && (
               <motion.div
                 aria-hidden="true"
@@ -1006,29 +1038,20 @@ export default function Hero() {
                   position:      "absolute",
                   left:          heroMousePos.x,
                   top:           heroMousePos.y,
-                  width:         "620px",
-                  height:        "360px",
+                  width:         "640px",
+                  height:        "640px",
                   transform:     "translate(-50%, -50%)",
                   zIndex:        25,
                   pointerEvents: "none",
                   opacity:       deskHaloOpacity,
                   mixBlendMode:  "screen",
+                  background:    "radial-gradient(circle, rgba(255,247,230,0.95) 0%, rgba(255,234,196,0.55) 18%, rgba(255,210,150,0.22) 38%, transparent 68%)",
                 }}
-              >
-                {/* Clumpy, heavily-blurred white puffs = a drifting wisp of cloud */}
-                <div
-                  className="cloud-wisp"
-                  style={{
-                    position:   "absolute",
-                    inset:      0,
-                    filter:     "blur(26px)",
-                    background: "radial-gradient(38% 52% at 30% 52%, rgba(255,255,255,0.5), transparent 72%), radial-gradient(46% 58% at 55% 42%, rgba(255,255,255,0.46), transparent 70%), radial-gradient(34% 46% at 73% 58%, rgba(255,255,255,0.42), transparent 72%), radial-gradient(28% 40% at 46% 66%, rgba(255,255,255,0.36), transparent 74%)",
-                  }}
-                />
-              </motion.div>
+              />
             )}
 
-            {/* Alert line — drops in word-by-word over the sky */}
+            {/* Alert line — drops in word-by-word over the sky, then scales down +
+                fades on exit (deskWordsScale / deskWordsOpacity, set in measure()). */}
             <motion.div
               style={{
                 position:       "absolute",
@@ -1041,7 +1064,8 @@ export default function Hero() {
                 textAlign:      "center",
                 padding:        "0 6vw",
                 pointerEvents:  "none",
-                opacity:        deskSkyOpacity,
+                opacity:        deskWordsOpacity,
+                scale:          deskWordsScale,
               }}
             >
               <div style={{ maxWidth: "24ch" }}>
@@ -1064,6 +1088,7 @@ export default function Hero() {
             the panel bottom exactly as the hero content exits the panel top.  */}
         <motion.div
           ref={alarmCardRef}
+          data-alarm="1"
           style={{
             position:      "absolute",
             top:           "38%",
@@ -1149,13 +1174,13 @@ export default function Hero() {
           {/* Eyebrow */}
           <div
             className="hero-rise"
-            style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "2.5rem", animationDelay: "0.05s" }}
+            style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: MB.eyebrow, animationDelay: "0.05s" }}
           >
             <div style={{ width: "32px", height: "1px", background: "#4a90a4", flexShrink: 0 }} />
             <p
               style={{
                 fontFamily:    "var(--font-dm-sans)",
-                fontSize:      "12px",
+                fontSize:      FS.eyebrow,
                 fontWeight:    500,
                 letterSpacing: "0.26em",
                 textTransform: "uppercase",
@@ -1168,7 +1193,7 @@ export default function Hero() {
           </div>
 
           {/* Headline — clip-path line reveal on page load (CSS, no JS gate) */}
-          <h1 style={{ margin: "0 0 2.25rem", padding: 0 }}>
+          <h1 style={{ margin: `0 0 ${MB.head}`, padding: 0 }}>
             {HERO.headline.map((line, i) => (
               <div key={line} style={{ clipPath: "inset(0 -9999px)", lineHeight: 0.86 }}>
                 <span
@@ -1176,7 +1201,7 @@ export default function Hero() {
                   style={{
                     display:       "block",
                     fontFamily:    "var(--font-cormorant)",
-                    fontSize:      "clamp(3rem, 7vw, 7.5rem)",
+                    fontSize:      FS.head,
                     fontWeight:    400,
                     fontStyle:     "normal",
                     lineHeight:    0.86,
@@ -1196,11 +1221,11 @@ export default function Hero() {
             className="hero-rise"
             style={{
               fontFamily:   "var(--font-dm-sans)",
-              fontSize:     "clamp(1rem, 1.3vw, 1.125rem)",
+              fontSize:     FS.sub,
               lineHeight:   1.72,
               color:        "#3d5060",
               maxWidth:     "400px",
-              marginBottom: "2.75rem",
+              marginBottom: MB.sub,
               animationDelay: "0.52s",
             }}
           >
@@ -1215,7 +1240,7 @@ export default function Hero() {
               flexWrap:     "wrap",
               alignItems:   "center",
               gap:          "0.75rem",
-              marginBottom: "3rem",
+              marginBottom: MB.cta,
               animationDelay: "0.62s",
             }}
           >
@@ -1229,7 +1254,7 @@ export default function Hero() {
                 color:          "#ffffff",
                 fontFamily:     "var(--font-dm-sans)",
                 fontWeight:     500,
-                fontSize:       "13px",
+                fontSize:       FS.cta,
                 letterSpacing:  "0.06em",
                 textTransform:  "uppercase",
                 padding:        "15px 36px",
@@ -1251,7 +1276,7 @@ export default function Hero() {
                 color:          "#5a7280",
                 fontFamily:     "var(--font-dm-sans)",
                 fontWeight:     400,
-                fontSize:       "14px",
+                fontSize:       FS.ctaAlt,
                 letterSpacing:  "0.02em",
                 padding:        "15px 20px",
                 textDecoration: "none",
@@ -1280,7 +1305,7 @@ export default function Hero() {
                 <span
                   style={{
                     fontFamily: "var(--font-cormorant)",
-                    fontSize:   "14px",
+                    fontSize:   FS.badgeNum,
                     fontStyle:  "normal",
                     color:      "#4a90a4",
                     flexShrink: 0,
@@ -1293,7 +1318,7 @@ export default function Hero() {
                 <span
                   style={{
                     fontFamily:    "var(--font-dm-sans)",
-                    fontSize:      "13px",
+                    fontSize:      FS.badge,
                     fontWeight:    500,
                     color:         "#3d5060",
                     letterSpacing: "0.07em",
