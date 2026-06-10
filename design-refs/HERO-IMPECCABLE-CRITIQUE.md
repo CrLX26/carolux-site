@@ -78,12 +78,19 @@ visible, true pink, and the burst must sit BEHIND the stats.*
   desktop vs mobile). The desktop *looked* washed because of a heavy full-bleed cream scrim — that
   was reduced to a light wash under the lockup column only, so the pink reads true and the navy
   15% stays legible.
-- **Mobile — cross-fade + burst behind the stats.** The section cross-fades in via the wrapper
-  opacity (CSS-transitioned, fired by the IntersectionObserver — the 100svh container has no usable
-  scroll progress). The burst is zoomed (`scale(2.0)`, origin `50% 78%`) so the pink sits BEHIND
-  the numbers instead of as a band below them. NOTE: the clip's wide dense petals only exist in its
-  lower half (the column is narrow up top), so the hero 15% sits over the lighter top of the burst
-  by nature of the material — pushing the zoom further just blurs it. Verified `scripts/mnat.mjs`.
+- **Mobile — now unified with desktop.** Mobile was rebuilt to use the SAME mechanism as desktop:
+  a sticky tunnel (`200svh`) pulled up `~-170svh` so it pins over the alert's hold, a scroll-linked
+  `entranceOpacity` cross-fade (wider window on mobile since its tunnel is shorter), and the looping
+  burst gated on scroll progress (`VID_START 0.42`, after the fade). The old relative-section +
+  IntersectionObserver path was deleted. This fixed BOTH the "whole screen of white before it" gap
+  (the section now pins on the alert, no dead scroll) and the missing cross-fade.
+  - **Critical gotcha (z-index leak):** the mobile hero's inner layers carry z-indices up to 35 and
+    the hero outer creates NO stacking context, so they leak into the root and painted OVER the
+    stats during the overlap (stats was `z:auto`). Fixed with `zIndex: 50` on the Stats container
+    (mobile only; above hero's 35, below nav's 100). Without this the whole section is invisible
+    behind the hero. Verified the stats paints on top via `elementFromPoint` (`scripts/mdbg2.mjs`).
+  - Burst is zoomed (`scale(2.0)`, origin `50% 78%`) so the pink fills BEHIND all the stats incl.
+    the 15%. Verified `scripts/mnat.mjs` (real wheel scroll: alert → pink-backed stats, no white).
 
 ### [P2] Two "primary" CTAs + near-invisible phone link
 - **What:** Primary button teal in base copy, orange `#ff5500` in the thermal replica; phone

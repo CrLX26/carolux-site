@@ -93,9 +93,14 @@ export default function Stats() {
   // in over the alert while pinned — no scale punch, no rise. Fully opaque (and
   // the burst starts) by VID_START. The hero alert behind it stays put; the
   // fade-in over it IS the cross-dissolve.
-  // Hold at 1 once faded in — the 4th keyframe pins it so the section never
-  // fades back out as the visitor scrolls deeper into the tunnel.
-  const entranceOpacity = useTransform(scrollYProgress, [0.04, 0.12, 1], [0, 1, 1]);
+  // Opacity cross-fade with the alert — same mechanism on both platforms. The
+  // 3rd keyframe pins it at 1 so the section never fades back out deeper in the
+  // tunnel. Mobile's tunnel is shorter, so its fade spans a wider fraction.
+  const entranceOpacity = useTransform(
+    scrollYProgress,
+    isTouch ? [0.10, 0.42, 1] : [0.04, 0.12, 1],
+    [0, 1, 1],
+  );
 
   // ── Desktop: capability-gated. ───────────────────────────────────────────
   // Per-frame video seeking (the scrub) is smooth on Chromium but stutters on
@@ -103,13 +108,14 @@ export default function Stats() {
   // / low-memory → plain autoplay-loop (no seeking). Stat reveals stay
   // scroll-driven in BOTH paths, so the section reads the same either way.
   useEffect(() => {
-    if (isTouch) return;
     const video = videoRef.current;
 
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isFirefox      = /firefox/i.test(navigator.userAgent);
     const lowMemory      = typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4;
-    const canScrub       = !prefersReduced && !isFirefox && !lowMemory;
+    // Mobile/touch never scrubs (per-frame seeking is far too heavy there); it
+    // takes the looping fallback path like Firefox/low-power.
+    const canScrub       = !isTouch && !prefersReduced && !isFirefox && !lowMemory;
 
     // Opacity-only reveal — the stats fade in place as the burst plays, no rise.
     const revealStats = (v) => {
@@ -120,26 +126,28 @@ export default function Stats() {
       });
     };
 
-    // Burst timing window (scroll progress). The section cross-fades in by ~0.12
-    // (entranceOpacity); the burst is held at frame 0 until then so it only
-    // begins once the panel is fully visible (a hair before is fine), and reaches
-    // its end by VID_END so the settled pile holds while the visitor reads.
-    const VID_START = 0.12, VID_END = 0.82, DUR = 7;
+    // Burst timing window (scroll progress). The burst is held at frame 0 until
+    // the section has cross-faded in (≈ end of entranceOpacity) so it only begins
+    // once the panel is fully visible. Mobile's fade is longer, so its start is
+    // later. VID_END only matters for the scrub (mobile just loops).
+    const VID_START = isTouch ? 0.42 : 0.12, VID_END = 0.82, DUR = 7;
 
-    // ── Fallback (Firefox / reduced-motion / low-memory): autoplay loop, no
-    //    per-frame seeking — kills the scroll stutter. The clip is NOT scroll-
-    //    scrubbed here, so gate it on scroll progress: start it fresh from frame
-    //    0 only once the section is fully visible (v ≥ VID_START), pause when
-    //    scrolled away. Stats still reveal on scroll.
+    // ── Fallback (mobile / Firefox / reduced-motion / low-memory): autoplay
+    //    loop, no per-frame seeking. The clip is NOT scroll-scrubbed here, so
+    //    gate it on scroll progress: lazy-load as it approaches, then start it
+    //    fresh from frame 0 only once the section is fully visible (v ≥
+    //    VID_START), pause when scrolled away. Stats still reveal on scroll.
     if (!canScrub) {
-      if (video) {
-        video.loop    = true;
-        video.preload = "auto";
-      }
-      let playing = false;
+      if (video) video.loop = true;
+      let playing = false, loaded = false;
       const onChange = (v) => {
         revealStats(v);
         if (!video) return;
+        if (!loaded && v >= VID_START - 0.25) {
+          video.preload = "auto";
+          video.load();
+          loaded = true;
+        }
         if (v >= VID_START && v < 0.97) {
           if (!playing) {
             try { video.currentTime = 0; } catch { /* not seekable yet */ }
@@ -201,84 +209,36 @@ export default function Stats() {
     };
   }, [scrollYProgress, isTouch]);
 
-  // ── Mobile: autoplay video + IntersectionObserver stat reveals ───────────
-  useEffect(() => {
-    if (!isTouch) return;
-    const video = videoRef.current;
-    if (video) video.loop = true;
-    const section = sectionRef.current;
-    if (!section) return;
-    // The burst must play AS the section fills the screen — not 300px early,
-    // which let the short clip run out (settling to cream) while the alert was
-    // still on screen. preload="none" keeps the clip from competing with the
-    // hero on first load; we download it the moment it touches the viewport,
-    // then restart it from frame 0 once the panel is ~half in view so the dense
-    // explosion coincides with the section settling in.
-    // Cross-fade the whole section in (cream + burst + stats together) as it
-    // reaches the screen — opacity only, no movement — mirroring the desktop
-    // cross-dissolve. The 100svh container has no usable scroll progress, so the
-    // fade is CSS-transitioned and triggered here.
-    const wrap = wrapperRef.current;
-    if (wrap) {
-      wrap.style.opacity    = "0";
-      wrap.style.transition = "opacity 650ms ease";
-    }
-    let loaded = false, playing = false;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const ratio = entry.intersectionRatio;
-        if (video && ratio > 0 && !loaded) {
-          video.preload = "auto";
-          video.load();
-          loaded = true;
-        }
-        if (ratio >= 0.25) {
-          if (wrap) wrap.style.opacity = "1";
-          if (video && !playing) {
-            try { video.currentTime = 0; } catch { /* not seekable yet */ }
-            video.play().catch(() => {});
-            playing = true;
-          }
-          statRefs.forEach((ref) => {
-            if (ref.current) ref.current.style.opacity = "1";
-          });
-        } else {
-          if (wrap) wrap.style.opacity = "0";
-          if (video && playing) { video.pause(); playing = false; }
-          statRefs.forEach((ref) => {
-            if (ref.current) ref.current.style.opacity = "0";
-          });
-        }
-      },
-      { threshold: [0, 0.25], rootMargin: "0px" },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, [isTouch]);
-
   return (
     <div
       ref={containerRef}
       className="burst-reveal"
       style={{
-        height:     isTouch ? "100svh" : "420vh",
+        // Both platforms are a sticky tunnel now. Mobile's is shorter (it only
+        // needs room for the cross-fade + the looping burst, not a frame scrub).
+        height:     isTouch ? "200svh" : "420vh",
         position:   "relative",
+        // Mobile only: the hero's inner layers carry z-indices up to 35 and the
+        // hero outer creates no stacking context, so they leak into the root and
+        // would paint OVER this (z:auto) section during the overlap. A z-index
+        // above 35 (and below the nav's 100) keeps the cross-fade on top.
+        zIndex:     isTouch ? 50 : undefined,
         // Transparent so the hero alert shows through while the section
         // cross-fades in over it. The cream lives INSIDE the fading layer (and
         // the page body is cream too, so any gap reads cream regardless).
         background: "transparent",
         // Overlap the hero so the section pins WHILE the alert is still on screen,
         // then cross-fades in over it (entranceOpacity) — a true cross-dissolve,
-        // no slide, no dead-cream gap. Desktop pulls ~2 screens so the pin lands
-        // on the alert's hold; mobile pulls ~40svh so the burst rises as the alert
-        // cools (u≈2.2) without intruding on the hold.
-        marginTop:  isTouch ? "-42svh" : `calc(-200svh - ${navH}px)`,
+        // no slide, no dead-cream gap. Desktop pulls ~2 screens; mobile pulls
+        // ~170svh so the pin lands on the alert's hold (u≈1.9) and the cross-fade
+        // completes before the hero's own cool-to-cream.
+        marginTop:  isTouch ? `calc(-170svh - ${navH}px)` : `calc(-200svh - ${navH}px)`,
       }}
     >
       <div
         ref={sectionRef}
         style={{
-          position: isTouch ? "relative" : "sticky",
+          position: "sticky",
           top:      0,
           height:   "100svh",
           width:    "100%",
@@ -293,10 +253,8 @@ export default function Stats() {
           style={{
             position: "absolute",
             inset:    0,
-            // Desktop: scroll-linked cross-fade. Mobile: opacity is driven
-            // imperatively by the IntersectionObserver (CSS-transitioned) since
-            // the 100svh container has no usable scroll progress of its own.
-            opacity:  isTouch ? undefined : entranceOpacity,
+            // Scroll-linked cross-fade with the alert (both platforms).
+            opacity:  entranceOpacity,
           }}
         >
 
@@ -595,9 +553,8 @@ export default function Stats() {
             <div
               ref={statRefs[0]}
               style={{
-                opacity:    0,
-                transition: "opacity 600ms ease",
-                textAlign:  "center",
+                opacity:   0,
+                textAlign: "center",
               }}
             >
               {hero.qualifier && (
@@ -677,7 +634,6 @@ export default function Stats() {
                   ref={statRefs[i + 1]}
                   style={{
                     opacity:    0,
-                    transition: "opacity 600ms ease",
                     display:    "flex",
                     alignItems: "baseline",
                     gap:        "10px",
