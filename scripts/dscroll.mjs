@@ -14,7 +14,8 @@ const my = process.env.MY ? Number(process.env.MY) : null;
 
 mkdirSync(".shots", { recursive: true });
 const browser = await chromium.launch();
-const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+const VW = Number(process.env.WIDTH || 1440), VH2 = Number(process.env.HEIGHT || 900);
+const ctx = await browser.newContext({ viewport: { width: VW, height: VH2 }, deviceScaleFactor: 1 });
 const page = await ctx.newPage();
 await page.goto(url, { waitUntil: "domcontentloaded" });
 await page.waitForTimeout(2500);
