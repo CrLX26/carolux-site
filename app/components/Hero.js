@@ -475,12 +475,7 @@ export default function Hero() {
       holes = Array.from({ length: 3 }, () => ({ x: rnd(0.55, 0.86) * W, y: rnd(0.30, 0.72) * H, d: rnd(0, 0.16) }));
     };
     seed();
-    // Cursor as a HOT window (reveals thermal): a black hole the mask lets through.
-    const hotHole = (m) => `radial-gradient(circle ${m.radius.toFixed(0)}px at ${m.x.toFixed(0)}px ${m.y.toFixed(0)}px, #000 0%, #000 60%, transparent 100%)`;
-    // Cursor as a COOL window (reveals normal): a TRANSPARENT hole punched into a
-    // solid mask — so the thermal is hidden under the pointer and the normal house
-    // + navy copy beneath show through. No mask-compositing needed.
-    const coolHole = (m) => `radial-gradient(circle ${(m.radius * 1.1).toFixed(0)}px at ${m.x.toFixed(0)}px ${m.y.toFixed(0)}px, transparent 0%, transparent 54%, #000 82%)`;
+    const circle = (x, y, r) => `radial-gradient(circle ${r.toFixed(0)}px at ${x.toFixed(0)}px ${y.toFixed(0)}px, #000 0%, #000 56%, transparent 100%)`;
 
     let raf = null;
     const start = performance.now();
@@ -492,37 +487,49 @@ export default function Hero() {
       const c = elapsed % CYCLE;
       const m = heroMousePosRef.current;
       const hasCur = m && m.radius > 0.5;
-      let mask = EMPTY, opacity = 1;
+      let opacity = 1;
+      const base = []; // thermal-coverage mask layers (thermal shows through #000)
 
       if (reduce || c < T_NORMAL) {
-        // NORMAL: rest on the house; cursor opens a HOT window to thermal.
-        mask = hasCur ? hotHole(m) : EMPTY;
+        // NORMAL: rest on the house (nothing auto).
       } else if (c < T_NORMAL + T_IN) {
-        // IN: house-biased holes grow to full thermal; cursor still adds heat.
+        // IN: house-biased holes grow toward full thermal.
         const p = easeIn((c - T_NORMAL) / T_IN);
         const Rmax = 2.0 * Math.hypot(W, H);
-        const ls = [];
         for (const h of holes) {
           const pp = Math.max(0, (p - h.d) / (1 - h.d));
           const r = pp * Rmax;
-          if (r > 0.5) ls.push(`radial-gradient(circle ${r.toFixed(0)}px at ${h.x.toFixed(0)}px ${h.y.toFixed(0)}px, #000 0%, #000 52%, transparent 100%)`);
+          if (r > 0.5) base.push(circle(h.x, h.y, r));
         }
-        if (hasCur) ls.push(hotHole(m));
-        mask = ls.length ? ls.join(",") : EMPTY;
       } else if (c < T_NORMAL + T_IN + T_HOLD) {
-        // HOLD: full thermal; cursor opens a COOL window back to the normal house.
-        mask = hasCur ? coolHole(m) : SOLID;
+        base.push(SOLID); // full thermal
       } else {
-        // OUT: cool-fade dissolve — solid thermal fades uniformly back to normal
-        // (no wipe line). Cursor still opens a cool window during the fade.
-        const p = (c - T_NORMAL - T_IN - T_HOLD) / T_OUT;
+        const p = (c - T_NORMAL - T_IN - T_HOLD) / T_OUT; // cool-fade dissolve
         const k = 1 - p;
-        opacity = k * k * (3 - 2 * k); // smooth ease toward 0
-        mask = hasCur ? coolHole(m) : SOLID;
+        opacity = k * k * (3 - 2 * k);
+        base.push(SOLID);
       }
+      if (base.length === 0) base.push(EMPTY);
+
+      // Cursor composites with the thermal coverage via XOR (exclude): where it
+      // overlaps thermal it cuts a COOL window (normal house+copy show); where the
+      // area is still normal it reveals a HOT thermal window. Self-flipping, so the
+      // transition happens exactly when the bloom reaches the pointer — no dead
+      // "hazy dot" gap. (subtract = source−dest left the cursor invisible inside
+      // the base; XOR is symmetric difference, which is what we want.)
+      // Cursor must be the TOP layer (listed first) so ITS operator composites
+      // with the base below it; as the bottom layer the operator is a no-op.
+      const layers = [];
+      const comps = [];
+      if (hasCur) { layers.push(circle(m.x, m.y, m.radius)); comps.push("exclude"); }
+      for (const b of base) { layers.push(b); comps.push("add"); }
+
+      const img = layers.join(",");
       el.style.opacity = String(opacity);
-      el.style.webkitMaskImage = mask;
-      el.style.maskImage = mask;
+      el.style.webkitMaskImage = img;
+      el.style.maskImage = img;
+      el.style.maskComposite = comps.join(",");                                  // Firefox (standard keywords)
+      el.style.webkitMaskComposite = comps.map((x) => (x === "exclude" ? "xor" : "source-over")).join(","); // Chromium/Safari
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
