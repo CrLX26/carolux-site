@@ -91,13 +91,19 @@ visible, true pink, and the burst must sit BEHIND the stats.*
     behind the hero. Verified the stats paints on top via `elementFromPoint` (`scripts/mdbg2.mjs`).
   - Burst is zoomed (`scale(2.0)`, origin `50% 78%`) so the pink fills BEHIND all the stats incl.
     the 15%. Verified `scripts/mnat.mjs` (real wheel scroll: alert → pink-backed stats, no white).
-  - **Reveal retimed to the VIDEO clock (2026-06-10).** Mobile plays the burst ONCE from frame 0
-    when fully visible (not looping, not scroll-scrubbed); stats reveal off `video.currentTime` via
-    a `timeupdate` listener — 15% early (~0.5s), 90%+ mid (~0.48·dur), R-49 a half-second before the
-    clip ends (`dur − 0.5`). Tunnel lengthened to `280svh` and the fade tightened to `[0.05,0.22]`
-    so the section holds pinned through the ~7s playthrough; zoom dialed back to `scale(1.3)` (the
-    playing explosion fills the frame, so heavy zoom is no longer needed). Desktop fallback stays
-    scroll-driven. Verified `scripts/mtime.mjs` (hold in view, watch the clock-driven reveal).
+  - **Reveal is SCROLL-driven (reverted from video-clock).** A brief experiment tied the reveal to
+    `video.currentTime` (final stat 0.5s before the clip ends), but that needs the visitor to linger
+    ~7s — on a normal scroll-through only the 15% appeared. Reverted to scroll-driven `revealStats`
+    (WINDOWS) so all three reliably show as you scroll, paced by the longer `280svh` tunnel. The
+    burst loops from frame 0 once fully visible. Zoom removed entirely (`transform:none`) — the full
+    burst column shows. Verified `scripts/mnat.mjs`. (Tradeoff: reliable 3-stat reveal vs exact
+    video-end sync — reliability won.)
+  - **Hero thermal "gone" (2026-06-10) was NOT a regression.** Verified the ambient thermal cycle
+    works on Chromium AND Firefox, the cursor reveal works on Chromium, and it survives a
+    scroll-to-Stats-and-back round-trip (`scripts/heroamb.mjs`, `heroambfx.mjs`, `herocur.mjs`,
+    `heroback.mjs`). Hero.js was untouched by any Stats commit (`git diff hero-polish HEAD`). The
+    thermal is `!isMobile` (hidden ≤767px) — it's absent when viewing in a narrow/mobile window,
+    which is the likely cause.
 
 ### [P2] Two "primary" CTAs + near-invisible phone link
 - **What:** Primary button teal in base copy, orange `#ff5500` in the thermal replica; phone

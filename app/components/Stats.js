@@ -131,30 +131,15 @@ export default function Stats() {
     // once the panel is fully visible. VID_END only matters for the scrub.
     const VID_START = isTouch ? 0.22 : 0.12, VID_END = 0.82, DUR = 7;
 
-    // Mobile reveal is driven by the VIDEO clock, not scroll: once the burst is
-    // playing, each stat appears at a fixed point in the clip and the LAST one
-    // lands ~0.5s before the burst ends. (Desktop fallback stays scroll-driven.)
-    const hideStats = () => statRefs.forEach((r) => { if (r.current) r.current.style.opacity = "0"; });
-    const revealByTime = () => {
-      if (!video) return;
-      const dur   = video.duration && !isNaN(video.duration) ? video.duration : DUR;
-      const t     = video.currentTime;
-      // 15% early, 90%+ mid, R-49 a half-second before the burst finishes.
-      const times = [Math.min(0.4, dur * 0.08), dur * 0.48, Math.max(0, dur - 0.5)];
-      statRefs.forEach((ref, i) => { if (ref.current && t >= times[i]) ref.current.style.opacity = "1"; });
-    };
-
     // ── Fallback (mobile / Firefox / reduced-motion / low-memory): no per-frame
-    //    seeking. Gate on scroll progress: lazy-load as it approaches, then start
-    //    fresh from frame 0 once the section is fully visible (v ≥ VID_START).
-    //    Mobile plays the clip ONCE (no loop) and reveals stats off the video
-    //    clock; Firefox/low-power loops and reveals on scroll.
+    //    seeking. The burst loops from frame 0 once the section is fully visible
+    //    (v ≥ VID_START); the stats reveal on SCROLL (so all three reliably show
+    //    as the visitor scrolls through, paced by the tunnel length).
     if (!canScrub) {
-      if (video) video.loop = !isTouch;
-      if (isTouch && video) video.addEventListener("timeupdate", revealByTime);
+      if (video) video.loop = true;
       let playing = false, loaded = false;
       const onChange = (v) => {
-        if (!isTouch) revealStats(v);
+        revealStats(v);
         if (!video) return;
         if (!loaded && v >= VID_START - 0.25) {
           video.preload = "auto";
@@ -164,21 +149,16 @@ export default function Stats() {
         if (v >= VID_START && v < 0.999) {
           if (!playing) {
             try { video.currentTime = 0; } catch { /* not seekable yet */ }
-            if (isTouch) hideStats();      // start hidden; revealByTime fills them
             video.play().catch(() => {});
             playing = true;
           }
         } else if (playing) {
           video.pause();
-          if (isTouch) { try { video.currentTime = 0; } catch {} hideStats(); }
           playing = false;
         }
       };
       const unsub = scrollYProgress.on("change", onChange);
-      return () => {
-        unsub();
-        if (isTouch && video) video.removeEventListener("timeupdate", revealByTime);
-      };
+      return () => unsub();
     }
 
     // ── Scrub path (Chromium) ──
@@ -298,10 +278,9 @@ export default function Stats() {
             width:         "100%",
             height:        "100%",
             objectFit:     "cover",
-            // Mobile: a gentle zoom lifts the petal column behind the numbers.
-            // The clip plays through from frame 0 here, so the explosion fills the
-            // frame on its own and heavy zoom is no longer needed. Desktop = full.
-            transform:     isTouch ? "scale(1.3)" : "none",
+            // Mobile: show the full burst column (no zoom) — the explosion fills
+            // the frame as it plays. Desktop = full burst as well.
+            transform:       "none",
             transformOrigin: "50% 60%",
             zIndex:        0,
             pointerEvents: "none",
@@ -572,9 +551,8 @@ export default function Stats() {
             <div
               ref={statRefs[0]}
               style={{
-                opacity:    0,
-                transition: "opacity 550ms ease",
-                textAlign:  "center",
+                opacity:   0,
+                textAlign: "center",
               }}
             >
               {hero.qualifier && (
@@ -654,7 +632,6 @@ export default function Stats() {
                   ref={statRefs[i + 1]}
                   style={{
                     opacity:    0,
-                    transition: "opacity 550ms ease",
                     display:    "flex",
                     alignItems: "baseline",
                     gap:        "10px",
