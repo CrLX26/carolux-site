@@ -23,7 +23,7 @@ async function wheelTo(targetY) {
 await wheelTo(1000);
 await page.waitForTimeout(400);
 
-const stops = [1100, 1300, 1500, 1750];
+const stops = [1100, 1300, 1460];
 for (const y of stops) {
   await wheelTo(y);
   await page.waitForTimeout(500);

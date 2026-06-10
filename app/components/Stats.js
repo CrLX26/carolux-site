@@ -98,7 +98,7 @@ export default function Stats() {
   // tunnel. Mobile's tunnel is shorter, so its fade spans a wider fraction.
   const entranceOpacity = useTransform(
     scrollYProgress,
-    isTouch ? [0.10, 0.42, 1] : [0.04, 0.12, 1],
+    isTouch ? [0.05, 0.22, 1] : [0.04, 0.12, 1],
     [0, 1, 1],
   );
 
@@ -128,39 +128,57 @@ export default function Stats() {
 
     // Burst timing window (scroll progress). The burst is held at frame 0 until
     // the section has cross-faded in (≈ end of entranceOpacity) so it only begins
-    // once the panel is fully visible. Mobile's fade is longer, so its start is
-    // later. VID_END only matters for the scrub (mobile just loops).
-    const VID_START = isTouch ? 0.42 : 0.12, VID_END = 0.82, DUR = 7;
+    // once the panel is fully visible. VID_END only matters for the scrub.
+    const VID_START = isTouch ? 0.22 : 0.12, VID_END = 0.82, DUR = 7;
 
-    // ── Fallback (mobile / Firefox / reduced-motion / low-memory): autoplay
-    //    loop, no per-frame seeking. The clip is NOT scroll-scrubbed here, so
-    //    gate it on scroll progress: lazy-load as it approaches, then start it
-    //    fresh from frame 0 only once the section is fully visible (v ≥
-    //    VID_START), pause when scrolled away. Stats still reveal on scroll.
+    // Mobile reveal is driven by the VIDEO clock, not scroll: once the burst is
+    // playing, each stat appears at a fixed point in the clip and the LAST one
+    // lands ~0.5s before the burst ends. (Desktop fallback stays scroll-driven.)
+    const hideStats = () => statRefs.forEach((r) => { if (r.current) r.current.style.opacity = "0"; });
+    const revealByTime = () => {
+      if (!video) return;
+      const dur   = video.duration && !isNaN(video.duration) ? video.duration : DUR;
+      const t     = video.currentTime;
+      // 15% early, 90%+ mid, R-49 a half-second before the burst finishes.
+      const times = [Math.min(0.4, dur * 0.08), dur * 0.48, Math.max(0, dur - 0.5)];
+      statRefs.forEach((ref, i) => { if (ref.current && t >= times[i]) ref.current.style.opacity = "1"; });
+    };
+
+    // ── Fallback (mobile / Firefox / reduced-motion / low-memory): no per-frame
+    //    seeking. Gate on scroll progress: lazy-load as it approaches, then start
+    //    fresh from frame 0 once the section is fully visible (v ≥ VID_START).
+    //    Mobile plays the clip ONCE (no loop) and reveals stats off the video
+    //    clock; Firefox/low-power loops and reveals on scroll.
     if (!canScrub) {
-      if (video) video.loop = true;
+      if (video) video.loop = !isTouch;
+      if (isTouch && video) video.addEventListener("timeupdate", revealByTime);
       let playing = false, loaded = false;
       const onChange = (v) => {
-        revealStats(v);
+        if (!isTouch) revealStats(v);
         if (!video) return;
         if (!loaded && v >= VID_START - 0.25) {
           video.preload = "auto";
           video.load();
           loaded = true;
         }
-        if (v >= VID_START && v < 0.97) {
+        if (v >= VID_START && v < 0.999) {
           if (!playing) {
             try { video.currentTime = 0; } catch { /* not seekable yet */ }
+            if (isTouch) hideStats();      // start hidden; revealByTime fills them
             video.play().catch(() => {});
             playing = true;
           }
         } else if (playing) {
           video.pause();
+          if (isTouch) { try { video.currentTime = 0; } catch {} hideStats(); }
           playing = false;
         }
       };
       const unsub = scrollYProgress.on("change", onChange);
-      return () => unsub();
+      return () => {
+        unsub();
+        if (isTouch && video) video.removeEventListener("timeupdate", revealByTime);
+      };
     }
 
     // ── Scrub path (Chromium) ──
@@ -214,9 +232,10 @@ export default function Stats() {
       ref={containerRef}
       className="burst-reveal"
       style={{
-        // Both platforms are a sticky tunnel now. Mobile's is shorter (it only
-        // needs room for the cross-fade + the looping burst, not a frame scrub).
-        height:     isTouch ? "200svh" : "420vh",
+        // Both platforms are a sticky tunnel. Mobile's holds the section pinned
+        // long enough for the burst to play through (~7s) while the stats reveal
+        // off the video clock.
+        height:     isTouch ? "280svh" : "420vh",
         position:   "relative",
         // Mobile only: the hero's inner layers carry z-indices up to 35 and the
         // hero outer creates no stacking context, so they leak into the root and
@@ -279,11 +298,11 @@ export default function Stats() {
             width:         "100%",
             height:        "100%",
             objectFit:     "cover",
-            // Mobile: zoom hard into the dense petal mass (lower in the frame) so
-            // the pink fills BEHIND the numbers — at 1× the column sits low and
-            // leaves the hero 15% on bare cream. Desktop keeps the full burst.
-            transform:     isTouch ? "scale(2.0)" : "none",
-            transformOrigin: "50% 78%",
+            // Mobile: a gentle zoom lifts the petal column behind the numbers.
+            // The clip plays through from frame 0 here, so the explosion fills the
+            // frame on its own and heavy zoom is no longer needed. Desktop = full.
+            transform:     isTouch ? "scale(1.3)" : "none",
+            transformOrigin: "50% 60%",
             zIndex:        0,
             pointerEvents: "none",
           }}
@@ -553,8 +572,9 @@ export default function Stats() {
             <div
               ref={statRefs[0]}
               style={{
-                opacity:   0,
-                textAlign: "center",
+                opacity:    0,
+                transition: "opacity 550ms ease",
+                textAlign:  "center",
               }}
             >
               {hero.qualifier && (
@@ -634,6 +654,7 @@ export default function Stats() {
                   ref={statRefs[i + 1]}
                   style={{
                     opacity:    0,
+                    transition: "opacity 550ms ease",
                     display:    "flex",
                     alignItems: "baseline",
                     gap:        "10px",
