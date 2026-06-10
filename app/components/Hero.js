@@ -62,6 +62,7 @@ export default function Hero() {
   const vidBRef = useRef(null);                  // sun-sky loop — crossfade copy B
   const vidADeskRef = useRef(null);              // DESKTOP sky-reveal loop — copy A
   const vidBDeskRef = useRef(null);              // DESKTOP sky-reveal loop — copy B
+  const emberMaskRef = useRef(null);             // DESKTOP ambient "thermal holes" mask layer
   const mobileExitCream = useMotionValue(0);    // cools to cream into Stats (step 6 tail)
   const mWordRefs = useRef([]);                 // attic alert words (step 6)
 
@@ -439,6 +440,47 @@ export default function Hero() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
+  // ── Desktop ambient: "thermal holes" ─────────────────────────────────────
+  // Small circular holes open across the whole hero, each widening to reveal the
+  // thermal house beneath, then shrinking back to normal — continuously, at
+  // random spots. Pure JS-animated CSS mask on a full-bleed thermal layer
+  // (emberMaskRef). Desktop only; respects reduced-motion. Sits below the copy
+  // (z10) and the mouse thermal spotlight (z20), so hover still dominates.
+  useEffect(() => {
+    if (isMobile) return;
+    const el = emberMaskRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let W = window.innerWidth, H = window.innerHeight;
+    const onResize = () => { W = window.innerWidth; H = window.innerHeight; };
+    window.addEventListener("resize", onResize, { passive: true });
+    const N = 7; // simultaneous holes
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    // t starts negative = a stagger delay before this hole first opens.
+    const spawn = () => ({ x: rnd(0.06, 0.94) * W, y: rnd(0.10, 0.92) * H, maxR: rnd(55, 150), dur: rnd(2600, 4400), t: rnd(-2600, 0) });
+    let holes = Array.from({ length: N }, spawn);
+    let raf = null, last = performance.now();
+    const tick = (now) => {
+      const dt = now - last; last = now;
+      let mask = "";
+      for (let i = 0; i < holes.length; i++) {
+        const h = holes[i];
+        h.t += dt;
+        if (h.t >= h.dur) { holes[i] = spawn(); continue; } // closed → respawn elsewhere
+        if (h.t <= 0) continue; // still in stagger delay
+        const p = h.t / h.dur;                 // 0→1 lifetime
+        const r = Math.sin(p * Math.PI) * h.maxR; // grow then shrink (0 at ends)
+        if (r > 0.5) mask += (mask ? "," : "") + `radial-gradient(circle ${r.toFixed(1)}px at ${h.x.toFixed(0)}px ${h.y.toFixed(0)}px, #000 0%, #000 52%, transparent 100%)`;
+      }
+      el.style.webkitMaskImage = mask || "linear-gradient(#0000,#0000)";
+      el.style.maskImage = mask || "linear-gradient(#0000,#0000)";
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { if (raf) cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
+
   // Cursor-centred mask for the thermal overlay
   const overlayMask = heroMousePos
     ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
@@ -632,28 +674,25 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* ── Ambient resting ember (desktop) ──────────────────────────────────
-            A slow, faint reveal of the THERMAL house at REST — masked to the
-            window area so only the warm glowing windows show (not the whole
-            heat-map / dark fill). Gives the hero a permanent warm focal point;
-            previously the whole effect was gated behind a mouse-move so at rest
-            the frame was all cool grey (worst on big monitors). Sits above the
-            grey house, below the copy (z10) and the mouse thermal reveal (z20),
-            so hover still dominates. Desktop only (mobile has .thermal-crossfade). */}
+        {/* ── Ambient "thermal holes" (desktop) ────────────────────────────────
+            A full-bleed thermal layer revealed only through small holes that open
+            and close across the frame (mask animated in JS, see effect above), so
+            the heat-map peeks through at random spots then flits back to the normal
+            house. Parallax-coupled to the house; below the copy (z10) and the mouse
+            thermal spotlight (z20). Desktop only (mobile has .thermal-crossfade). */}
         <div
+          ref={emberMaskRef}
           aria-hidden="true"
-          className="hidden md:block hero-ember"
+          className="hidden md:block"
           style={{
-            position:        "absolute",
-            inset:           0,
-            zIndex:          1,
-            pointerEvents:   "none",
-            // Move with the SAME mouse parallax as the normal/thermal house so the
-            // glow stays locked to the windows (mask + image translate together).
-            transform:       `translate(${parallax.x}px, ${parallax.y}px)`,
-            transition:      "transform 0.15s ease-out",
-            WebkitMaskImage: "radial-gradient(36% 42% at 63% 47%, #000 0%, #000 30%, transparent 74%)",
-            maskImage:       "radial-gradient(36% 42% at 63% 47%, #000 0%, #000 30%, transparent 74%)",
+            position:       "absolute",
+            inset:          0,
+            zIndex:         1,
+            pointerEvents:  "none",
+            transform:      `translate(${parallax.x}px, ${parallax.y}px)`,
+            transition:     "transform 0.15s ease-out",
+            WebkitMaskImage: "linear-gradient(#0000,#0000)", // starts empty; JS drives the holes
+            maskImage:       "linear-gradient(#0000,#0000)",
           }}
         >
           <Image
