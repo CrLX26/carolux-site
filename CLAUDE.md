@@ -6,21 +6,27 @@
 
 ---
 
-## 🔴 CURRENT HANDOFF — Mobile hero scroll sequence (branch `hero-polish`)
-*Updated 2026-06-09. Read this first. This block is the authoritative current state.*
+## 🟢 CURRENT HANDOFF — Hero (mobile sequence + desktop thermal cycle) — LIVE on main
+*Updated 2026-06-10. Read this first. This block is the authoritative current state.*
 
-**Worktree/lane:** design lane (`carolux-site`). **Branch:** `hero-polish` (kept active for ongoing work; synced to main).
-**Git:** ✅ **MERGED to `main` via PR #4 (2026-06-09)** — the whole mobile hero sequence is now on
-`main` and deploying to Vercel production. `hero-polish` was fast-forwarded to the merge commit and
-remains the active design-lane branch for continued work. Live Wix site still untouched (new site only
-goes live when the domain DNS is repointed to Vercel — merging to main just updates the Vercel deploy).
-**Preview URL (test on phone):** https://carolux-site-git-hero-polish-carolux.vercel.app
+**Worktree/lane:** design lane (`carolux-site`).
+**Git:** ✅ **LIVE on `main` (2026-06-10)** at `08496cc`. `main` = `hero-polish` = `hero-large-monitor`
+(all fast-forwarded to the same commit; linear history). Vercel production is deploying from `main`.
+**Live Wix site still untouched** — the new site only reaches the public domain when DNS is repointed to
+Vercel; pushing to `main` just updates the Vercel production deploy. Rollback = FF `main` to `c8ae941`.
+**Both the mobile hero sequence AND the new desktop thermal hero are now on `main`.**
 
-### What was built this session
+### Desktop hero (NEW this round, on main) — `app/components/Hero.js`, `!isMobile` branches
+- **Responsive fit:** fluid type via `FS`/`MB` tokens bound by BOTH width and height — `clamp(MIN, min(Xvw,Yvh), MAX)` — used by base AND thermal copy so they stay overlaid. Panel = `calc(100svh - nav)` (no 720px min) so the hero fits 1280→4K without clipping/header overlap. Verified 1280/1920/2560/3840.
+- **Ambient thermal cycle** (rAF on the thermal overlay's mask, `thermalRevealRef`): rest on normal house → a few house-biased holes GROW to full thermal (copy flips to its hot colour state) → hold → **cool-fade dissolve** back to normal → loop, new spots each time. `T_NORMAL/T_IN/T_HOLD/T_OUT` knobs in the effect.
+- **Phase-aware cursor (XOR):** the cursor composites with the thermal coverage via `mask-composite: exclude` / `-webkit-mask-composite: xor` (cursor is the TOP mask layer or its operator no-ops). Where it overlaps thermal it cuts a COOL window (normal house+copy); where the area is normal it reveals a HOT thermal window. Self-flipping = no dead "hazy dot". Plus a soft screen-blend glow following the pointer.
+- **Headline descenders:** the per-line reveal `clip-path` carries `fontSize: FS.head` so the `-0.32em` bottom inset scales with the headline (em was resolving at the inherited 16px). Don't drop the fontSize or the y/j tails clip again.
+- Desktop verify tooling: `scripts/dshot.mjs` (cursor screenshots, WIDTH/HEIGHT env), `scripts/dscroll.mjs` (scroll timeline; real wheel keeps Lenis+framer synced; reads alarm-card pos + sky opacity).
+
+### Mobile sequence (unchanged, on main) — `isMobile` branch
 A complete **mobile-only** hero intro, sequenced as ONE pinned scroll tunnel inside `Hero.js`
-(the old separate `MobileAlert.js` was folded in and **deleted**). Desktop is 100% untouched —
-**every change is gated behind `isMobile` (max-width:767px)**; desktop still uses its original
-scroll tunnel + mouse thermal reveal.
+(the old separate `MobileAlert.js` was folded in and **deleted**). All mobile work stays
+**gated behind `isMobile` (max-width:767px)**; the desktop thermal cycle above is `!isMobile`-only.
 
 **The mobile sequence (all in `app/components/Hero.js`), driven by scroll units `u` (= scroll/viewport):**
 1. Hero loads normally (thermal house **time-loop** still runs — `.thermal-crossfade`).
@@ -65,8 +71,13 @@ Use **Playwright iPhone emulation** instead (touch → `pointer:coarse` → Leni
 - Older backlog (other lanes / future): FAQ+schema (SEO lane), package pricing, real reviews (replace placeholders), estimator lead-capture backend.
 
 ### Don't break
-- `Nav.js` locked. Desktop hero scroll values locked. All mobile work is `isMobile`-gated — keep it that way.
+- `Nav.js` locked. The locked desktop SCROLL MotionValues (`heroContentY`, `imageScale/Opacity`, `bridgeY`, `tealLineOpacity`) are unchanged — the desktop thermal cycle is additive and the hero tunnel was lengthened (480vh) for the alert; don't re-touch those scroll values. Mobile work stays `isMobile`-gated; desktop work stays `!isMobile`-gated.
 - Legal: Tony = FORMER inspector (never "licensed"); company **insured, not licensed**; no "mold"; no specific $ savings; 2-yr guarantee.
+
+### Outstanding design polish (from the impeccable critique — NOT yet done)
+See the critique findings; the P0s (large-monitor focal anchor + measure) are done. Still open:
+Stats "stat-strip" → one dominant stat; hero→alert→stats palette/transition continuity; two competing
+primary CTA colours + faint phone link; pinned-scroll length / always-reachable estimate CTA.
 
 ---
 

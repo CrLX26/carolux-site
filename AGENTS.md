@@ -305,20 +305,24 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-09):**
-- ✅ MERGED: the mobile hero scroll-sequence rebuild (pinned tunnel: text rise/fade →
-  house cross-fades into a looping bright sky video w/ centered sun → word-by-word
-  alert → cool to cream) is **merged to `main` via PR #4** and deploying to Vercel
-  production. **See CLAUDE.md "CURRENT HANDOFF" block — it is authoritative.**
-- 🔴 ACTIVE: branch `hero-polish` (design lane) — kept open for continued hero work,
-  fast-forwarded to the PR #4 merge so it's level with `main`. Self-verify with the
-  Playwright scripts in `scripts/` (`mshot`, `perf`, `vidcheck`, `bleedcheck`, …).
-- `main` — production, live. Contains all work to date: design polish, growth-levers
-  batch (estimator, before/after, conversion copy, legal fixes), privacy-policy page,
-  Firefox scrub fallback, the copy-polish hero changes, and the mobile hero sequence.
-- THREE active worktrees: `carolux-site` (design), `carolux-seo`/`seo-foundation` (SEO),
-  `carolux-copy`/`copy-polish` (wording). The design lane's active branch changes over
-  time (currently `hero-polish`). See memory: worktree-split for the full lane rules.
+**Current state (2026-06-10):**
+- ✅ LIVE on `main` @ `08496cc` (Vercel production deploying). `main` = `hero-polish` =
+  `hero-large-monitor` (all fast-forwarded to the same commit; linear). **Wix domain still
+  untouched** — main only updates the Vercel deploy; the public domain switches when DNS is
+  repointed. Rollback = FF `main` to `c8ae941`. **CLAUDE.md "CURRENT HANDOFF" is authoritative.**
+- What's live now: the **mobile** hero scroll-sequence (text rise/fade → house→sky-video →
+  word-by-word alert → cool-to-cream) AND the **desktop** thermal hero (responsive fluid type
+  that fits 1280→4K; ambient thermal cycle — holes grow to full thermal, hot copy, cool-fade
+  back; phase-aware XOR cursor: hot window on normal / cool window on thermal + soft glow).
+  All desktop work is `!isMobile`-gated; mobile `isMobile`-gated; locked desktop scroll
+  MotionValues untouched.
+- Design lane branches `hero-polish` / `hero-large-monitor` are level with `main` (can keep
+  `hero-polish` as the ongoing lane; `hero-large-monitor` is mergeable/deletable).
+- THREE worktrees: `carolux-site` (design), `carolux-seo`/`seo-foundation` (SEO),
+  `carolux-copy`/`copy-polish` (wording). See memory: worktree-split for lane rules.
+- Open design polish (impeccable critique, not yet done): Stats stat-strip → one dominant
+  stat; hero→alert→stats palette/transition continuity; single primary-CTA colour + louder
+  phone link; pinned-scroll length / always-reachable estimate CTA.
 - Legacy merged branches: mobile-fixes, design-polish, growth-levers-experiment,
   conversion-text-buttons, perf-scrub-firefox-fallback, privacy-policy-page.
 
