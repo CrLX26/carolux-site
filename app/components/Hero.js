@@ -632,6 +632,37 @@ export default function Hero() {
           </div>
         </motion.div>
 
+        {/* ── Ambient resting ember (desktop) ──────────────────────────────────
+            A slow, faint reveal of the THERMAL house at REST — masked to the
+            window area so only the warm glowing windows show (not the whole
+            heat-map / dark fill). Gives the hero a permanent warm focal point;
+            previously the whole effect was gated behind a mouse-move so at rest
+            the frame was all cool grey (worst on big monitors). Sits above the
+            grey house, below the copy (z10) and the mouse thermal reveal (z20),
+            so hover still dominates. Desktop only (mobile has .thermal-crossfade). */}
+        <div
+          aria-hidden="true"
+          className="hidden md:block hero-ember"
+          style={{
+            position:        "absolute",
+            inset:           0,
+            zIndex:          1,
+            pointerEvents:   "none",
+            WebkitMaskImage: "radial-gradient(36% 42% at 63% 47%, #000 0%, #000 30%, transparent 74%)",
+            maskImage:       "radial-gradient(36% 42% at 63% 47%, #000 0%, #000 30%, transparent 74%)",
+          }}
+        >
+          <Image
+            src="/images/house-thermal4.webp"
+            alt=""
+            fill
+            quality={60}
+            sizes="100vw"
+            className="object-[center_center]"
+            style={{ objectFit: "cover" }}
+          />
+        </div>
+
         {/* ── Thermal overlay — reveals thermal image + orange text ─────────
             Desktop: mouse cursor drives the radial-gradient mask.
             Mobile (isMobile): the SAME overlay is revealed by the .thermal-sweep
@@ -726,7 +757,7 @@ export default function Hero() {
               }}
             >
               <div
-                className="w-full md:w-[min(58%,760px)]"
+                className="w-full md:w-[min(56%,980px)]"
                 style={{
                   position:     "relative",
                   paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
@@ -1154,7 +1185,7 @@ export default function Hero() {
         {/* ── Base hero content — exits upward on scroll ───────────────────── */}
         <motion.div
           ref={heroContentRef}
-          className="relative z-10 w-full md:w-[min(58%,760px)]"
+          className="relative z-10 w-full md:w-[min(56%,980px)]"
           style={{
             paddingLeft:  "clamp(1.5rem, 8vw, 7rem)",
             paddingRight: "clamp(1.5rem, 3vw, 3rem)",
