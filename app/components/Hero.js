@@ -62,7 +62,8 @@ export default function Hero() {
   const vidBRef = useRef(null);                  // sun-sky loop — crossfade copy B
   const vidADeskRef = useRef(null);              // DESKTOP sky-reveal loop — copy A
   const vidBDeskRef = useRef(null);              // DESKTOP sky-reveal loop — copy B
-  const emberMaskRef = useRef(null);             // DESKTOP ambient "thermal holes" mask layer
+  const thermalRevealRef = useRef(null);         // DESKTOP thermal overlay masked layer (ambient cycle + cursor)
+  const heroMousePosRef = useRef(null);          // mirror of heroMousePos so the rAF can read the cursor
   const mobileExitCream = useMotionValue(0);    // cools to cream into Stats (step 6 tail)
   const mWordRefs = useRef([]);                 // attic alert words (step 6)
 
@@ -330,6 +331,7 @@ export default function Hero() {
       const radius = SPOTLIGHT_RADIUS * Math.min(1, Math.max(0, minDist / SPOTLIGHT_RAMP));
 
       setHeroMousePos({ x: mx, y: my, radius });
+      heroMousePosRef.current = { x: mx, y: my, radius }; // for the ambient-cycle rAF
 
       // Opacity is now just a clean on/off — radius handles the edge behaviour
       setThermalOpacity(minDist > 0 ? 1 : 0);
@@ -440,51 +442,82 @@ export default function Hero() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
-  // ── Desktop ambient: "thermal holes" ─────────────────────────────────────
-  // Small circular holes open across the whole hero, each widening to reveal the
-  // thermal house beneath, then shrinking back to normal — continuously, at
-  // random spots. Pure JS-animated CSS mask on a full-bleed thermal layer
-  // (emberMaskRef). Desktop only; respects reduced-motion. Sits below the copy
-  // (z10) and the mouse thermal spotlight (z20), so hover still dominates.
+  // ── Desktop ambient thermal cycle ────────────────────────────────────────
+  // A slow loop on the THERMAL overlay (which carries the heat-map house AND the
+  // thermal-coloured copy replica): rest on the normal house, then a few
+  // house-biased holes GROW until the whole hero is thermal (so the copy flips to
+  // its hot colour state), hold, then a downward WIPE returns to normal — loop,
+  // new spots each time. The cursor always unions its own live reveal on top.
+  // Drives the existing z20 overlay's mask imperatively (rAF) so it survives the
+  // frequent re-renders from mouse parallax. Desktop only; reduced-motion = no
+  // auto cycle (cursor reveal still works). The thermal image inside is parallax-
+  // coupled to the house already.
   useEffect(() => {
     if (isMobile) return;
-    const el = emberMaskRef.current;
+    const el = thermalRevealRef.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const EMPTY = "linear-gradient(#0000,#0000)";
+    el.style.webkitMaskImage = EMPTY; // no thermal flash before the first frame
+    el.style.maskImage = EMPTY;
     let W = window.innerWidth, H = window.innerHeight;
     const onResize = () => { W = window.innerWidth; H = window.innerHeight; };
     window.addEventListener("resize", onResize, { passive: true });
-    const N = 7; // simultaneous holes
+
+    const T_NORMAL = 1700, T_IN = 2600, T_HOLD = 1500, T_OUT = 2000;
+    const CYCLE = T_NORMAL + T_IN + T_HOLD + T_OUT;
     const rnd = (a, b) => a + Math.random() * (b - a);
-    // t starts negative = a stagger delay before this hole first opens.
-    const spawn = () => ({ x: rnd(0.06, 0.94) * W, y: rnd(0.10, 0.92) * H, maxR: rnd(55, 150), dur: rnd(2600, 4400), t: rnd(-2600, 0) });
-    let holes = Array.from({ length: N }, spawn);
-    let raf = null, last = performance.now();
+    const easeIn = (p) => p * p;
+    let holes = [];
+    const seed = () => { // 3 holes biased to the house (right-centre) → blooms warm
+      holes = Array.from({ length: 3 }, () => ({ x: rnd(0.55, 0.86) * W, y: rnd(0.30, 0.72) * H, d: rnd(0, 0.16) }));
+    };
+    seed();
+    const cursor = () => {
+      const m = heroMousePosRef.current;
+      if (!m || m.radius <= 0.5) return null;
+      return `radial-gradient(circle ${m.radius.toFixed(0)}px at ${m.x.toFixed(0)}px ${m.y.toFixed(0)}px, #000 0%, #000 60%, transparent 100%)`;
+    };
+
+    let raf = null;
+    const start = performance.now();
+    let lastCycle = -1;
     const tick = (now) => {
-      const dt = now - last; last = now;
-      let mask = "";
-      for (let i = 0; i < holes.length; i++) {
-        const h = holes[i];
-        h.t += dt;
-        if (h.t >= h.dur) { holes[i] = spawn(); continue; } // closed → respawn elsewhere
-        if (h.t <= 0) continue; // still in stagger delay
-        const p = h.t / h.dur;                 // 0→1 lifetime
-        const r = Math.sin(p * Math.PI) * h.maxR; // grow then shrink (0 at ends)
-        if (r > 0.5) mask += (mask ? "," : "") + `radial-gradient(circle ${r.toFixed(1)}px at ${h.x.toFixed(0)}px ${h.y.toFixed(0)}px, #000 0%, #000 52%, transparent 100%)`;
+      const elapsed = now - start;
+      const idx = Math.floor(elapsed / CYCLE);
+      if (idx !== lastCycle) { lastCycle = idx; seed(); }
+      const c = elapsed % CYCLE;
+      const layers = [];
+      if (!reduce) {
+        if (c < T_NORMAL) {
+          // normal house
+        } else if (c < T_NORMAL + T_IN) {
+          const p = easeIn((c - T_NORMAL) / T_IN);
+          const Rmax = 2.0 * Math.hypot(W, H);
+          for (const h of holes) {
+            const pp = Math.max(0, (p - h.d) / (1 - h.d));
+            const r = pp * Rmax;
+            if (r > 0.5) layers.push(`radial-gradient(circle ${r.toFixed(0)}px at ${h.x.toFixed(0)}px ${h.y.toFixed(0)}px, #000 0%, #000 52%, transparent 100%)`);
+          }
+        } else if (c < T_NORMAL + T_IN + T_HOLD) {
+          layers.push("linear-gradient(#000,#000)"); // full thermal
+        } else {
+          const p = (c - T_NORMAL - T_IN - T_HOLD) / T_OUT; // wipe down → normal
+          const y = p * (H + 140);
+          layers.push(`linear-gradient(to bottom, #0000 ${(y - 140).toFixed(0)}px, #000 ${y.toFixed(0)}px)`);
+        }
       }
-      el.style.webkitMaskImage = mask || "linear-gradient(#0000,#0000)";
-      el.style.maskImage = mask || "linear-gradient(#0000,#0000)";
+      const cur = cursor();
+      if (cur) layers.push(cur);
+      const mask = layers.length ? layers.join(",") : EMPTY;
+      el.style.webkitMaskImage = mask;
+      el.style.maskImage = mask;
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => { if (raf) cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
-
-  // Cursor-centred mask for the thermal overlay
-  const overlayMask = heroMousePos
-    ? `radial-gradient(circle ${heroMousePos.radius}px at ${heroMousePos.x}px ${heroMousePos.y}px, black 0%, black 60%, transparent 100%)`
-    : "none";
 
   // ── Thermal copy colours — split by surface ────────────────────────────────
   // DESKTOP: the mouse-revealed thermal text lands over the dark left fill
@@ -674,37 +707,6 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* ── Ambient "thermal holes" (desktop) ────────────────────────────────
-            A full-bleed thermal layer revealed only through small holes that open
-            and close across the frame (mask animated in JS, see effect above), so
-            the heat-map peeks through at random spots then flits back to the normal
-            house. Parallax-coupled to the house; below the copy (z10) and the mouse
-            thermal spotlight (z20). Desktop only (mobile has .thermal-crossfade). */}
-        <div
-          ref={emberMaskRef}
-          aria-hidden="true"
-          className="hidden md:block"
-          style={{
-            position:       "absolute",
-            inset:          0,
-            zIndex:         1,
-            pointerEvents:  "none",
-            transform:      `translate(${parallax.x}px, ${parallax.y}px)`,
-            transition:     "transform 0.15s ease-out",
-            WebkitMaskImage: "linear-gradient(#0000,#0000)", // starts empty; JS drives the holes
-            maskImage:       "linear-gradient(#0000,#0000)",
-          }}
-        >
-          <Image
-            src="/images/house-thermal4.webp"
-            alt=""
-            fill
-            quality={60}
-            sizes="100vw"
-            className="object-[center_center]"
-            style={{ objectFit: "cover" }}
-          />
-        </div>
 
         {/* ── Thermal overlay — reveals thermal image + orange text ─────────
             Desktop: mouse cursor drives the radial-gradient mask.
@@ -721,13 +723,16 @@ export default function Hero() {
           }}
         >
           <div
+            ref={isMobile ? undefined : thermalRevealRef}
             className={isMobile ? "thermal-crossfade" : undefined}
             style={{
               position:         "absolute",
               inset:            0,
-              opacity:          isMobile ? undefined : thermalOpacity,
-              WebkitMaskImage:  isMobile ? undefined : overlayMask,
-              maskImage:        isMobile ? undefined : overlayMask,
+              // Desktop: opacity is full; the ambient-cycle rAF owns the maskImage
+              // (don't bind it here or React's frequent re-renders would clobber it).
+              opacity:          isMobile ? undefined : 1,
+              maskRepeat:       isMobile ? undefined : "no-repeat",
+              WebkitMaskRepeat: isMobile ? undefined : "no-repeat",
               transition:       "opacity 150ms ease-out",
               pointerEvents:    "none",
             }}
