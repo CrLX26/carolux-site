@@ -98,7 +98,10 @@ export default function Stats() {
   // tunnel. Mobile's tunnel is shorter, so its fade spans a wider fraction.
   const entranceOpacity = useTransform(
     scrollYProgress,
-    isTouch ? [0.05, 0.22, 1] : [0.04, 0.12, 1],
+    // Mobile: start the cross-fade LATER so the alert fully writes out and holds
+    // an extra beat before Stats fades in over it (aligns with the hero's own
+    // cool-to-cream). Desktop unchanged.
+    isTouch ? [0.05, 0.30, 1] : [0.04, 0.12, 1],
     [0, 1, 1],
   );
 
@@ -129,7 +132,7 @@ export default function Stats() {
     // Burst timing window (scroll progress). The burst is held at frame 0 until
     // the section has cross-faded in (≈ end of entranceOpacity) so it only begins
     // once the panel is fully visible. VID_END only matters for the scrub.
-    const VID_START = isTouch ? 0.22 : 0.12, VID_END = 0.82, DUR = 7;
+    const VID_START = isTouch ? 0.30 : 0.12, VID_END = 0.82, DUR = 7;
 
     // ── Fallback (mobile / Firefox / reduced-motion / low-memory): no per-frame
     //    seeking. The burst loops from frame 0 once the section is fully visible
@@ -231,7 +234,7 @@ export default function Stats() {
         // no slide, no dead-cream gap. Desktop pulls ~2 screens; mobile pulls
         // ~170svh so the pin lands on the alert's hold (u≈1.9) and the cross-fade
         // completes before the hero's own cool-to-cream.
-        marginTop:  isTouch ? `calc(-170svh - ${navH}px)` : `calc(-200svh - ${navH}px)`,
+        marginTop:  isTouch ? `calc(-140svh - ${navH}px)` : `calc(-200svh - ${navH}px)`,
       }}
     >
       <div
