@@ -533,7 +533,21 @@ export default function Hero() {
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => { if (raf) cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+      // Clear the imperatively-set mask/opacity. `isMobile` starts false, so this
+      // rAF runs for one render before mobile is detected and leaves an inline
+      // EMPTY (transparent) mask on the SHARED thermal div. Mobile then swaps the
+      // div to .thermal-crossfade (CSS, no mask) — but an inline mask outranks the
+      // stylesheet, so the leftover EMPTY mask hides the whole mobile thermal
+      // reveal. Resetting these on teardown lets the mobile CSS take over.
+      el.style.maskImage = "";
+      el.style.webkitMaskImage = "";
+      el.style.maskComposite = "";
+      el.style.webkitMaskComposite = "";
+      el.style.opacity = "";
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
