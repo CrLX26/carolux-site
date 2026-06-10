@@ -75,9 +75,10 @@ Use **Playwright iPhone emulation** instead (touch → `pointer:coarse` → Leni
 - Legal: Tony = FORMER inspector (never "licensed"); company **insured, not licensed**; no "mold"; no specific $ savings; 2-yr guarantee.
 
 ### Outstanding design polish (from the impeccable critique — NOT yet done)
-See the critique findings; the P0s (large-monitor focal anchor + measure) are done. Still open:
-Stats "stat-strip" → one dominant stat; hero→alert→stats palette/transition continuity; two competing
-primary CTA colours + faint phone link; pinned-scroll length / always-reachable estimate CTA.
+📄 **Full findings + status saved at `design-refs/HERO-IMPECCABLE-CRITIQUE.md`** (the P0s are done;
+the P1/P2 backlog lives there). Quick list still open: Stats "stat-strip" → one dominant stat;
+hero→alert→stats palette/transition continuity; single primary-CTA colour + louder phone link;
+pinned-scroll length / always-reachable estimate CTA.
 
 ---
 
