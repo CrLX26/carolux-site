@@ -1315,7 +1315,9 @@ export default function Hero() {
           {/* Headline — clip-path line reveal on page load (CSS, no JS gate) */}
           <h1 style={{ margin: `0 0 ${MB.head}`, padding: 0 }}>
             {HERO.headline.map((line, i) => (
-              <div key={line} style={{ clipPath: "inset(0 -9999px)", lineHeight: 0.86 }}>
+              // Negative bottom inset lets descenders (y, j tails) show below the
+              // tight 0.86 line box; top stays 0 so the load reveal still wipes.
+              <div key={line} style={{ clipPath: "inset(0 -9999px -0.22em -9999px)", lineHeight: 0.86 }}>
                 <span
                   className="hero-line"
                   style={{
