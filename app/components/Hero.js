@@ -1317,7 +1317,9 @@ export default function Hero() {
             {HERO.headline.map((line, i) => (
               // Negative bottom inset lets descenders (y, j tails) show below the
               // tight 0.86 line box; top stays 0 so the load reveal still wipes.
-              <div key={line} style={{ clipPath: "inset(0 -9999px -0.22em -9999px)", lineHeight: 0.86 }}>
+              // fontSize on the div makes the -em resolve against the HEADLINE size
+              // (not the ~16px inherited size, which made the inset far too small).
+              <div key={line} style={{ clipPath: "inset(0 -9999px -0.32em -9999px)", lineHeight: 0.86, fontSize: FS.head }}>
                 <span
                   className="hero-line"
                   style={{
