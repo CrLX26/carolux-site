@@ -648,6 +648,10 @@ export default function Hero() {
             inset:           0,
             zIndex:          1,
             pointerEvents:   "none",
+            // Move with the SAME mouse parallax as the normal/thermal house so the
+            // glow stays locked to the windows (mask + image translate together).
+            transform:       `translate(${parallax.x}px, ${parallax.y}px)`,
+            transition:      "transform 0.15s ease-out",
             WebkitMaskImage: "radial-gradient(36% 42% at 63% 47%, #000 0%, #000 30%, transparent 74%)",
             maskImage:       "radial-gradient(36% 42% at 63% 47%, #000 0%, #000 30%, transparent 74%)",
           }}
