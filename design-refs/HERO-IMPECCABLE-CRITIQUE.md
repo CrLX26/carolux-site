@@ -21,8 +21,9 @@ the design its restraint.
 |---|---|---|
 | Large-monitor focal void / headline measure shatters to 6 lines | P0 | ✅ DONE — fluid `FS`/`MB` tokens (width+height bound), wider measure; 3 lines @2560 |
 | No warm pixel at rest / hero payoff gated behind mouse-move | P0 | ✅ DONE — ambient desktop thermal cycle + phase-aware XOR cursor (live on main) |
-| Stats is the "AI stat-strip" / breaks one-message rule | P1 | ⬜ OPEN |
-| Hero→Alert→Stats palette + transition continuity | P1 | ⬜ OPEN |
+| Stats is the "AI stat-strip" / breaks one-message rule | P1 | ✅ DONE — distilled to one dominant 15% + 2 demoted supports (90%+/R-49); dropped ROI; broke the 4-up grid into a left-anchored editorial lockup (branch `stats-distill-palette`) |
+| Hero→Alert→Stats palette + transition continuity | P1 | ⚠️ REVISED — burst stays **PINK** (it's the real pink fiberglass material; owner override, not a palette bug). Amber regrade reverted. The continuity item is reframed: keep pink, fixed the burst *timing* instead. |
+| Stats burst timing (desktop) + mobile entry gap | new | ✅ DONE — see "Stats timing fixes" below |
 | Two competing primary-CTA colours + faint phone link | P2 | ⬜ OPEN |
 | Pinned-scroll length / always-reachable estimate CTA | P2 | ⬜ OPEN |
 | Headline descenders (y/j) clipped | minor | ✅ DONE — clip-path bottom inset w/ `fontSize: FS.head` |
@@ -39,22 +40,50 @@ the design its restraint.
 
 ## OPEN PRIORITY ISSUES (not yet built)
 
-### [P1] Stats is the "AI stat-strip"
-- **What:** Four identical units (giant numeral + teal rule + tracked uppercase label) in
-  a `repeat(4,1fr)` grid — the textbook hero-metric template. Code renders FOUR stats
-  (incl. "100%+ ROI"); brand wants "one dominant message" + "30% less text."
-- **Why:** Most "AI-generated"-looking section; four co-equal numbers = no focal point.
-- **Direction:** Promote ONE hero stat (the **15%**, tied to the homeowner's bill) to true
-  display scale; demote 90% / R-49 to smaller supporting context; drop the 4th; fold per-stat
-  `source` italics into one caveat; break the four-up symmetry. → `/impeccable distill`.
+### ✅ [P1 — DONE] Stats is the "AI stat-strip"
+- **Was:** Four identical units (giant numeral + teal rule + tracked uppercase label) in a
+  `repeat(4,1fr)` grid — the textbook hero-metric template (an *absolute ban* in impeccable).
+- **Done (`stats-distill-palette`):** Distilled to **one dominant 15%** (display scale, lower-left,
+  with an "up to" kicker + EPA source) and **two demoted supporting facts** (90%+ under-insulated,
+  R-49 for NC) set small beneath a teal hairline. Dropped the 4th (100%+ ROI). Folded per-stat
+  sources into the single caveat. Broke the four-up symmetry → left-anchored editorial lockup;
+  the amber burst plays to the right/above. Mobile mirrors the hierarchy (big 15% + stacked
+  supports). Verified 1440 / 2560 / iPhone via `scripts/statshot.mjs` + `scripts/mstatshot.mjs`.
+  Content now 3 stats in `content.js` (`qualifier` field on the hero).
 
-### [P1] Palette / transition continuity across the sequence
-- **What:** Journey runs thermal-orange → sky-blue → cream → **pink** (Stats burst). Pink is
-  the only non-brand colour on the site; brushes the "fake stock" anti-reference. Transitions
-  are crossfades/cuts, not transformations.
-- **Why:** Breaks the "one cinematic world"; seams don't carry meaning.
-- **Direction:** Tint the Stats burst toward warm cream/amber so it belongs to the palette;
-  carry one element/colour through each cut. → `/impeccable colorize` + `/impeccable animate`.
+### ⚠️ [P1 — REVISED] Palette: keep the pink (it's the material)
+- **Critique said:** pink is the only non-brand colour; tint it warm amber.
+- **Owner override (2026-06-10):** the burst is **pink fiberglass insulation** — the pink IS the
+  product. Recolouring it misrepresents the material. The amber regrade was **reverted**; the
+  burst videos are back to the original pink (restored from git: `insulation-burst-bg2-scrub.mp4`
+  6.6MB / `-mobile.mp4` 2.7MB). Do **not** re-tint the burst.
+- **The real continuity problem was timing, not colour** — fixed below.
+
+### ✅ [DONE] Stats ⇄ alert transition — true cross-dissolve (desktop + mobile)
+*Reworked 2026-06-10 after owner feedback: no upward movement, video starts only when fully
+visible, true pink, and the burst must sit BEHIND the stats.*
+
+- **Desktop — opacity cross-fade, no movement.** The old entrance slid up (sticky slide + scale
+  punch + per-stat `translateY`). Replaced with a pure opacity cross-fade: the container is
+  `transparent` and the section is pulled up ~`-200svh` so it pins WHILE the alert is on screen,
+  then `entranceOpacity` (`[0.04,0.12,1]→[0,1,1]`, 4-pt so it holds at 1 and never fades back out)
+  dissolves the cream+burst+lockup in over the alert. Per-stat reveal is opacity-only now.
+  Verified `scripts/dtrans.mjs`: at wrapOpacity 0.7 the sky and pink burst are superimposed.
+- **Video starts only when fully visible (both browsers).** Both the Chromium scrub and the
+  Firefox/low-power loop are gated on scroll progress (`v ≥ VID_START 0.12`, i.e. once the
+  cross-fade completes); the fallback resets to frame 0 and plays there, scrub holds frame 0 until
+  then and finishes by `VID_END 0.82`. Verified on real Firefox (`scripts/dffx.mjs`): paused at
+  page top, playing at full view.
+- **True pink restored.** Both burst files are the original pink fiberglass (identical avg colour
+  desktop vs mobile). The desktop *looked* washed because of a heavy full-bleed cream scrim — that
+  was reduced to a light wash under the lockup column only, so the pink reads true and the navy
+  15% stays legible.
+- **Mobile — cross-fade + burst behind the stats.** The section cross-fades in via the wrapper
+  opacity (CSS-transitioned, fired by the IntersectionObserver — the 100svh container has no usable
+  scroll progress). The burst is zoomed (`scale(2.0)`, origin `50% 78%`) so the pink sits BEHIND
+  the numbers instead of as a band below them. NOTE: the clip's wide dense petals only exist in its
+  lower half (the column is narrow up top), so the hero 15% sits over the lighter top of the burst
+  by nature of the material — pushing the zoom further just blurs it. Verified `scripts/mnat.mjs`.
 
 ### [P2] Two "primary" CTAs + near-invisible phone link
 - **What:** Primary button teal in base copy, orange `#ff5500` in the thermal replica; phone
@@ -89,5 +118,8 @@ the design its restraint.
 
 ---
 
-*Next highest-impact = the two P1s (Stats redesign + palette continuity); they're what's left of
-the "looks AI-made" risk. Branch off `hero-polish` when tackling.*
+*Both P1s done (2026-06-10, branch `stats-distill-palette` off `hero-polish`): Stats distilled to
+one dominant figure, and the burst recolored pink→amber. That clears the bulk of the "looks
+AI-made" risk. What's left: the two P2s (single CTA colour + louder phone link; pinned-scroll
+escape hatch) and the motion half of the palette item (carry an element through each Hero→Alert→
+Stats cut — `/impeccable animate`). Not yet committed/merged — review on the branch first.*

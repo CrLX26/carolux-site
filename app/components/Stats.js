@@ -29,13 +29,12 @@ const getNarrowServerSnapshot = () => false;
 
 // ── Cumulative reveal — entry windows only ────────────────────────────────────
 // Each tuple: [enterStart, enterEnd] in scroll progress 0→1.
-// Stats fade in one by one as the burst plays — and STAY visible.
-// All four are present when the burst ends.
+// The hero figure lands first and holds; the two supporting facts follow.
+// All three are present when the burst ends. (Cumulative — no exit phase.)
 const WINDOWS = [
-  [0.12, 0.22],   // stat 1 — 15%  savings
-  [0.36, 0.46],   // stat 2 — 90%+ under-insulated
-  [0.60, 0.70],   // stat 3 — R-49
-  [0.84, 0.94],   // stat 4 — 100%+ ROI
+  [0.10, 0.24],   // HERO   — 15% lower costs (lands first, biggest weight)
+  [0.40, 0.54],   // support — 90%+ under-insulated
+  [0.62, 0.76],   // support — R-49
 ];
 
 // Maps scroll progress to opacity + Y for one stat.
@@ -51,12 +50,12 @@ export default function Stats() {
   const containerRef = useRef(null); // outer scroll tunnel
   const sectionRef   = useRef(null); // inner sticky viewport
   const videoRef     = useRef(null);
+  const wrapperRef   = useRef(null); // entrance/cross-fade layer (mobile opacity)
 
   const stat1Ref = useRef(null);
   const stat2Ref = useRef(null);
   const stat3Ref = useRef(null);
-  const stat4Ref = useRef(null);
-  const statRefs = [stat1Ref, stat2Ref, stat3Ref, stat4Ref];
+  const statRefs = [stat1Ref, stat2Ref, stat3Ref];
 
   const isTouch = useSyncExternalStore(
     subscribePointer,
@@ -89,27 +88,14 @@ export default function Stats() {
     offset: ["start start", "end end"],
   });
 
-  // ── Option A: scale-punch entrance (desktop only) ────────────────────────
-  // Inner wrapper starts zoomed-in + low, snaps to rest over first 6% of the
-  // scroll tunnel (≈ 25vh). Four-keyframe exponential decay: fast exit, hard land.
-  //
-  // To switch to Option B (Hero-driven pre-staging):
-  //   1. Delete these two useTransform calls.
-  //   2. Delete the motion.div wrapper in the JSX (search "ENTRANCE-WRAPPER").
-  //   3. In page.js: pass heroScrollYProgress (from Hero's useScroll) into <Stats>.
-  //   4. In Stats: accept heroScrollYProgress prop; add
-  //      const stageY = useTransform(heroScrollYProgress, [0.87, 0.95, 1.0], [100, 30, 0]);
-  //      and apply style={{ y: stageY }} to the sectionRef div.
-  const entranceScale = useTransform(
-    scrollYProgress,
-    [0,    0.02, 0.07, 0.12],
-    [1.30, 1.20, 1.06, 1.0],
-  );
-  const entranceY = useTransform(
-    scrollYProgress,
-    [0,    0.02, 0.07, 0.12],
-    [120,  75,   18,   0],
-  );
+  // ── Desktop entrance: pure opacity CROSS-FADE (no movement) ───────────────
+  // The panel slides up into its pin at opacity 0 (invisible), then cross-fades
+  // in over the alert while pinned — no scale punch, no rise. Fully opaque (and
+  // the burst starts) by VID_START. The hero alert behind it stays put; the
+  // fade-in over it IS the cross-dissolve.
+  // Hold at 1 once faded in — the 4th keyframe pins it so the section never
+  // fades back out as the visitor scrolls deeper into the tunnel.
+  const entranceOpacity = useTransform(scrollYProgress, [0.04, 0.12, 1], [0, 1, 1]);
 
   // ── Desktop: capability-gated. ───────────────────────────────────────────
   // Per-frame video seeking (the scrub) is smooth on Chromium but stutters on
@@ -125,24 +111,47 @@ export default function Stats() {
     const lowMemory      = typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4;
     const canScrub       = !prefersReduced && !isFirefox && !lowMemory;
 
+    // Opacity-only reveal — the stats fade in place as the burst plays, no rise.
     const revealStats = (v) => {
       statRefs.forEach((ref, i) => {
         if (!ref.current) return;
-        const { opacity, y } = getStatStyle(v, WINDOWS[i]);
-        ref.current.style.opacity   = String(opacity);
-        ref.current.style.transform = `translateY(${y}px)`;
+        const { opacity } = getStatStyle(v, WINDOWS[i]);
+        ref.current.style.opacity = String(opacity);
       });
     };
 
+    // Burst timing window (scroll progress). The section cross-fades in by ~0.12
+    // (entranceOpacity); the burst is held at frame 0 until then so it only
+    // begins once the panel is fully visible (a hair before is fine), and reaches
+    // its end by VID_END so the settled pile holds while the visitor reads.
+    const VID_START = 0.12, VID_END = 0.82, DUR = 7;
+
     // ── Fallback (Firefox / reduced-motion / low-memory): autoplay loop, no
-    //    per-frame seeking — kills the scroll stutter. Stats still reveal on scroll.
+    //    per-frame seeking — kills the scroll stutter. The clip is NOT scroll-
+    //    scrubbed here, so gate it on scroll progress: start it fresh from frame
+    //    0 only once the section is fully visible (v ≥ VID_START), pause when
+    //    scrolled away. Stats still reveal on scroll.
     if (!canScrub) {
       if (video) {
         video.loop    = true;
         video.preload = "auto";
-        video.play().catch(() => {});
       }
-      const unsub = scrollYProgress.on("change", revealStats);
+      let playing = false;
+      const onChange = (v) => {
+        revealStats(v);
+        if (!video) return;
+        if (v >= VID_START && v < 0.97) {
+          if (!playing) {
+            try { video.currentTime = 0; } catch { /* not seekable yet */ }
+            video.play().catch(() => {});
+            playing = true;
+          }
+        } else if (playing) {
+          video.pause();
+          playing = false;
+        }
+      };
+      const unsub = scrollYProgress.on("change", onChange);
       return () => unsub();
     }
 
@@ -177,9 +186,12 @@ export default function Stats() {
     };
     rafId = requestAnimationFrame(tick);
 
-    // Scroll listener: scrub video + drive each stat's transform/opacity.
+    // Scroll listener: scrub video + drive each stat's opacity. Held at frame 0
+    // until the section is fully visible (VID_START), then scrubbed to its end by
+    // VID_END so the settled pile holds while the visitor reads.
     const unsubscribe = scrollYProgress.on("change", (v) => {
-      targetTime = v * 7;
+      const p = Math.max(0, Math.min(1, (v - VID_START) / (VID_END - VID_START)));
+      targetTime = p * DUR;
       revealStats(v);
     });
 
@@ -196,31 +208,49 @@ export default function Stats() {
     if (video) video.loop = true;
     const section = sectionRef.current;
     if (!section) return;
-    // Defer the heavy video until Stats is near the viewport. preload="none"
-    // means nothing downloads until this play() call, so the 16MB clip never
-    // competes with the hero on first load. rootMargin starts it ~300px early
-    // so it's running by the time the section is in view. Pause on exit.
+    // The burst must play AS the section fills the screen — not 300px early,
+    // which let the short clip run out (settling to cream) while the alert was
+    // still on screen. preload="none" keeps the clip from competing with the
+    // hero on first load; we download it the moment it touches the viewport,
+    // then restart it from frame 0 once the panel is ~half in view so the dense
+    // explosion coincides with the section settling in.
+    // Cross-fade the whole section in (cream + burst + stats together) as it
+    // reaches the screen — opacity only, no movement — mirroring the desktop
+    // cross-dissolve. The 100svh container has no usable scroll progress, so the
+    // fade is CSS-transitioned and triggered here.
+    const wrap = wrapperRef.current;
+    if (wrap) {
+      wrap.style.opacity    = "0";
+      wrap.style.transition = "opacity 650ms ease";
+    }
+    let loaded = false, playing = false;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          if (video) video.play().catch(() => {});
-          statRefs.forEach((ref, i) => {
-            setTimeout(() => {
-              if (!ref.current) return;
-              ref.current.style.opacity   = "1";
-              ref.current.style.transform = "translateY(0px)";
-            }, i * 150);
+        const ratio = entry.intersectionRatio;
+        if (video && ratio > 0 && !loaded) {
+          video.preload = "auto";
+          video.load();
+          loaded = true;
+        }
+        if (ratio >= 0.25) {
+          if (wrap) wrap.style.opacity = "1";
+          if (video && !playing) {
+            try { video.currentTime = 0; } catch { /* not seekable yet */ }
+            video.play().catch(() => {});
+            playing = true;
+          }
+          statRefs.forEach((ref) => {
+            if (ref.current) ref.current.style.opacity = "1";
           });
         } else {
-          if (video) video.pause();
+          if (wrap) wrap.style.opacity = "0";
+          if (video && playing) { video.pause(); playing = false; }
           statRefs.forEach((ref) => {
-            if (!ref.current) return;
-            ref.current.style.opacity   = "0";
-            ref.current.style.transform = "translateY(20px)";
+            if (ref.current) ref.current.style.opacity = "0";
           });
         }
       },
-      { threshold: 0.3, rootMargin: "300px 0px" },
+      { threshold: [0, 0.25], rootMargin: "0px" },
     );
     observer.observe(section);
     return () => observer.disconnect();
@@ -233,8 +263,16 @@ export default function Stats() {
       style={{
         height:     isTouch ? "100svh" : "420vh",
         position:   "relative",
-        background: "#faf8f5",
-        marginTop:  isTouch ? 0 : `calc(-100svh - ${navH}px)`,
+        // Transparent so the hero alert shows through while the section
+        // cross-fades in over it. The cream lives INSIDE the fading layer (and
+        // the page body is cream too, so any gap reads cream regardless).
+        background: "transparent",
+        // Overlap the hero so the section pins WHILE the alert is still on screen,
+        // then cross-fades in over it (entranceOpacity) — a true cross-dissolve,
+        // no slide, no dead-cream gap. Desktop pulls ~2 screens so the pin lands
+        // on the alert's hold; mobile pulls ~40svh so the burst rises as the alert
+        // cools (u≈2.2) without intruding on the hold.
+        marginTop:  isTouch ? "-42svh" : `calc(-200svh - ${navH}px)`,
       }}
     >
       <div
@@ -247,17 +285,24 @@ export default function Stats() {
           overflow: "clip",
         }}
       >
-        {/* ENTRANCE-WRAPPER — Option A scale-punch. Remove this motion.div (and its
-            closing tag below) when switching to Option B. */}
+        {/* ENTRANCE-WRAPPER — opacity cross-fade with the alert (desktop). All of
+            the section's pixels (cream + video + lockup) fade in together, so the
+            alert behind shows through until the fade completes. No movement. */}
         <motion.div
+          ref={wrapperRef}
           style={{
-            position:        "absolute",
-            inset:           0,
-            transformOrigin: "50% 65%",
-            scale:           isTouch ? 1 : entranceScale,
-            y:               isTouch ? 0 : entranceY,
+            position: "absolute",
+            inset:    0,
+            // Desktop: scroll-linked cross-fade. Mobile: opacity is driven
+            // imperatively by the IntersectionObserver (CSS-transitioned) since
+            // the 100svh container has no usable scroll progress of its own.
+            opacity:  isTouch ? undefined : entranceOpacity,
           }}
         >
+
+        {/* Cream backdrop — lives inside the fading layer so the brand cream
+            cross-fades in with everything else (container is transparent). */}
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "#faf8f5", zIndex: 0 }} />
 
         {/* ── Video background ───────────────────────────────────────────────
             Desktop scrubs frame-by-frame, so it gets the keyframe-dense scrub
@@ -276,6 +321,11 @@ export default function Stats() {
             width:         "100%",
             height:        "100%",
             objectFit:     "cover",
+            // Mobile: zoom hard into the dense petal mass (lower in the frame) so
+            // the pink fills BEHIND the numbers — at 1× the column sits low and
+            // leaves the hero 15% on bare cream. Desktop keeps the full burst.
+            transform:     isTouch ? "scale(2.0)" : "none",
+            transformOrigin: "50% 78%",
             zIndex:        0,
             pointerEvents: "none",
           }}
@@ -321,152 +371,215 @@ export default function Stats() {
           />
         ))}
 
-        {/* ── Desktop: Four-column bottom band ─────────────────────────────
-            Bottom 28% of the panel. Stats reveal cumulatively — each fades in
-            once and stays. Upper 72% remains clear for burst video.
-            JS drives opacity + translateY via refs — no CSS transitions needed. */}
+        {/* A soft cream wash only under the lockup column (left third) keeps the
+            navy text legible without paling the burst — far lighter than the old
+            full-bleed scrim, and it fades out before the dense centre of the
+            burst so the true pink reads. */}
         {!isTouch && (
           <div
-            role="region"
-            aria-label="Key statistics"
+            aria-hidden="true"
             style={{
-              position:            "absolute",
-              bottom:              0,
-              // Centre a width-capped grid (translateX trick — left/right:0 would
-              // stretch the abs element and ignore maxWidth) so the four numbers
-              // stay evenly distributed and contained instead of clumping left.
-              left:                "50%",
-              transform:           "translateX(-50%)",
-              width:               "100%",
-              maxWidth:            "1100px",
-              zIndex:              10,
-              display:             "grid",
-              // Deterministic columns: 4-across on desktop, 2×2 when the panel is
-              // narrow (≤860px / landscape phones), so the 4th stat is never
-              // clipped and the row never leaves empty tracks on the right.
-              gridTemplateColumns: isNarrow ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-              alignItems:          "start",
-              justifyItems:        "center",
-              rowGap:              "clamp(20px, 3vh, 36px)",
-              paddingBottom:       "clamp(24px, 5vh, 64px)",
-              pointerEvents:       "none",
+              position:   "absolute",
+              inset:      0,
+              zIndex:     8,
+              background:
+                "linear-gradient(100deg, rgba(250,248,245,0.62) 0%, rgba(250,248,245,0.30) 22%, transparent 40%)",
+              pointerEvents: "none",
+            }}
+          />
+        )}
+
+        {/* ── Desktop: editorial lockup ───────────────────────────────────
+            One dominant figure (15%) anchored lower-left at display scale, two
+            demoted supporting facts beneath it. Breaks the old four-up grid —
+            single message per section. Burst plays to the right / above.
+            JS drives opacity + translateY via refs — no CSS transitions needed. */}
+        {!isTouch && (() => {
+          const hero = STATS[0];
+          const supports = STATS.slice(1);
+          return (
+          <div
+            role="region"
+            aria-label="Why insulation pays off"
+            style={{
+              position:       "absolute",
+              left:           0,
+              bottom:         0,
+              top:            0,
+              width:          "100%",
+              maxWidth:       "min(640px, 52vw)",
+              zIndex:         10,
+              display:        "flex",
+              flexDirection:  "column",
+              justifyContent: "flex-end",
+              alignItems:     "flex-start",
+              padding:        "0 clamp(28px, 6vw, 110px) clamp(48px, 9vh, 104px)",
+              pointerEvents:  "none",
             }}
           >
-            {STATS.map((stat, i) => (
-              <div
-                key={i}
-                ref={statRefs[i]}
-                style={{
-                  opacity:       0,
-                  transform:     "translateY(60px)",
-                  textAlign:     "center",
-                  padding:       "0 clamp(8px, 1.5vw, 28px)",
-                  display:       "flex",
-                  flexDirection: "column",
-                  alignItems:    "center",
-                }}
-              >
-                {/* Teal accent rule — sits above number */}
-                <div
-                  aria-hidden="true"
+            {/* ── HERO figure ── */}
+            <div
+              ref={statRefs[0]}
+              style={{ opacity: 0, textAlign: "left" }}
+            >
+              {hero.qualifier && (
+                <span
                   style={{
-                    width:        "24px",
-                    height:       "1.5px",
-                    background:   "#4a90a4",
-                    marginBottom: "clamp(10px, 1.2vh, 18px)",
-                    opacity:      0.8,
-                  }}
-                />
-
-                {/* Number */}
-                <div
-                  aria-label={`${stat.prefix}${stat.countTo}${stat.suffix}`}
-                  style={{
-                    fontFamily:     "var(--font-cormorant)",
-                    fontWeight:     400,
-                    fontSize:       "clamp(56px, 9vw, 120px)",
-                    lineHeight:     0.88,
-                    color:          "#0d1d2b",
-                    textShadow:     "0 2px 20px rgba(250,248,245,0.65)",
-                    display:        "flex",
-                    alignItems:     "baseline",
-                    justifyContent: "center",
-                    letterSpacing:  "-0.04em",
-                  }}
-                >
-                  {stat.prefix && (
-                    <span style={{ fontSize: "0.46em", letterSpacing: "0.03em", marginRight: "3px" }}>
-                      {stat.prefix}
-                    </span>
-                  )}
-                  <span>{stat.countTo}</span>
-                  {stat.suffix && (
-                    <span style={{ fontSize: "0.38em", alignSelf: "flex-start", paddingTop: "0.14em", marginLeft: "3px" }}>
-                      {stat.suffix}
-                    </span>
-                  )}
-                </div>
-
-                {/* Label */}
-                <p
-                  style={{
+                    display:       "block",
                     fontFamily:    "var(--font-label)",
-                    fontSize:      "clamp(12px, 1.25vw, 16px)",
+                    fontSize:      "clamp(12px, 1.05vw, 15px)",
                     fontWeight:    500,
-                    letterSpacing: "0.11em",
+                    letterSpacing: "0.18em",
                     textTransform: "uppercase",
                     color:         "#4a90a4",
-                    margin:        "clamp(8px, 1vh, 14px) auto 0",
-                    lineHeight:    1.4,
-                    maxWidth:      "18ch",
+                    marginBottom:  "clamp(4px, 0.8vh, 10px)",
                   }}
                 >
-                  {stat.label}
-                </p>
-
-                {/* Source */}
-                {stat.source && (
-                  <p
-                    style={{
-                      fontFamily:    "var(--font-dm-sans)",
-                      fontSize:      "clamp(10px, 0.95vw, 12px)",
-                      fontStyle:     "italic",
-                      color:         "rgba(13,29,43,0.72)",
-                      margin:        "6px 0 0",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {stat.source}
-                  </p>
+                  {hero.qualifier}
+                </span>
+              )}
+              <div
+                aria-label={`${hero.prefix}${hero.countTo}${hero.suffix}`}
+                style={{
+                  fontFamily:    "var(--font-cormorant)",
+                  fontWeight:    400,
+                  fontSize:      "clamp(108px, 17vw, 280px)",
+                  lineHeight:    0.82,
+                  color:         "#0d1d2b",
+                  textShadow:    "0 2px 28px rgba(250,248,245,0.7)",
+                  display:       "flex",
+                  alignItems:    "baseline",
+                  letterSpacing: "-0.045em",
+                }}
+              >
+                {hero.prefix && (
+                  <span style={{ fontSize: "0.42em", letterSpacing: "0.02em", marginRight: "4px" }}>
+                    {hero.prefix}
+                  </span>
+                )}
+                <span>{hero.countTo}</span>
+                {hero.suffix && (
+                  <span style={{ fontSize: "0.40em", alignSelf: "flex-start", paddingTop: "0.18em", marginLeft: "4px" }}>
+                    {hero.suffix}
+                  </span>
                 )}
               </div>
-            ))}
+              <p
+                style={{
+                  fontFamily:    "var(--font-cormorant)",
+                  fontWeight:    400,
+                  fontSize:      "clamp(20px, 2.1vw, 32px)",
+                  lineHeight:    1.18,
+                  color:         "#1a2b3c",
+                  margin:        "clamp(10px, 1.6vh, 22px) 0 0",
+                  maxWidth:      "20ch",
+                }}
+              >
+                {hero.label}
+              </p>
+              {hero.source && (
+                <p
+                  style={{
+                    fontFamily:    "var(--font-dm-sans)",
+                    fontSize:      "clamp(10px, 0.85vw, 12px)",
+                    fontStyle:     "italic",
+                    color:         "rgba(13,29,43,0.66)",
+                    margin:        "clamp(8px, 1vh, 14px) 0 0",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {hero.source}
+                </p>
+              )}
+            </div>
 
-            {/* Caveat — every figure is an average, not a guarantee */}
+            {/* ── Supporting facts ── demoted scale + muted, set below the hero
+                 with a teal hairline divider. Row on wide screens, stacked when
+                 the panel is narrow. */}
+            <div
+              aria-hidden="false"
+              style={{
+                display:        "flex",
+                flexDirection:  isNarrow ? "column" : "row",
+                gap:            isNarrow ? "clamp(14px, 2vh, 22px)" : "clamp(32px, 4vw, 56px)",
+                marginTop:      "clamp(26px, 4.5vh, 52px)",
+                paddingTop:     "clamp(20px, 3vh, 30px)",
+                borderTop:      "1px solid rgba(74,144,164,0.32)",
+                alignItems:     isNarrow ? "flex-start" : "baseline",
+              }}
+            >
+              {supports.map((stat, i) => (
+                <div
+                  key={i}
+                  ref={statRefs[i + 1]}
+                  style={{
+                    opacity:    0,
+                    display:    "flex",
+                    alignItems: "baseline",
+                    gap:        "clamp(8px, 0.9vw, 14px)",
+                  }}
+                >
+                  <span
+                    aria-label={`${stat.prefix}${stat.countTo}${stat.suffix}`}
+                    style={{
+                      fontFamily:    "var(--font-cormorant)",
+                      fontWeight:    400,
+                      fontSize:      "clamp(34px, 4.2vw, 60px)",
+                      lineHeight:    0.9,
+                      color:         "rgba(13,29,43,0.9)",
+                      letterSpacing: "-0.03em",
+                      whiteSpace:    "nowrap",
+                    }}
+                  >
+                    {stat.prefix}{stat.countTo}
+                    {stat.suffix && (
+                      <span style={{ fontSize: "0.5em" }}>{stat.suffix}</span>
+                    )}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily:    "var(--font-dm-sans)",
+                      fontSize:      "clamp(12px, 1vw, 15px)",
+                      fontWeight:    500,
+                      lineHeight:    1.35,
+                      color:         "rgba(26,43,60,0.78)",
+                      maxWidth:      "17ch",
+                    }}
+                  >
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Caveat — every figure is an average, not a guarantee. Folds the
+                per-stat sources into one line. */}
             <p
               style={{
-                gridColumn:    "1 / -1",
-                margin:        "clamp(8px, 1.5vh, 20px) auto 0",
-                maxWidth:      "70ch",
-                textAlign:     "center",
-                fontFamily:    "var(--font-dm-sans)",
-                fontSize:      "clamp(10px, 0.9vw, 12px)",
-                fontStyle:     "italic",
-                lineHeight:    1.6,
-                color:         "rgba(13,29,43,0.66)",
-                padding:       "0 clamp(16px, 4vw, 40px)",
+                margin:     "clamp(18px, 2.6vh, 28px) 0 0",
+                maxWidth:   "56ch",
+                textAlign:  "left",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize:   "clamp(10px, 0.85vw, 12px)",
+                fontStyle:  "italic",
+                lineHeight: 1.6,
+                color:      "rgba(13,29,43,0.6)",
               }}
             >
               {STATS_CAVEAT}
             </p>
           </div>
-        )}
+          );
+        })()}
 
-        {/* ── Mobile: 2×2 grid — all stats visible, stagger on intersect ───── */}
-        {isTouch && (
+        {/* ── Mobile: hero figure + two supporting facts ─────────────────── */}
+        {isTouch && (() => {
+          const hero = STATS[0];
+          const supports = STATS.slice(1);
+          return (
           <div
             role="region"
-            aria-label="Key statistics"
+            aria-label="Why insulation pays off"
             style={{
               position:       "absolute",
               inset:          0,
@@ -475,83 +588,137 @@ export default function Stats() {
               flexDirection:  "column",
               justifyContent: "center",
               alignItems:     "center",
-              paddingBottom:  "clamp(40px, 7vh, 64px)",
+              padding:        "0 clamp(24px, 7vw, 40px) clamp(40px, 7vh, 64px)",
             }}
           >
+            {/* ── HERO figure ── */}
             <div
+              ref={statRefs[0]}
               style={{
-                display:             "grid",
-                gridTemplateColumns: "1fr 1fr",
-                placeItems:          "center",
-                width:               "100%",
+                opacity:    0,
+                transition: "opacity 600ms ease",
+                textAlign:  "center",
               }}
             >
-            {STATS.map((stat, i) => (
+              {hero.qualifier && (
+                <span
+                  style={{
+                    display:       "block",
+                    fontFamily:    "var(--font-label)",
+                    fontSize:      "clamp(11px, 3vw, 13px)",
+                    fontWeight:    500,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color:         "#4a90a4",
+                    marginBottom:  "6px",
+                  }}
+                >
+                  {hero.qualifier}
+                </span>
+              )}
               <div
-                key={i}
-                ref={statRefs[i]}
+                aria-label={`${hero.prefix}${hero.countTo}${hero.suffix}`}
                 style={{
-                  opacity:    0,
-                  transform:  "translateY(20px)",
-                  transition: "opacity 600ms ease, transform 600ms ease",
-                  textAlign:  "center",
-                  padding:    "clamp(12px, 3vw, 32px)",
-                  width:      "100%",
+                  fontFamily:     "var(--font-cormorant)",
+                  fontWeight:     400,
+                  fontSize:       "clamp(96px, 30vw, 150px)",
+                  lineHeight:     0.86,
+                  color:          "#0d1d2b",
+                  textShadow:     "0 1px 6px rgba(250,248,245,0.6)",
+                  display:        "flex",
+                  alignItems:     "baseline",
+                  justifyContent: "center",
+                  letterSpacing:  "-0.04em",
                 }}
               >
-                {/* Number */}
-                <div
-                  aria-label={`${stat.prefix}${stat.countTo}${stat.suffix}`}
-                  style={{
-                    fontFamily:     "var(--font-cormorant)",
-                    fontWeight:     400,
-                    fontSize:       "clamp(44px, 11vw, 80px)",
-                    lineHeight:     0.9,
-                    color:          "#1a2b3c",
-                    textShadow:     "0 1px 4px rgba(255,255,255,0.5)",
-                    display:        "flex",
-                    alignItems:     "baseline",
-                    justifyContent: "center",
-                    letterSpacing:  "-0.03em",
-                  }}
-                >
-                  {stat.prefix && (
-                    <span style={{ fontSize: "0.52em", letterSpacing: "0.04em", marginRight: "2px" }}>
-                      {stat.prefix}
-                    </span>
-                  )}
-                  <span>{stat.countTo}</span>
-                  {stat.suffix && (
-                    <span style={{ fontSize: "0.44em", alignSelf: "flex-start", paddingTop: "0.12em", marginLeft: "2px" }}>
-                      {stat.suffix}
-                    </span>
-                  )}
-                </div>
-
-                {/* Label */}
-                <p
-                  style={{
-                    fontFamily:    "var(--font-dm-sans)",
-                    fontSize:      "clamp(10px, 2.8vw, 13px)",
-                    fontWeight:    500,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color:         "rgba(26,43,60,0.85)",
-                    margin:        "clamp(6px, 1vw, 12px) auto 0",
-                    lineHeight:    1.5,
-                    maxWidth:      "16ch",
-                  }}
-                >
-                  {stat.label}
-                </p>
+                {hero.prefix && (
+                  <span style={{ fontSize: "0.46em", letterSpacing: "0.03em", marginRight: "2px" }}>
+                    {hero.prefix}
+                  </span>
+                )}
+                <span>{hero.countTo}</span>
+                {hero.suffix && (
+                  <span style={{ fontSize: "0.42em", alignSelf: "flex-start", paddingTop: "0.14em", marginLeft: "3px" }}>
+                    {hero.suffix}
+                  </span>
+                )}
               </div>
-            ))}
+              <p
+                style={{
+                  fontFamily: "var(--font-cormorant)",
+                  fontWeight: 400,
+                  fontSize:   "clamp(18px, 5vw, 24px)",
+                  lineHeight: 1.2,
+                  color:      "#1a2b3c",
+                  margin:     "clamp(10px, 2vw, 16px) auto 0",
+                  maxWidth:   "18ch",
+                }}
+              >
+                {hero.label}
+              </p>
             </div>
 
-            {/* Caveat — every figure is an average, not a guarantee */}
+            {/* ── Supporting facts ── stacked, demoted, teal hairline above ── */}
+            <div
+              style={{
+                display:       "flex",
+                flexDirection: "column",
+                gap:           "clamp(12px, 3vw, 18px)",
+                alignItems:    "center",
+                marginTop:     "clamp(26px, 6vw, 38px)",
+                paddingTop:    "clamp(20px, 4vw, 26px)",
+                borderTop:     "1px solid rgba(74,144,164,0.3)",
+                width:         "min(100%, 360px)",
+              }}
+            >
+              {supports.map((stat, i) => (
+                <div
+                  key={i}
+                  ref={statRefs[i + 1]}
+                  style={{
+                    opacity:    0,
+                    transition: "opacity 600ms ease",
+                    display:    "flex",
+                    alignItems: "baseline",
+                    gap:        "10px",
+                    textAlign:  "left",
+                  }}
+                >
+                  <span
+                    aria-label={`${stat.prefix}${stat.countTo}${stat.suffix}`}
+                    style={{
+                      fontFamily:    "var(--font-cormorant)",
+                      fontWeight:    400,
+                      fontSize:      "clamp(34px, 9vw, 44px)",
+                      lineHeight:    0.9,
+                      color:         "rgba(13,29,43,0.9)",
+                      letterSpacing: "-0.03em",
+                      whiteSpace:    "nowrap",
+                    }}
+                  >
+                    {stat.prefix}{stat.countTo}
+                    {stat.suffix && <span style={{ fontSize: "0.5em" }}>{stat.suffix}</span>}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize:   "clamp(11px, 3vw, 13px)",
+                      fontWeight: 500,
+                      lineHeight: 1.35,
+                      color:      "rgba(26,43,60,0.78)",
+                      maxWidth:   "18ch",
+                    }}
+                  >
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Caveat — folds the per-stat sources into one line */}
             <p
               style={{
-                marginTop:  "clamp(20px, 3vh, 32px)",
+                marginTop:  "clamp(18px, 3vh, 28px)",
                 maxWidth:   "34ch",
                 textAlign:  "center",
                 fontFamily: "var(--font-dm-sans)",
@@ -565,7 +732,8 @@ export default function Stats() {
               {STATS_CAVEAT}
             </p>
           </div>
-        )}
+          );
+        })()}
 
         </motion.div>{/* /ENTRANCE-WRAPPER */}
       </div>

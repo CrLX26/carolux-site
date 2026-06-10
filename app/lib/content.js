@@ -43,34 +43,32 @@ export const TRUST_BADGES = [
   "2-Year workmanship guarantee",
 ];
 
+// One dominant figure, two supporting facts. Index 0 is the hero stat (the
+// homeowner's bill); 1 and 2 are demoted context. The four-up "stat strip" was
+// retired — a single message per section, not four co-equal numbers.
 export const STATS = [
   {
+    // HERO — the number tied to the visitor's energy bill.
     prefix: "",
+    qualifier: "up to",
     countTo: 15,
     suffix: "%",
-    label: "Up to 15% heating & cooling savings",
+    label: "lower heating & cooling costs",
     source: "EPA ENERGY STAR",
   },
   {
+    // Supporting — the hidden-problem hook.
     prefix: "",
     countTo: 90,
     suffix: "%+",
     label: "of U.S. homes are under-insulated",
-    source: "ENERGY STAR 2024",
   },
   {
+    // Supporting — the technical benchmark (Tony's inspector edge).
     prefix: "R-",
     countTo: 49,
     suffix: "",
-    label: "Recommended level for NC",
-    source: "Department of Energy",
-  },
-  {
-    prefix: "",
-    countTo: 100,
-    suffix: "%+",
-    label: "Typical ROI at resale",
-    source: "Remodeling 2016 Cost vs. Value",
+    label: "recommended attic level for North Carolina",
   },
 ];
 
