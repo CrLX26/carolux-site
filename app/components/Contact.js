@@ -13,6 +13,16 @@ import {
   sectionStyle,
   containerStyle,
 } from "./sectionKit";
+import {
+  useLead,
+  Spinner,
+  ErrorNote,
+  SuccessReveal,
+  CheckBadge,
+  Honeypot,
+  focusRing,
+  ERR_ON_LIGHT,
+} from "./leadForm";
 
 // Shared field styling — warm-white surface so inputs read cleanly on the navy band.
 const fieldStyle = {
@@ -38,8 +48,9 @@ const labelStyle = {
   marginBottom: "8px",
 };
 
-function Field({ id, label, type = "text", value, onChange, placeholder, required, autoComplete }) {
+function Field({ id, label, type = "text", value, onChange, placeholder, required, autoComplete, invalid, disabled }) {
   const [focused, setFocused] = useState(false);
+  const borderColor = invalid ? ERR_ON_LIGHT : focused ? C.teal : C.border;
   return (
     <div style={{ textAlign: "left" }}>
       <label htmlFor={id} style={labelStyle}>
@@ -54,9 +65,16 @@ function Field({ id, label, type = "text", value, onChange, placeholder, require
         placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}
+        aria-invalid={!!invalid}
+        disabled={disabled}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        style={{ ...fieldStyle, borderColor: focused ? C.teal : C.border, transition: "border-color 150ms ease" }}
+        style={{
+          ...fieldStyle,
+          borderColor,
+          boxShadow: focused ? focusRing(invalid ? "rgba(168,57,42,0.25)" : undefined) : "none",
+          transition: "border-color 150ms ease, box-shadow 150ms ease",
+        }}
       />
     </div>
   );
@@ -70,17 +88,27 @@ export default function Contact() {
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
   const [msgFocused, setMsgFocused] = useState(false);
+  const [tried, setTried] = useState(false);
+  const [hp, setHp] = useState(""); // honeypot
+  const lead = useLead();
 
-  // No backend yet: compose a prefilled email via mailto. See content.js TODO(lead-capture).
-  const onSubmit = (e) => {
+  const nameErr = tried && !name.trim();
+  const phoneErr = tried && !phone.trim();
+
+  // POST to /api/lead (Resend). Name + phone are the only hard requirements so an
+  // owner can call back. The direct phone/email CTAs below are the always-on fallback.
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const subject = `Free estimate request${name ? ` — ${name}` : ""}`;
-    const body =
-      `Name: ${name}\n` +
-      `Phone: ${phone}\n` +
-      `Property address: ${address}\n\n` +
-      `What's going on up there:\n${message}\n`;
-    window.location.href = `${COMPANY.emailHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setTried(true);
+    if (!name.trim() || !phone.trim()) return;
+    await lead.submit({
+      type: "contact",
+      name: name.trim(),
+      phone: phone.trim(),
+      address: address.trim(),
+      message: message.trim(),
+      company: hp,
+    });
   };
 
   return (
@@ -150,116 +178,183 @@ export default function Contact() {
           {intro}
         </Reveal>
 
-        {/* ── Lead form (primary action) — mailto fallback, no backend yet ───── */}
+        {/* ── Lead form (primary action) → /api/lead (Resend) ───── */}
         <Reveal delay={0.2} style={{ maxWidth: "560px", margin: "clamp(32px, 5vh, 48px) auto 0" }}>
-          <form onSubmit={onSubmit}>
-            <div
+          {lead.status === "success" ? (
+            <SuccessReveal
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
-                gap: "clamp(14px, 2vw, 18px)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "16px",
+                padding: "clamp(32px, 5vw, 48px) clamp(24px, 4vw, 40px)",
+                background: "rgba(250,248,245,0.04)",
+                border: "1px solid rgba(74,144,164,0.28)",
+                borderRadius: "5px",
+                textAlign: "center",
               }}
             >
-              <Field
-                id="lead-name"
-                label={form.nameLabel}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={form.namePlaceholder}
-                required
-                autoComplete="name"
-              />
-              <Field
-                id="lead-phone"
-                label={form.phoneLabel}
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder={form.phonePlaceholder}
-                required
-                autoComplete="tel"
-              />
-            </div>
-
-            <div style={{ marginTop: "clamp(14px, 2vw, 18px)" }}>
-              <Field
-                id="lead-address"
-                label={form.addressLabel}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder={form.addressPlaceholder}
-                autoComplete="street-address"
-              />
-            </div>
-
-            <div style={{ marginTop: "clamp(14px, 2vw, 18px)", textAlign: "left" }}>
-              <label htmlFor="lead-message" style={labelStyle}>
-                {form.messageLabel}
-              </label>
-              <textarea
-                id="lead-message"
-                name="lead-message"
-                rows={3}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder={form.messagePlaceholder}
-                onFocus={() => setMsgFocused(true)}
-                onBlur={() => setMsgFocused(false)}
+              <CheckBadge size={52} bg="rgba(74,144,164,0.18)" />
+              <h3
                 style={{
-                  ...fieldStyle,
-                  resize: "vertical",
-                  lineHeight: 1.6,
-                  borderColor: msgFocused ? C.teal : C.border,
-                  transition: "border-color 150ms ease",
+                  margin: 0,
+                  fontFamily: "var(--font-cormorant)",
+                  fontWeight: 400,
+                  fontSize: "clamp(1.7rem, 3.5vw, 2.3rem)",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.01em",
+                  color: C.cream,
                 }}
-              />
-            </div>
+              >
+                {form.successTitle}
+              </h3>
+              <p
+                style={{
+                  margin: 0,
+                  maxWidth: "44ch",
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "clamp(0.98rem, 1.2vw, 1.08rem)",
+                  lineHeight: 1.65,
+                  color: "rgba(250,248,245,0.82)",
+                }}
+              >
+                {form.successBody}
+              </p>
+            </SuccessReveal>
+          ) : (
+            <form onSubmit={onSubmit} noValidate>
+              <Honeypot value={hp} onChange={(e) => setHp(e.target.value)} />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
+                  gap: "clamp(14px, 2vw, 18px)",
+                }}
+              >
+                <Field
+                  id="lead-name"
+                  label={form.nameLabel}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={form.namePlaceholder}
+                  required
+                  autoComplete="name"
+                  invalid={nameErr}
+                  disabled={lead.busy}
+                />
+                <Field
+                  id="lead-phone"
+                  label={form.phoneLabel}
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder={form.phonePlaceholder}
+                  required
+                  autoComplete="tel"
+                  invalid={phoneErr}
+                  disabled={lead.busy}
+                />
+              </div>
 
-            <button
-              type="submit"
-              style={{
-                marginTop: "clamp(18px, 3vh, 24px)",
-                width: "100%",
-                fontFamily: "var(--font-label)",
-                fontWeight: 600,
-                fontSize: "14px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                padding: "16px 30px",
-                minHeight: "54px",
-                border: "1.5px solid transparent",
-                borderRadius: "3px",
-                background: C.teal,
-                color: "#ffffff",
-                cursor: "pointer",
-                transition: "background 160ms ease, transform 160ms ease, box-shadow 160ms ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = C.tealDeep;
-                e.currentTarget.style.transform = "translateY(-1px)";
-                e.currentTarget.style.boxShadow = "0 12px 26px rgba(74,144,164,0.30)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = C.teal;
-                e.currentTarget.style.transform = "none";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              {form.submit}
-            </button>
+              <div style={{ marginTop: "clamp(14px, 2vw, 18px)" }}>
+                <Field
+                  id="lead-address"
+                  label={form.addressLabel}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder={form.addressPlaceholder}
+                  autoComplete="street-address"
+                  disabled={lead.busy}
+                />
+              </div>
 
-            <p
-              style={{
-                margin: "14px 0 0",
-                fontFamily: "var(--font-dm-sans)",
-                fontSize: "12px",
-                lineHeight: 1.6,
-                color: "rgba(250,248,245,0.55)",
-              }}
-            >
-              {form.fallbackNote}
-            </p>
-          </form>
+              <div style={{ marginTop: "clamp(14px, 2vw, 18px)", textAlign: "left" }}>
+                <label htmlFor="lead-message" style={labelStyle}>
+                  {form.messageLabel}
+                </label>
+                <textarea
+                  id="lead-message"
+                  name="lead-message"
+                  rows={3}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={form.messagePlaceholder}
+                  disabled={lead.busy}
+                  onFocus={() => setMsgFocused(true)}
+                  onBlur={() => setMsgFocused(false)}
+                  style={{
+                    ...fieldStyle,
+                    resize: "vertical",
+                    lineHeight: 1.6,
+                    borderColor: msgFocused ? C.teal : C.border,
+                    boxShadow: msgFocused ? focusRing() : "none",
+                    transition: "border-color 150ms ease, box-shadow 150ms ease",
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={lead.busy}
+                style={{
+                  marginTop: "clamp(18px, 3vh, 24px)",
+                  width: "100%",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  fontFamily: "var(--font-label)",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  padding: "16px 30px",
+                  minHeight: "54px",
+                  border: "1.5px solid transparent",
+                  borderRadius: "3px",
+                  background: C.teal,
+                  color: "#ffffff",
+                  cursor: lead.busy ? "wait" : "pointer",
+                  opacity: lead.busy ? 0.9 : 1,
+                  transition: "background 160ms ease, transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  if (lead.busy) return;
+                  e.currentTarget.style.background = C.tealDeep;
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "0 12px 26px rgba(74,144,164,0.30)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = C.teal;
+                  e.currentTarget.style.transform = "none";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                {lead.busy ? (<><Spinner size={16} />{form.submitting}</>) : form.submit}
+              </button>
+
+              {(nameErr || phoneErr) && (
+                <ErrorNote onDark style={{ justifyContent: "center" }}>{form.requiredNote}</ErrorNote>
+              )}
+              {lead.status === "error" && (
+                <ErrorNote onDark style={{ justifyContent: "center" }}>
+                  {lead.error} {form.errorRetry}.
+                </ErrorNote>
+              )}
+
+              <p
+                style={{
+                  margin: "14px 0 0",
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "12px",
+                  lineHeight: 1.6,
+                  color: "rgba(250,248,245,0.55)",
+                }}
+              >
+                {form.fallbackNote}
+              </p>
+            </form>
+          )}
         </Reveal>
 
         {/* ── Secondary: reach an owner directly ─────────────────────────────── */}
