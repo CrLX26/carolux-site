@@ -6,7 +6,7 @@ const BASE_URL = "https://caroluxinsulation.com";
 // Flip to true ONLY once the visible FAQ section is rendered on the page.
 // FAQPage schema without matching on-page content violates Google's structured
 // data guidelines, so the FAQ node stays out of the graph until then.
-const FAQ_SECTION_LIVE = false;
+const FAQ_SECTION_LIVE = true;
 
 // Schema is a DERIVED VIEW of content.js — service/process text comes straight
 // from the approved on-page copy, so structured data always mirrors what's
