@@ -194,6 +194,17 @@ export default function CostGuidePage() {
           >
             Charlotte, NC · Insulation Pricing Guide
           </p>
+          <p
+            style={{
+              fontFamily: "var(--font-dm-sans)",
+              fontSize: "0.78rem",
+              color: C.inkSoft,
+              marginBottom: "1rem",
+            }}
+          >
+            By <strong>Tony Kermis</strong>, former NC Home Inspector &amp; co-owner, Carolux Insulation ·{" "}
+            <span>Last updated June 2026</span>
+          </p>
           <h1
             style={{
               fontFamily: "var(--font-cormorant)",
@@ -227,13 +238,15 @@ export default function CostGuidePage() {
               }}
             >
               <strong>Quick answer:</strong> Attic blown-in insulation in Charlotte runs{" "}
-              <strong>$1.00–$5.00+ per square foot installed</strong> across the market.
-              Specialty insulation companies typically fall in the{" "}
-              <strong>$1.25–$2.50/sqft</strong> range; large multi-service home-comfort
-              companies with higher overhead often quote <strong>$3.00–$5.00/sqft</strong> for
-              the same work. Crawl space insulation runs <strong>$1.00–$3.50/sqft</strong> for
-              batts, plus <strong>$1.50–$4.00/sqft</strong> for a vapor barrier. A free energy
-              audit gives you a firm, all-in number for your specific home.
+              <strong>$1.00–$5.00+ per square foot installed</strong> across the market,
+              per Angi and HomeAdvisor 2025–2026 data. Specialty insulation companies
+              typically fall in the <strong>$1.25–$2.50/sqft</strong> range; large
+              multi-service home-comfort companies with higher overhead often quote{" "}
+              <strong>$3.00–$5.00/sqft</strong> for the same work. Crawl space insulation
+              runs <strong>$1.00–$3.50/sqft</strong> for batts, plus{" "}
+              <strong>$1.50–$4.00/sqft</strong> for a vapor barrier. The U.S. Department
+              of Energy recommends R-49 for North Carolina attics. A free energy audit
+              gives you a firm, all-in number for your specific home.
             </p>
           </div>
           <p
@@ -400,7 +413,8 @@ export default function CostGuidePage() {
             Minimum job: $800. Flat-fee add-ons (vapor barrier removal, rodent remediation,
             attic hatch) quoted separately during assessment. Encapsulation (sealed vents +
             dehumidifier) is a different scope from a vapor barrier liner — make sure you're
-            comparing the same service when getting quotes.
+            comparing the same service when getting quotes. Range sources: Angi, HomeAdvisor,
+            HomeGuide, and local Charlotte MSA contractor data (2025–2026).
           </p>
 
           {/* Why the range is so wide */}

@@ -12,6 +12,11 @@ export const FAQ = {
     {
       q: "How much does attic insulation cost in Charlotte?",
       a: "It depends on the size of your attic, what insulation is up there now, and how much air sealing the job needs. We price by the square foot and put the full number in writing the same day we visit, so nothing changes on you later. The estimate is free, and our online calculator gives you a rough idea first.",
+      // SEO lane: learnMoreHref added 2026-06-11. Design lane — please render this
+      // as a small "See full price guide →" link after the answer text in FaqItem.
+      // Keep answer text clean (used verbatim in FAQPage schema); link is display-only.
+      learnMoreHref: "/cost-guide",
+      learnMoreLabel: "See full Charlotte price guide →",
     },
     {
       q: "What R-value should attic insulation be in North Carolina?",
