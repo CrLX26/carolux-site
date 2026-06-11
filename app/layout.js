@@ -1,6 +1,6 @@
 import { Gloock, Manrope, Jost } from "next/font/google";
 import "./globals.css";
-import { localBusinessSchema } from "./lib/schema";
+import { schemaGraph } from "./lib/schema";
 
 // Manrope — geometric sans, strong readability at small sizes.
 const manrope = Manrope({
@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
         {children}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
         />
       </body>
     </html>

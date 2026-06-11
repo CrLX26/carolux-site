@@ -1,25 +1,35 @@
+import { COMPANY, SERVICES, PROCESS, SERVICE_AREA } from "./content";
+
 const BASE_URL = "https://caroluxinsulation.com";
 
+// Schema is a DERIVED VIEW of content.js — service/process text comes straight
+// from the approved on-page copy, so structured data always mirrors what's
+// visible (Google's requirement) and stays inside the legal guardrails without
+// a second place to maintain.
+
+const areaServed = SERVICE_AREA.cities.map((city) => ({
+  "@type": "City",
+  name: `${city}, NC`,
+}));
+
 // Service-area business: we intentionally omit a street address (no public
-// storefront) and lean on `areaServed` + locality. This is the schema.org-
-// recommended shape for a business that travels to the customer.
-export const localBusinessSchema = {
-  "@context": "https://schema.org",
+// storefront) and lean on `areaServed` + locality — the schema.org-recommended
+// shape for a business that travels to the customer.
+const business = {
   "@type": "LocalBusiness",
   "@id": `${BASE_URL}/#business`,
-  name: "Carolux Insulation LLC",
+  name: COMPANY.name,
   description:
-    "Owner-operated insulation company serving Charlotte & Gastonia, NC. Blown-in attic insulation, air sealing, and crawl space encapsulation with a 2-year workmanship guarantee.",
+    "Owner-operated insulation company serving Charlotte, Gastonia, and the surrounding North Carolina Piedmont. Blown-in attic insulation, fiberglass batt, crawl space encapsulation and vapor barriers, plus air sealing on every full install. Fully insured; 2-year workmanship guarantee.",
   url: BASE_URL,
   telephone: "+17042282729",
-  email: "team@caroluxinsulation.com",
+  email: COMPANY.email,
   image: `${BASE_URL}/images/house-thermal4.webp`,
   priceRange: "$$",
   founder: [
     { "@type": "Person", name: "Tony Kermis" },
     { "@type": "Person", name: "Juan Gonzalez" },
   ],
-  // Locality only — no street address for this service-area business.
   address: {
     "@type": "PostalAddress",
     addressLocality: "Charlotte",
@@ -31,21 +41,7 @@ export const localBusinessSchema = {
     latitude: 35.2271,
     longitude: -80.8431,
   },
-  areaServed: [
-    "Charlotte, NC",
-    "Gastonia, NC",
-    "Huntersville, NC",
-    "Pineville, NC",
-    "Concord, NC",
-    "Harrisburg, NC",
-    "Belmont, NC",
-    "Cramerton, NC",
-    "Lowell, NC",
-    "Mount Holly, NC",
-    "Stanley, NC",
-    "Matthews, NC",
-    "Mint Hill, NC",
-  ].map((name) => ({ "@type": "City", name })),
+  areaServed,
   knowsAbout: [
     "Blown-in attic insulation",
     "Fiberglass batt insulation",
@@ -55,44 +51,48 @@ export const localBusinessSchema = {
     "Home energy efficiency",
     "R-49 insulation for North Carolina",
   ],
-  // Explicit catalog of what we sell — strong signal for AI answer engines
-  // ("what does Carolux do?") and Google's local understanding.
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: "Insulation Services",
-    itemListElement: [
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Blown-In Attic Insulation",
-          description:
-            "Fiberglass or cellulose blown-in attic insulation to the DOE-recommended R-49 for North Carolina. Air sealing included with every full insulation install, at no extra charge.",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Crawl Space & Vapor Barrier",
-          description:
-            "Crawl space encapsulation with a heavy-duty vapor barrier and perimeter insulation to block moisture and lower energy bills.",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Fiberglass Batt Insulation",
-          description:
-            "Hand-fitted fiberglass batt set snug between crawl space floor joists — steadies the floors above, softens sound between levels, and keeps conditioned air where it belongs.",
-        },
-      },
-    ],
-  },
-  sameAs: ["https://instagram.com/caroluxinsulation"],
+  sameAs: [COMPANY.instagram],
   // TODO (legitimate signals to add later — do NOT fabricate):
-  //  - openingHoursSpecification: add your real business hours
-  //  - aggregateRating / review: wire up only with genuine Google reviews
+  //  - openingHoursSpecification: add real business hours
+  //  - aggregateRating / review: only with genuine Google reviews
   //    (self-applied star ratings violate Google's policy and risk penalties)
+};
+
+// One Service node per offering, mirroring the visible Services section. Each
+// back-references the business as provider so AI engines and Google tie the
+// service to the entity and its service area.
+const serviceSchemas = SERVICES.map((service) => ({
+  "@type": "Service",
+  name: service.title,
+  serviceType: service.title,
+  description: service.description,
+  provider: { "@id": `${BASE_URL}/#business` },
+  areaServed,
+}));
+
+// The visible 4-step Process section as a HowTo — strong extractable structure
+// for "how does an insulation job work?" style AI queries.
+const howToSchema = {
+  "@type": "HowTo",
+  name: "How a Carolux insulation project works",
+  description:
+    "Carolux's four-step process for every attic and crawl space job, from on-site assessment to the final walkthrough.",
+  step: PROCESS.steps.map((step, index) => ({
+    "@type": "HowToStep",
+    position: index + 1,
+    name: step.title,
+    text: step.description,
+  })),
+};
+
+// Single JSON-LD graph injected once in layout.js.
+export const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": [business, ...serviceSchemas, howToSchema],
+};
+
+// Kept for back-compat / standalone use.
+export const localBusinessSchema = {
+  "@context": "https://schema.org",
+  ...business,
 };
