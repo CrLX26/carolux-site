@@ -57,7 +57,12 @@ const business = {
     "Home energy efficiency",
     "R-49 insulation for North Carolina",
   ],
-  sameAs: [COMPANY.instagram],
+  sameAs: [
+    COMPANY.instagram,
+    COMPANY.facebook,
+    COMPANY.googleBusiness,
+    COMPANY.nextdoor,
+  ],
   // TODO (legitimate signals to add later — do NOT fabricate):
   //  - openingHoursSpecification: add real business hours
   //  - aggregateRating / review: only with genuine Google reviews
