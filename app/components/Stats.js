@@ -442,7 +442,8 @@ export default function Stats() {
                     fontFamily:    "var(--font-dm-sans)",
                     fontSize:      "clamp(10px, 0.85vw, 12px)",
                     fontStyle:     "italic",
-                    color:         "rgba(13,29,43,0.66)",
+                    color:         "rgba(13,29,43,0.9)",
+                    textShadow:    "0 0 4px rgba(250,248,245,0.92), 0 1px 8px rgba(250,248,245,0.75)",
                     margin:        "clamp(8px, 1vh, 14px) 0 0",
                     letterSpacing: "0.04em",
                   }}
@@ -501,7 +502,8 @@ export default function Stats() {
                       fontSize:      "clamp(12px, 1vw, 15px)",
                       fontWeight:    500,
                       lineHeight:    1.35,
-                      color:         "rgba(26,43,60,0.78)",
+                      color:         "rgba(26,43,60,0.96)",
+                      textShadow:    "0 0 4px rgba(250,248,245,0.92), 0 1px 8px rgba(250,248,245,0.75)",
                       maxWidth:      "17ch",
                     }}
                   >
@@ -522,7 +524,8 @@ export default function Stats() {
                 fontSize:   "clamp(10px, 0.85vw, 12px)",
                 fontStyle:  "italic",
                 lineHeight: 1.6,
-                color:      "rgba(13,29,43,0.6)",
+                color:      "rgba(13,29,43,0.84)",
+                textShadow: "0 0 4px rgba(250,248,245,0.92), 0 1px 8px rgba(250,248,245,0.75)",
               }}
             >
               {STATS_CAVEAT}
@@ -662,7 +665,8 @@ export default function Stats() {
                       fontSize:   "clamp(11px, 3vw, 13px)",
                       fontWeight: 500,
                       lineHeight: 1.35,
-                      color:      "rgba(26,43,60,0.78)",
+                      color:      "rgba(26,43,60,0.96)",
+                      textShadow: "0 0 4px rgba(250,248,245,0.92), 0 1px 8px rgba(250,248,245,0.75)",
                       maxWidth:   "18ch",
                     }}
                   >
@@ -682,7 +686,8 @@ export default function Stats() {
                 fontSize:   "clamp(9px, 2.4vw, 11px)",
                 fontStyle:  "italic",
                 lineHeight: 1.55,
-                color:      "rgba(26,43,60,0.7)",
+                color:      "rgba(26,43,60,0.85)",
+                textShadow: "0 0 4px rgba(250,248,245,0.92), 0 1px 8px rgba(250,248,245,0.75)",
                 padding:    "0 clamp(16px, 6vw, 32px)",
               }}
             >
