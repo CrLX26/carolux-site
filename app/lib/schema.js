@@ -48,6 +48,7 @@ export const localBusinessSchema = {
   ].map((name) => ({ "@type": "City", name })),
   knowsAbout: [
     "Blown-in attic insulation",
+    "Fiberglass batt insulation",
     "Crawl space encapsulation",
     "Vapor barriers",
     "Air sealing",
@@ -66,7 +67,7 @@ export const localBusinessSchema = {
           "@type": "Service",
           name: "Blown-In Attic Insulation",
           description:
-            "Fiberglass or cellulose blown-in attic insulation to the DOE-recommended R-49 for North Carolina, with air sealing always included.",
+            "Fiberglass or cellulose blown-in attic insulation to the DOE-recommended R-49 for North Carolina. Air sealing included with every full insulation install, at no extra charge.",
         },
       },
       {
@@ -76,6 +77,15 @@ export const localBusinessSchema = {
           name: "Crawl Space & Vapor Barrier",
           description:
             "Crawl space encapsulation with a heavy-duty vapor barrier and perimeter insulation to block moisture and lower energy bills.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Fiberglass Batt Insulation",
+          description:
+            "Hand-fitted fiberglass batt set snug between crawl space floor joists — steadies the floors above, softens sound between levels, and keeps conditioned air where it belongs.",
         },
       },
     ],
