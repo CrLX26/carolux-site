@@ -35,17 +35,18 @@ production** env (preview env not set — non-blocking). Production verified: ho
 missing-fields→400 (key read), and a labeled prod test delivered to team@. PR #5 closed. `resend` in
 package.json; `.env.local` has the key (UTF-8 BOM — extract with `grep -ao`). Verify: `scripts/leadshot.mjs`.
 
-### In flight — NOT on `main` yet
-- **Social buttons** — branch `social-buttons`. Footer brand-column icon row (Google, Instagram,
-  Facebook, Nextdoor; monochrome cream→teal; Nextdoor = house glyph). `content.js` COMPANY:
-  **Nextdoor + Instagram real; Facebook + Google Business Profile are PLACEHOLDERS**
-  (`TODO(social-url)`) pending real links. SEO follow-up: add all 4 to `schema.js` `sameAs`.
-  Verify: `scripts/footshot.mjs`.
+### Social buttons — ✅ LIVE on `main` (`6430346`)
+Footer brand-column icon row (Google, Instagram, Facebook, Nextdoor; monochrome cream→teal; Nextdoor
+= house glyph). All four URLs in `content.js` COMPANY confirmed (instagram/facebook/googleBusiness/
+nextdoor). **SEO follow-up (open):** add the same four to `schema.js` `sameAs` (SEO-owned). Verify:
+`scripts/footshot.mjs`.
+
+### Nothing left in flight — all this session's feature branches are merged to `main`.
 
 ### Path-to-live backlog (from the launch audit, not yet done)
 Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); before/after city captions
 unverified; owner photos 1.9MB PNG (downscale); desktop thermal XOR verified Chromium-only (check
-Firefox/Safari); Vercel Deployment Protection off + DNS repoint; finalize the 2 social URLs.
+Firefox/Safari); Vercel Deployment Protection off + DNS repoint; `schema.js` `sameAs` social URLs.
 (Lead capture — the #1 conversion blocker — is now DONE and live.)
 
 ---
