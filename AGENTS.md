@@ -13,7 +13,7 @@ site built to replace the current Wix site at caroluxinsulation.com. Currently
 hosted at a Vercel preview URL (not yet connected to the real domain).
 
 The current live site at caroluxinsulation.com is on Wix and must NOT be touched.
-The new site goes live when it is ready by pointing the domain DNS to Vercel.
+The new site goes live only when explicitly authorised — do NOT touch DNS until then.
 
 **Design reference page (internal only — not linked in nav):**
 https://carolux-site-g0kscstwv-carolux.vercel.app/design-reference
@@ -348,7 +348,7 @@ Routes: `/` and `/privacy-policy` (server-rendered legal page) and `/design-refe
 
 Components in app/components/:
 - Nav, Hero, Stats (Chromium scroll-scrub video; Firefox/low-power fallback to autoplay-loop)
-- Estimator (savings calc; email capture is a STUB — no backend yet)
+- Estimator (savings calc; email capture ✅ live — POSTs to /api/lead via Resend)
 - Services (3 services), BeforeAfter (drag slider), Process, WhyUs (4 pillars), Packages
 - Owners (real Tony & Juan photos — Tony = FORMER inspector), Reviews (PLACEHOLDER copy),
   ServiceArea (13 cities), Contact (Text Us button gated behind smsEnabled), Footer, SmoothScroll

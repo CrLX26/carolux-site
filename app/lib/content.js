@@ -233,13 +233,13 @@ export const OWNERS = {
     {
       name: "Tony Kermis",
       role: "Co-Owner · Former NC Home Inspector",
-      photo: "/images/tony-profile-1.png",
+      photo: "/images/tony-profile-1.webp",
       bio: "A former North Carolina home inspector, Tony reads a house the way few insulation crews can. He knows where the heat is escaping before the first bag goes in.",
     },
     {
       name: "Juan Gonzalez",
       role: "Co-Owner · Operations & Customer Care",
-      photo: "/images/juan-profile-1.png",
+      photo: "/images/juan-profile-1.webp",
       bio: "Juan runs the schedule, the follow-through, and the part most contractors drop: keeping you in the loop from the first call to the final walkthrough.",
     },
   ],

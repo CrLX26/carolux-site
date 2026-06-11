@@ -48,10 +48,11 @@ stays in sync). Verify: `scripts/footshot.mjs`.
 ### Nothing left in flight — all this session's feature branches are merged to `main`.
 
 ### Path-to-live backlog (from the launch audit, not yet done)
-Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); before/after city captions
-unverified; owner photos 1.9MB PNG (downscale); desktop thermal XOR verified Chromium-only (check
-Firefox/Safari); Vercel Deployment Protection off + DNS repoint.
-(Lead capture — the #1 conversion blocker — is DONE and live.)
+Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); desktop thermal XOR verified
+Chromium-only (check Firefox/Safari); Vercel Deployment Protection off + DNS repoint.
+Owner photos ✅ downscaled (tony/juan PNG → WebP, 40KB/34KB). Before/after photos ✅ confirmed
+real Carolux jobs — city captions are safe to add. Lead capture ✅ DONE and live.
+Site stays on Wix until explicitly ready to cut over — do NOT touch DNS.
 
 ### Highest-leverage NEXT (off-site, user-owned — ON HOLD per user 2026-06-11)
 Claim + fully fill the **Google Business Profile** and gather **real reviews** (NAP-consistent). The
@@ -123,7 +124,7 @@ Use **Playwright iPhone emulation** instead (touch → `pointer:coarse` → Leni
 ### Pending / next steps
 - iPhone SE (568px, tiny) CTA sits ~14px under the bottom bar — minor; tighten mobile spacing if you care about it.
 - Clean up the unused attic placeholder images in `public/images/` (no longer referenced).
-- Stray untracked `public/12398979_3840_2160_25fps.mp4` (4K leftover) — move out or use it.
+- ✅ Stray 4K video `public/12398979_3840_2160_25fps.mp4` deleted.
 - Older backlog (other lanes / future): FAQ+schema (SEO lane), package pricing, real reviews (replace placeholders), estimator lead-capture backend.
 
 ### Don't break
@@ -165,7 +166,7 @@ All sections are fully designed/built (the old "unstyled placeholder" notes are 
 | `Nav.js` | Complete | **DO NOT TOUCH** — user hard constraint |
 | `Hero.js` | Complete | Scroll tunnel + thermal reveal (desktop) / static image (mobile) |
 | `Stats.js` | Complete | Chromium scroll-scrub video; **Firefox / reduced-motion / ≤4GB RAM fall back to autoplay-loop** (no per-frame seeking — that stutters). Mobile autoplay + IntersectionObserver |
-| `Estimator.js` | Complete | Savings calculator (bill-based, EPA/DOE formula). ⚠️ email capture is a STUB — goes nowhere yet (`TODO(lead-capture)` in content.js) |
+| `Estimator.js` | Complete | Savings calculator (bill-based, EPA/DOE formula). ✅ Email capture live — POSTs to `/api/lead` (Resend). |
 | `Services.js` | Complete | 3 services incl. Fiberglass Batt |
 | `BeforeAfter.js` | Complete | Drag-to-compare slider (ported from carolux-tools), navy band |
 | `Process.js` | Complete | 4-step "How We Work" |
@@ -433,10 +434,7 @@ See "Mobile Fixes Applied" table above.
 
 ## Open Tasks / Backlog
 
-- **Lead-capture email backend** — Estimator email field is a stub (goes nowhere). Wire to a
-  form service (Resend / Formspree / Web3Forms) or an API route. See `TODO(lead-capture)`.
-- **Before/after captions** — confirm whether those photos are real Carolux jobs before adding
-  a city caption (honesty rule, same as the placeholder reviews).
+- **Before/after captions** — ✅ confirmed real Carolux jobs; city captions safe to add.
 - **Reviews** — replace placeholder reviews with real ones (the "$80 power bill" line is a
   placeholder dollar-savings claim that violates the no-specific-$ rule; it goes when reviews are real).
 - **Growth-levers backlog** (see `GROWTH-LEVERS-PLAN.md`): guarantee seal by CTAs, honest urgency,
