@@ -305,12 +305,15 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-11):** `main` = **`e2f091c`** (Vercel production deploying). See the
+**Current state (2026-06-11):** `main` = **`4cfbc55`** (Vercel production deploying). See the
 **CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-11"** block for the authoritative latest state. Shipped to
 main since the hero: Stats polish, the WhyUs 2×2 quadrant-ledger, the SEO foundation
-(sitemap/robots/schema/llms.txt/faq.js — SEO lane), and the FAQ section + active FAQPage schema.
-In flight (not on main): `lead-capture` (PR #5, needs `RESEND_API_KEY` in Vercel) and
-`social-buttons` (footer socials; 2 URLs pending). All three worktrees synced to `e2f091c`.
+(sitemap/robots/schema/llms.txt/faq.js), the FAQ section + active FAQPage schema, **lead capture**
+(Estimator+Contact → Resend `/api/lead`; `RESEND_API_KEY` set in Vercel prod), **footer social
+buttons**, and the four social profiles in `schema.js` `sameAs`. **Nothing in flight** — all feature
+branches merged. Next (off-site, on hold): claim/fill the Google Business Profile + gather real
+reviews. Cross-worktree: after `main` moves, each worktree needs `git pull --ff-only` + `npm install`
+if a new dep landed.
 
 **Prior state (2026-06-10):**
 - ✅ LIVE on `main` @ `08496cc` (Vercel production deploying). `main` = `hero-polish` =

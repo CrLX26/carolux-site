@@ -7,9 +7,13 @@
 ---
 
 ## 🟢 CURRENT HANDOFF — 2026-06-11 (latest). Read this first.
-**`main` = `e2f091c`, deploying to Vercel production.** Wix domain still untouched (the public
-domain only switches when DNS is repointed). All three worktrees were synced to `e2f091c`
-(`carolux-site` design, `carolux-seo`/`seo-foundation`, `carolux-copy`/`copy-polish`).
+**`main` = `4cfbc55`, deploying to Vercel production.** Wix domain still untouched (the public
+domain only switches when DNS is repointed). Three worktrees: `carolux-site` (design),
+`carolux-seo`/`seo-foundation` (SEO), `carolux-copy`/`copy-polish` (copy). **Cross-worktree gotcha:**
+after `main` advances, each worktree needs `git fetch && git checkout main && git pull --ff-only`
+AND `npm install` if a new dependency landed (each worktree has its own `node_modules` — e.g.
+`resend` arrived with lead capture). The remote is the source of truth; a worktree can't update the
+local `main` ref while another worktree has `main` checked out (harmless).
 
 ### Shipped to `main` this session (all live)
 - **Stats polish** (`ebc6a0a`): trimmed caveat + single glow; caveat gated so fine print never
@@ -38,16 +42,23 @@ package.json; `.env.local` has the key (UTF-8 BOM — extract with `grep -ao`). 
 ### Social buttons — ✅ LIVE on `main` (`6430346`)
 Footer brand-column icon row (Google, Instagram, Facebook, Nextdoor; monochrome cream→teal; Nextdoor
 = house glyph). All four URLs in `content.js` COMPANY confirmed (instagram/facebook/googleBusiness/
-nextdoor). **SEO follow-up (open):** add the same four to `schema.js` `sameAs` (SEO-owned). Verify:
-`scripts/footshot.mjs`.
+nextdoor). SEO added the same four to `schema.js` `sameAs` (`4cfbc55`, derives from `COMPANY.*` so it
+stays in sync). Verify: `scripts/footshot.mjs`.
 
 ### Nothing left in flight — all this session's feature branches are merged to `main`.
 
 ### Path-to-live backlog (from the launch audit, not yet done)
 Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); before/after city captions
 unverified; owner photos 1.9MB PNG (downscale); desktop thermal XOR verified Chromium-only (check
-Firefox/Safari); Vercel Deployment Protection off + DNS repoint; `schema.js` `sameAs` social URLs.
-(Lead capture — the #1 conversion blocker — is now DONE and live.)
+Firefox/Safari); Vercel Deployment Protection off + DNS repoint.
+(Lead capture — the #1 conversion blocker — is DONE and live.)
+
+### Highest-leverage NEXT (off-site, user-owned — ON HOLD per user 2026-06-11)
+Claim + fully fill the **Google Business Profile** and gather **real reviews** (NAP-consistent). The
+`sameAs` links only pay off once those profiles are live + complete. Code-side follow-through when
+reviews exist: replace placeholder reviews + drop the "$80" line in `Reviews.js`/`content.js`, then
+add Review/AggregateRating schema — **only from genuine reviews** (self-applied ratings violate
+Google policy; `schema.js` already warns against this).
 
 ---
 
