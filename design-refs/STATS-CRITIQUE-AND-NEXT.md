@@ -18,25 +18,25 @@
 - The distill (one dominant 15% + demoted 90%/R-49 over the real pink-fiberglass burst) is what
   cleared the AI-slop bar. Core design is strong; the deductions are choreography + the caveat.
 
-## PENDING FIXES (none applied yet — user paused here to clear context)
-Apply on `hero-text-contrast`, one commit each (each independently reversible). In priority order:
+## PENDING FIXES — ✅ ALL 4 APPLIED & VERIFIED 2026-06-11 (on `hero-text-contrast`, NOT yet committed)
+Verified via `scripts/statshot.mjs` (desktop, 1440×900) + `scripts/mxend.mjs` (iPhone 13).
+Screenshots: `.shots/stat_0{0..3}.png`, `.shots/mxe_2300.png`.
 
-1. **[P1] Caveat: trim + lighten glow.** The 30-word italic legal caveat is the heaviest block in a
-   "30% less text" section, and the cream text-glow I just added reads slightly *furry* over the
-   burst. → Shorten `STATS_CAVEAT` (content.js) to one clause, e.g. "EPA/DOE averages, not a
-   guarantee. Results vary by home." AND drop one of the two text-shadow layers on the caveat (keep
-   a single `0 1px 6px rgba(250,248,245,0.85)`).
-2. **[P1] Mid-reveal looks broken.** The caveat (says "figures", plural) renders BEFORE the 90%/R-49
-   reveal, so a slow scroller sees fine print for data not yet on screen. → Gate the caveat opacity
-   to the LAST stat's reveal window (`WINDOWS[2]`), or tighten the reveal windows so the gap closes.
-   (Desktop reveal is scroll-driven via `revealStats`/`WINDOWS`; the caveat currently has no ref/gate.)
-3. **[P2] Desktop support row ragged.** "R-49" floats with more air than "90%" (baseline align +
-   uneven label wraps). → Equal min-width columns on the two support figures, or left-stack all three
-   like the hero. (Mobile centered version reads STRONGER than desktop — consider why.)
-4. **[P2] Scroll tunnel longer than payload.** Desktop container `420vh` (mobile `280svh`) for 3
-   facts + a 7s burst on a CTA-less proof beat. → Compress desktop to ~280-300vh. ⚠️ Touches scroll
-   timing (the VID_START/window/marginTop math is sensitive — framer progress for this container is
-   compressed by the big negative margin; see commit history). Verify with `scripts/statshot.mjs`.
+1. ✅ **[P1] Caveat: trim + lighten glow.** `STATS_CAVEAT` (content.js) shortened to
+   "EPA/DOE averages, not a guarantee. Results vary by home." Both caveats (desktop + mobile in
+   Stats.js) dropped to a single text-shadow `0 1px 6px rgba(250,248,245,0.85)`.
+2. ✅ **[P1] Mid-reveal looks broken.** Added `caveatRef`; caveat opacity now driven by
+   `getStatStyle(v, WINDOWS[2])` inside `revealStats` (starts at `opacity:0`). Verified hidden at
+   frac 0.30/0.55, fades in only with R-49 by ~0.78. Same gate covers the mobile branch (one ref,
+   one branch mounts at a time).
+3. ✅ **[P2] Desktop support row ragged.** The two support items now get `flex:1 1 0; minWidth:0`
+   (desktop/wide only — unchanged when `isNarrow`), so 90%+ and R-49 sit on equal-width columns.
+4. ✅ **[P2] Scroll tunnel longer than payload.** Desktop container `420vh → 300vh` (mobile `280svh`
+   unchanged). Reveal windows are progress fractions so they auto-rescaled; all 3 stats land by
+   ~0.78 and hold to 1.0. Burst scrub still smooth.
+
+Minor (NOT done): 90% "+" at 0.5em nearly vanishes over pink; hero source line + caveat duplicate
+the "sourced/averaged" message. Left for a later pass.
 
 Minor: 90% "+" at 0.5em nearly vanishes over pink; hero source line + caveat duplicate the
 "sourced/averaged" message (could drop one).

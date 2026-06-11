@@ -56,6 +56,10 @@ export default function Stats() {
   const stat2Ref = useRef(null);
   const stat3Ref = useRef(null);
   const statRefs = [stat1Ref, stat2Ref, stat3Ref];
+  // Caveat is gated to the LAST stat's reveal window so the fine print never
+  // shows before the figures it footnotes (a slow scroller would otherwise see
+  // "averages, not a guarantee" for data not yet on screen).
+  const caveatRef = useRef(null);
 
   const isTouch = useSyncExternalStore(
     subscribePointer,
@@ -127,6 +131,15 @@ export default function Stats() {
         const { opacity } = getStatStyle(v, WINDOWS[i]);
         ref.current.style.opacity = String(opacity);
       });
+      // Caveat gate: desktop holds it to the LAST stat (R-49) so the fine print
+      // never precedes the data. Mobile's tunnel tail is short, so gating to the
+      // last window left too brief a hold — the line revealed only at the very
+      // end and was easy to scroll past. On mobile it reveals with the supporting
+      // facts (WINDOWS[1]) so it's up and holding well before the section unpins.
+      if (caveatRef.current) {
+        const { opacity } = getStatStyle(v, isTouch ? WINDOWS[1] : WINDOWS[2]);
+        caveatRef.current.style.opacity = String(opacity);
+      }
     };
 
     // Burst timing window (scroll progress). The burst is held at frame 0 until
@@ -218,7 +231,7 @@ export default function Stats() {
         // Both platforms are a sticky tunnel. Mobile's holds the section pinned
         // long enough for the burst to play through (~7s) while the stats reveal
         // off the video clock.
-        height:     isTouch ? "280svh" : "420vh",
+        height:     isTouch ? "280svh" : "300vh",
         position:   "relative",
         // Mobile only: the hero's inner layers carry z-indices up to 35 and the
         // hero outer creates no stacking context, so they leak into the root and
@@ -477,6 +490,11 @@ export default function Stats() {
                     display:    "flex",
                     alignItems: "baseline",
                     gap:        "clamp(8px, 0.9vw, 14px)",
+                    // Equal-width columns so the two support figures sit on a
+                    // shared grid — keeps "R-49" from floating with extra air
+                    // next to the wider "90%+" / uneven label wraps.
+                    flex:       isNarrow ? undefined : "1 1 0",
+                    minWidth:   isNarrow ? undefined : 0,
                   }}
                 >
                   <span
@@ -514,9 +532,11 @@ export default function Stats() {
             </div>
 
             {/* Caveat — every figure is an average, not a guarantee. Folds the
-                per-stat sources into one line. */}
+                per-stat sources into one line. Gated to the last stat's reveal. */}
             <p
+              ref={caveatRef}
               style={{
+                opacity:    0,
                 margin:     "clamp(18px, 2.6vh, 28px) 0 0",
                 maxWidth:   "56ch",
                 textAlign:  "left",
@@ -525,7 +545,7 @@ export default function Stats() {
                 fontStyle:  "italic",
                 lineHeight: 1.6,
                 color:      "rgba(13,29,43,0.84)",
-                textShadow: "0 0 4px rgba(250,248,245,0.92), 0 1px 8px rgba(250,248,245,0.75)",
+                textShadow: "0 1px 6px rgba(250,248,245,0.85)",
               }}
             >
               {STATS_CAVEAT}
@@ -676,9 +696,12 @@ export default function Stats() {
               ))}
             </div>
 
-            {/* Caveat — folds the per-stat sources into one line */}
+            {/* Caveat — folds the per-stat sources into one line. Gated to the
+                last stat's reveal so it never shows before the figures. */}
             <p
+              ref={caveatRef}
               style={{
+                opacity:    0,
                 marginTop:  "clamp(18px, 3vh, 28px)",
                 maxWidth:   "34ch",
                 textAlign:  "center",
@@ -687,7 +710,7 @@ export default function Stats() {
                 fontStyle:  "italic",
                 lineHeight: 1.55,
                 color:      "rgba(26,43,60,0.85)",
-                textShadow: "0 0 4px rgba(250,248,245,0.92), 0 1px 8px rgba(250,248,245,0.75)",
+                textShadow: "0 1px 6px rgba(250,248,245,0.85)",
                 padding:    "0 clamp(16px, 6vw, 32px)",
               }}
             >

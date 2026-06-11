@@ -75,7 +75,7 @@ export const STATS = [
 // Shown beneath the stat numbers. Keeps the brand promise that every figure is
 // an average, never a guarantee (legal + honesty rule).
 export const STATS_CAVEAT =
-  "Figures are EPA, DOE and industry averages, not a guarantee. Every home is different; your results vary by HVAC system, usage, and the condition of your home.";
+  "EPA/DOE averages, not a guarantee. Results vary by home.";
 
 export const SERVICES = [
   {
