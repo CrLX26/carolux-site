@@ -11,6 +11,11 @@ export const COMPANY = {
   smsHref: "sms:7042282729",
   smsEnabled: false,
   instagram: "https://instagram.com/caroluxinsulation",
+  // Social profiles (all confirmed 2026-06-11). SEO note: app/lib/schema.js `sameAs`
+  // should list these same four profiles (coordinate with the SEO lane).
+  facebook: "https://www.facebook.com/caroluxinsulation",
+  googleBusiness: "https://g.page/caroluxinsulation",
+  nextdoor: "https://nextdoor.com/page/carolux-insulation-gastonia-nc/",
   serviceArea: "Charlotte & Gastonia, NC",
   owners: "Tony Kermis and Juan Gonzalez",
   year: "2026",
