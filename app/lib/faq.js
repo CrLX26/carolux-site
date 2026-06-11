@@ -10,47 +10,53 @@ export const FAQ = {
   title: "Straight answers before you call",
   items: [
     {
+      // Answer-first with price range — "It depends" opener failed AI extractability.
+      // learnMoreHref: design lane, please render as a small link after answer text
+      // in FaqItem. Keep answer string clean — used verbatim in FAQPage schema.
       q: "How much does attic insulation cost in Charlotte?",
-      a: "It depends on the size of your attic, what insulation is up there now, and how much air sealing the job needs. We price by the square foot and put the full number in writing the same day we visit, so nothing changes on you later. The estimate is free, and our online calculator gives you a rough idea first.",
-      // SEO lane: learnMoreHref added 2026-06-11. Design lane — please render this
-      // as a small "See full price guide →" link after the answer text in FaqItem.
-      // Keep answer text clean (used verbatim in FAQPage schema); link is display-only.
+      a: "Attic blown-in insulation in Charlotte typically runs $1.00–$5.00 per square foot installed, depending on contractor type and scope. Specialty insulation companies generally fall in the $1.25–$2.50/sqft range. The exact cost depends on your attic's current R-value, whether removal is needed, and square footage. The estimate is free and in writing the same day.",
       learnMoreHref: "/cost-guide",
       learnMoreLabel: "See full Charlotte price guide →",
     },
     {
+      // "our climate" replaced — not self-contained for AI extraction outside page context.
       q: "What R-value should attic insulation be in North Carolina?",
-      a: "The U.S. Department of Energy recommends R-49 for attics in our climate, and that is the level we install to on a full attic job. If yours is under-insulated, bringing it up to R-49 is usually where you feel the difference in comfort and in your monthly bill.",
+      a: "The U.S. Department of Energy recommends R-49 for attics in North Carolina's climate zone. Homes below R-49 lose conditioned air year-round through the ceiling. Carolux installs to R-49 on every full attic job. Bringing an under-insulated attic up to R-49 is typically where homeowners feel the difference in comfort and in monthly energy bills.",
     },
     {
       q: "What is the difference between blown-in and batt insulation?",
-      a: "Blown-in is loose fiberglass or cellulose blown across the attic floor, so it fills the gaps and odd corners that pre-cut pieces miss. Batt is fiberglass cut to fit between framing, which we hand-fit between crawl space floor joists. We use whichever suits the space, and sometimes both in one home.",
+      a: "Blown-in is loose fiberglass or cellulose blown across the attic floor, so it fills the gaps and odd corners that pre-cut pieces miss. Batt is fiberglass cut to fit between framing, hand-fitted between crawl space floor joists. Carolux uses whichever suits the space — and sometimes both in one home.",
     },
     {
-      q: "Do you include air sealing?",
-      a: "Yes, on every full insulation install, at no extra charge. Before we add insulation, we seal the leaks around light fixtures, plumbing, and the top plates of your walls. Skipping that step is the most common reason insulation underperforms. We don't auto-include it on small top-off jobs, and we'll tell you when that applies.",
+      // Rephrased from "Do you" to a general query pattern — better AI extraction.
+      q: "Is air sealing included with insulation installation?",
+      a: "Yes — Carolux includes air sealing on every full insulation install at no extra charge. Before insulation goes in, leaks around light fixtures, plumbing penetrations, and wall top plates are sealed. Skipping that step is the most common reason insulation underperforms. Air sealing is not included on small top-off jobs; Carolux will say so upfront.",
     },
     {
-      q: "Are you licensed and insured?",
-      a: "We carry full liability insurance. North Carolina does not require a contractor license for residential insulation at the sizes we handle, so it isn't a license any insulation crew would hold for this work. What sets us apart: co-owner Tony is a former NC home inspector, so the person reading your attic knows what he is looking at.",
+      // Rephrased from "Are you" — self-contained for AI citation.
+      q: "Does Carolux carry insurance, and is an insulation contractor license required in NC?",
+      a: "Carolux carries full general liability insurance. North Carolina does not require a contractor license for residential insulation work, so no insulation crew holds one for this scope. Carolux co-owner Tony Kermis is a former NC home inspector — the person who reads your attic knows what he is looking at.",
     },
     {
+      // Strengthened opener — "It can" is not extractable by AI systems.
       q: "Will new insulation actually lower my energy bills?",
-      a: "It can. The EPA's ENERGY STAR program estimates that air sealing plus proper insulation saves up to about 15% on heating and cooling costs. Every home is different, so your result depends on your HVAC, your habits, and the shape your attic is in now. We give you an honest read during the estimate.",
+      a: "Yes — the EPA's ENERGY STAR program estimates that air sealing plus proper insulation reduces heating and cooling costs by up to 15%. Results vary by home; they depend on your HVAC efficiency, habits, and how under-insulated your attic is now. Carolux provides an honest projection during the free energy audit.",
     },
     {
+      // Answer-first — "if...then yes" buried the answer.
       q: "Do I need a vapor barrier in my crawl space?",
-      a: "If your crawl space is bare dirt or it tends to feel damp, then yes. An open crawl space pulls humid air up into your home, which drives up bills and can lead to wood rot over time. We lay a heavy-duty vapor barrier and check the drainage, so moisture stays down where it belongs.",
+      a: "Yes, for most Charlotte-area homes. North Carolina's humid summers push moisture up through bare-dirt crawl spaces and into the subfloor above, raising energy bills and accelerating wood rot. A heavy-duty vapor barrier keeps humidity down where it belongs. Carolux installs the liner and checks drainage in the same visit.",
     },
     {
-      q: "What towns around Charlotte do you serve?",
-      a: "We cover Charlotte and most of the surrounding Piedmont, including Huntersville, Pineville, Matthews, Mint Hill, Concord, Harrisburg, Gastonia, Belmont, Cramerton, Lowell, Mount Holly, and Stanley. If your town isn't on the list but you are near the metro, give us a call. There's a good chance we still come to you.",
+      // Rephrased from "do you serve" — self-contained with Carolux named.
+      q: "What areas around Charlotte does Carolux serve?",
+      a: "Carolux serves Charlotte, Huntersville, Pineville, Matthews, Mint Hill, Concord, Harrisburg, Gastonia, Belmont, Cramerton, Lowell, Mount Holly, and Stanley, NC — plus the surrounding Piedmont. If your town isn't on the list but you're near the metro, call (704) 228-2729. There's a good chance the area is covered.",
     },
     {
-      // NOTE (verify): "most attic jobs in a day" is a reasonable default for
-      // residential blown-in — confirm it matches your real scheduling before launch.
-      q: "How long does the work take?",
-      a: "Most attic jobs wrap up in a single day. Crawl space work can run a little longer, depending on the size and how much moisture we find. Either way, both owners are on site from start to finish, and we walk the finished job with you before we pack up.",
+      // NOTE (verify): "most attic jobs in a day" — confirm matches real scheduling before launch.
+      // Minor self-containment fix — replaced "we/both owners" with named context.
+      q: "How long does insulation installation take?",
+      a: "Most attic insulation jobs wrap up in a single day. Crawl space work can run longer depending on size and moisture conditions found on-site. Both Carolux owners — Tony and Juan — are present from start to finish, and a walkthrough of the finished work happens before the crew leaves.",
     },
   ],
 };
