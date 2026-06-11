@@ -6,8 +6,52 @@
 
 ---
 
-## 🟢 CURRENT HANDOFF — Hero (mobile sequence + desktop thermal cycle) — LIVE on main
-*Updated 2026-06-10. Read this first. This block is the authoritative current state.*
+## 🟢 CURRENT HANDOFF — 2026-06-11 (latest). Read this first.
+**`main` = `e2f091c`, deploying to Vercel production.** Wix domain still untouched (the public
+domain only switches when DNS is repointed). All three worktrees were synced to `e2f091c`
+(`carolux-site` design, `carolux-seo`/`seo-foundation`, `carolux-copy`/`copy-polish`).
+
+### Shipped to `main` this session (all live)
+- **Stats polish** (`ebc6a0a`): trimmed caveat + single glow; caveat gated so fine print never
+  precedes the data (desktop→R-49 window, mobile→supports window); equal-width desktop support
+  columns; desktop scroll tunnel `420vh→300vh`. Verify: `scripts/statshot.mjs`, `scripts/mxend.mjs`.
+- **WhyUs redesign** (`7b1cf35`): the 4 pillars are now a deterministic **2×2 quadrant ledger**
+  (one structural cross of hairlines, promoted Roman numerals) stacking to 1 col <640px. Verify:
+  `scripts/whyshot.mjs`.
+- **SEO foundation** (SEO lane, `ca3e6b0…7a88342`): `sitemap.js`, `robots.js`, enriched
+  LocalBusiness + per-service `Service` + `HowTo` schema, `public/llms.txt`, `app/lib/faq.js`.
+  **SEO owns** `schema.js` / `sitemap.js` / `robots.js` / `layout.js` metadata / `faq.js` — coordinate.
+- **FAQ** (`9e59ab5`, `e2f091c`): new **`app/components/Faq.js`** — editorial two-column accordion
+  (sticky heading + hairline-divided Q&A, grid-template-rows expand), before Contact, `id=faq`,
+  renders `FAQ` from `app/lib/faq.js`. Flipped `FAQ_SECTION_LIVE=true` so the **FAQPage schema** is
+  active and matches the visible 9 Q&As. Verify: `scripts/faqshot.mjs`.
+
+### Lead capture — ✅ LIVE on `main` (`2e1fe4c`)
+Estimator email + Contact form POST to a hardened **`app/api/lead/route.js`** (Resend; reuses
+carolux-tools' account + verified sender; honeypot, per-IP rate limit, HTML-escape, validation).
+Shared kit **`app/components/leadForm.js`** (`useLead` state machine, Spinner, ErrorNote,
+SuccessReveal, CheckBadge, Honeypot). `RESEND_API_KEY` is set in the carolux-site **Vercel
+production** env (preview env not set — non-blocking). Production verified: honeypot→200,
+missing-fields→400 (key read), and a labeled prod test delivered to team@. PR #5 closed. `resend` in
+package.json; `.env.local` has the key (UTF-8 BOM — extract with `grep -ao`). Verify: `scripts/leadshot.mjs`.
+
+### In flight — NOT on `main` yet
+- **Social buttons** — branch `social-buttons`. Footer brand-column icon row (Google, Instagram,
+  Facebook, Nextdoor; monochrome cream→teal; Nextdoor = house glyph). `content.js` COMPANY:
+  **Nextdoor + Instagram real; Facebook + Google Business Profile are PLACEHOLDERS**
+  (`TODO(social-url)`) pending real links. SEO follow-up: add all 4 to `schema.js` `sameAs`.
+  Verify: `scripts/footshot.mjs`.
+
+### Path-to-live backlog (from the launch audit, not yet done)
+Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); before/after city captions
+unverified; owner photos 1.9MB PNG (downscale); desktop thermal XOR verified Chromium-only (check
+Firefox/Safari); Vercel Deployment Protection off + DNS repoint; finalize the 2 social URLs.
+(Lead capture — the #1 conversion blocker — is now DONE and live.)
+
+---
+
+## 🟡 PRIOR HANDOFF — Hero (mobile sequence + desktop thermal cycle) — LIVE on main
+*Detail reference from 2026-06-10. Still accurate for the Hero; superseded as "latest" by the block above.*
 
 **Worktree/lane:** design lane (`carolux-site`).
 **Git:** ✅ **LIVE on `main` (2026-06-10)** at `08496cc`. `main` = `hero-polish` = `hero-large-monitor`

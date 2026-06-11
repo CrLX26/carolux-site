@@ -305,7 +305,14 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-10):**
+**Current state (2026-06-11):** `main` = **`e2f091c`** (Vercel production deploying). See the
+**CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-11"** block for the authoritative latest state. Shipped to
+main since the hero: Stats polish, the WhyUs 2×2 quadrant-ledger, the SEO foundation
+(sitemap/robots/schema/llms.txt/faq.js — SEO lane), and the FAQ section + active FAQPage schema.
+In flight (not on main): `lead-capture` (PR #5, needs `RESEND_API_KEY` in Vercel) and
+`social-buttons` (footer socials; 2 URLs pending). All three worktrees synced to `e2f091c`.
+
+**Prior state (2026-06-10):**
 - ✅ LIVE on `main` @ `08496cc` (Vercel production deploying). `main` = `hero-polish` =
   `hero-large-monitor` (all fast-forwarded to the same commit; linear). **Wix domain still
   untouched** — main only updates the Vercel deploy; the public domain switches when DNS is
