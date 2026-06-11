@@ -243,8 +243,7 @@ export const OWNERS = {
 // Savings estimator. Formula basis (EPA/DOE ENERGY STAR): air sealing + insulation
 // saves up to ~15% of heating & cooling costs, averaging ~11% of a total energy bill.
 // Rates below are applied to the TOTAL annual bill and are intentionally honest ranges.
-// NOTE: email capture is NOT wired to any backend yet — submissions go nowhere.
-// TODO(lead-capture): connect the email field to a form service (Resend/Formspree/etc.).
+// Email capture POSTs to /api/lead (Resend). Status copy lives in `email*` below.
 export const ESTIMATOR = {
   eyebrow: "Savings Estimator",
   title: "What's hiding in your energy bill?",
@@ -263,7 +262,10 @@ export const ESTIMATOR = {
   emailPrompt: "Want it in writing? Leave your email and we'll send a personalized breakdown.",
   emailPlaceholder: "you@email.com",
   emailCta: "Email me my estimate",
-  emailDone: "Got it — we'll be in touch soon.",
+  emailSending: "Sending",
+  emailDone: "Estimate on its way.",
+  emailDoneSub: "We'll email your personalized breakdown shortly. Watch your inbox.",
+  emailRetry: "Try again",
   // Savings rate range [low, high] applied to the TOTAL annual bill, by insulation state.
   rates: { under: [0.08, 0.12], unsure: [0.07, 0.11], good: [0.03, 0.05] },
   billMin: 50,
@@ -272,9 +274,9 @@ export const ESTIMATOR = {
     "Estimate based on EPA ENERGY STAR and U.S. Department of Energy figures for the North Carolina climate. Every home is different; actual savings vary by HVAC system, usage, and the condition of your home.",
 };
 
-// Contact / final CTA. The form has NO backend — on submit it composes a prefilled
-// email to team@ via mailto (works today). Upgrade to a form service when the
-// lead-capture backend is decided. See TODO(lead-capture).
+// Contact / final CTA. On submit the form POSTs to /api/lead (Resend) and the
+// lead emails to team@. Status copy lives in `form.*` below. The direct call/email
+// CTAs stay as an always-available fallback.
 export const CONTACT = {
   eyebrow: "Free, No-Obligation",
   title: "Get your free estimate",
@@ -290,8 +292,14 @@ export const CONTACT = {
     messageLabel: "What's going on up there?",
     messagePlaceholder: "Hot upstairs, high bills, drafty rooms, crawl space moisture...",
     submit: "Send My Request",
+    submitting: "Sending",
     fallbackNote:
-      "This opens your email app with the details filled in, ready to send. Prefer to talk? Call or email us directly.",
+      "We'll never share your details. Prefer to talk? Call or email us directly, any time.",
+    requiredNote: "Please add your name and phone so an owner can reach you.",
+    successTitle: "Request sent.",
+    successBody:
+      "Thanks. An owner will get back to you, usually within a few hours. No call centers, no runaround.",
+    errorRetry: "Try again",
   },
   // Risk-reversal, repeated right at the ask. "Fully insured" never "licensed".
   reassurance: [

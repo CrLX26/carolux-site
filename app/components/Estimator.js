@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { ESTIMATOR } from "../lib/content";
 import { C, Reveal, SectionHeading, Cta, sectionStyle, containerStyle } from "./sectionKit";
+import { useLead, Spinner, ErrorNote, SuccessReveal, CheckBadge, Honeypot, focusRing, ERR_ON_LIGHT } from "./leadForm";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const money = (n) => `$${Math.round(n).toLocaleString()}`;
 
@@ -10,14 +13,17 @@ export default function Estimator() {
   const {
     eyebrow, title, intro, billLabel, insulationLabel, insulationOptions,
     resultLabel, tenYearLabel, cta, emailPrompt, emailPlaceholder, emailCta,
-    emailDone, rates, billMin, billMax, source,
+    emailSending, emailDone, emailDoneSub, rates, billMin, billMax, source,
   } = ESTIMATOR;
 
   const [bill, setBill] = useState("");
   const [insul, setInsul] = useState("unsure");
   const [billFocused, setBillFocused] = useState(false);
   const [email, setEmail] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [emailErr, setEmailErr] = useState("");
+  const [hp, setHp] = useState(""); // honeypot
+  const lead = useLead();
 
   const raw = parseFloat(bill) || 0;
   const clamped = raw > 0 ? Math.min(billMax, Math.max(billMin, raw)) : 0;
@@ -27,11 +33,24 @@ export default function Estimator() {
   const high = annual * hiRate;
   const hasResult = clamped > 0;
 
-  // NOTE: email capture is intentionally NOT wired to a backend yet — see content.js TODO.
-  // This only flips local UI state so the field feels responsive; nothing is sent or stored.
-  const onEmailSubmit = (e) => {
+  // Email capture POSTs to /api/lead (Resend). Client validates the address, then
+  // the status machine (useLead) drives the submitting / success / error states.
+  const onEmailSubmit = async (e) => {
     e.preventDefault();
-    if (email.trim()) setEmailSent(true);
+    const v = email.trim();
+    if (!EMAIL_RE.test(v)) {
+      setEmailErr("Please enter a valid email address.");
+      return;
+    }
+    setEmailErr("");
+    await lead.submit({
+      type: "estimate",
+      email: v,
+      bill: hasResult ? String(clamped) : "",
+      insulation: (insulationOptions.find((o) => o.key === insul) || {}).label || insul,
+      estimateRange: hasResult ? `${money(low)}-${money(high)}/yr` : "",
+      company: hp,
+    });
   };
 
   return (
@@ -249,22 +268,34 @@ export default function Estimator() {
           </Reveal>
         </div>
 
-        {/* ── Email capture (stub — goes nowhere yet) + source ───── */}
+        {/* ── Email capture → /api/lead (Resend) + source ───── */}
         <Reveal delay={0.26} style={{ marginTop: "clamp(32px, 5vh, 48px)", maxWidth: "640px" }}>
-          {emailSent ? (
-            <p
+          {lead.status === "success" ? (
+            <SuccessReveal
               style={{
-                fontFamily: "var(--font-dm-sans)",
-                fontSize: "1rem",
-                color: C.teal,
-                fontWeight: 500,
-                margin: 0,
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "16px",
+                maxWidth: "520px",
+                padding: "clamp(18px, 2.4vw, 24px)",
+                background: C.surface,
+                border: `1px solid ${C.border}`,
+                borderRadius: "4px",
               }}
             >
-              {emailDone}
-            </p>
+              <CheckBadge size={42} />
+              <div>
+                <p style={{ margin: 0, fontFamily: "var(--font-cormorant)", fontSize: "1.5rem", lineHeight: 1.1, color: C.navy }}>
+                  {emailDone}
+                </p>
+                <p style={{ margin: "6px 0 0", fontFamily: "var(--font-dm-sans)", fontSize: "0.95rem", lineHeight: 1.55, color: C.inkSoft }}>
+                  {emailDoneSub}
+                </p>
+              </div>
+            </SuccessReveal>
           ) : (
-            <form onSubmit={onEmailSubmit}>
+            <form onSubmit={onEmailSubmit} noValidate>
+              <Honeypot value={hp} onChange={(e) => setHp(e.target.value)} />
               <label
                 htmlFor="est-email"
                 style={{
@@ -284,10 +315,14 @@ export default function Estimator() {
                   required
                   placeholder={emailPlaceholder}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={!!emailErr}
+                  disabled={lead.busy}
+                  onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(""); }}
+                  onFocus={() => setEmailFocused(true)}
+                  onBlur={() => setEmailFocused(false)}
                   style={{
                     flex: "1 1 220px",
-                    border: `1.5px solid ${C.border}`,
+                    border: `1.5px solid ${emailErr ? ERR_ON_LIGHT : emailFocused ? C.teal : C.border}`,
                     borderRadius: "3px",
                     padding: "14px 16px",
                     fontFamily: "var(--font-dm-sans)",
@@ -295,11 +330,18 @@ export default function Estimator() {
                     color: C.navy,
                     background: C.surface,
                     outline: "none",
+                    boxShadow: emailFocused ? focusRing(emailErr ? "rgba(168,57,42,0.22)" : undefined) : "none",
+                    transition: "border-color 150ms ease, box-shadow 150ms ease",
                   }}
                 />
                 <button
                   type="submit"
+                  disabled={lead.busy}
                   style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
                     fontFamily: "var(--font-label)",
                     fontWeight: 600,
                     fontSize: "14px",
@@ -311,15 +353,17 @@ export default function Estimator() {
                     borderRadius: "3px",
                     background: C.navy,
                     color: "#ffffff",
-                    cursor: "pointer",
-                    transition: "background 160ms ease, transform 160ms ease",
+                    cursor: lead.busy ? "wait" : "pointer",
+                    opacity: lead.busy ? 0.85 : 1,
+                    transition: "background 160ms ease, transform 160ms ease, opacity 160ms ease",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = C.navyDeep; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseEnter={(e) => { if (lead.busy) return; e.currentTarget.style.background = C.navyDeep; e.currentTarget.style.transform = "translateY(-1px)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = C.navy; e.currentTarget.style.transform = "none"; }}
                 >
-                  {emailCta}
+                  {lead.busy ? (<><Spinner size={15} />{emailSending}</>) : emailCta}
                 </button>
               </div>
+              <ErrorNote>{emailErr || (lead.status === "error" ? lead.error : "")}</ErrorNote>
             </form>
           )}
 
