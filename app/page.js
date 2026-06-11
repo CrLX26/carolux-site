@@ -11,6 +11,7 @@ import Packages from "./components/Packages";
 import Owners from "./components/Owners";
 import Reviews from "./components/Reviews";
 import ServiceArea from "./components/ServiceArea";
+import Faq from "./components/Faq";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
@@ -31,6 +32,7 @@ export default function Home() {
         <Owners />
         <Reviews />
         <ServiceArea />
+        <Faq />
         <Contact />
       </main>
       <Footer />
