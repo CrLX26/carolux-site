@@ -1,9 +1,16 @@
 import { ImageResponse } from "next/og";
 import { loadGloockFont } from "../lib/og-font";
+import { SLUGS, getCity } from "../lib/cities";
 
-export const runtime = "edge";
+export const alt =
+  "Carolux Insulation — Charlotte-area attic and crawl space insulation";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+// Prerender one OG card per city at build time (font baked in, no runtime fetch).
+export function generateStaticParams() {
+  return SLUGS.map((city) => ({ city }));
+}
 
 const NAVY = "#1a2b3c";
 const TEAL = "#4a90a4";
@@ -26,7 +33,8 @@ function headingFontSize(name) {
 }
 
 export default async function Image({ params }) {
-  const cityName = cityDisplayName(params.city);
+  const { city: slug } = await params;
+  const cityName = getCity(slug)?.displayName ?? cityDisplayName(slug);
   const fontSize = headingFontSize(cityName);
   const subFontSize = Math.round(fontSize * 0.51);
 

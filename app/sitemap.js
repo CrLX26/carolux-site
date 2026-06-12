@@ -1,23 +1,9 @@
+import { SLUGS } from "./lib/cities";
+
 const BASE_URL = "https://caroluxinsulation.com";
 
-const CITY_SLUGS = [
-  "charlotte-insulation",
-  "huntersville-insulation",
-  "pineville-insulation",
-  "matthews-insulation",
-  "mint-hill-insulation",
-  "concord-insulation",
-  "harrisburg-insulation",
-  "belmont-insulation",
-  "cramerton-insulation",
-  "gastonia-insulation",
-  "lowell-insulation",
-  "mount-holly-insulation",
-  "stanley-insulation",
-];
-
 export default function sitemap() {
-  const cityPages = CITY_SLUGS.map((slug) => ({
+  const cityPages = SLUGS.map((slug) => ({
     url: `${BASE_URL}/${slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly",
