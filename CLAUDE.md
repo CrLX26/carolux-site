@@ -6,29 +6,28 @@
 
 ---
 
-## 🟢 CURRENT HANDOFF — 2026-06-11 (latest). Read this first.
-**`main` = `4cfbc55`, deploying to Vercel production.** Wix domain still untouched (the public
-domain only switches when DNS is repointed). Three worktrees: `carolux-site` (design),
-`carolux-seo`/`seo-foundation` (SEO), `carolux-copy`/`copy-polish` (copy). **Cross-worktree gotcha:**
-after `main` advances, each worktree needs `git fetch && git checkout main && git pull --ff-only`
-AND `npm install` if a new dependency landed (each worktree has its own `node_modules` — e.g.
-`resend` arrived with lead capture). The remote is the source of truth; a worktree can't update the
-local `main` ref while another worktree has `main` checked out (harmless).
+## 🟢 CURRENT HANDOFF — 2026-06-12 (latest). Read this first.
+**`main` = `86a66c8`, deploying to Vercel production.** Wix domain still untouched (the public
+domain only switches when DNS is repointed). Three worktrees: `carolux-site` (design, on `main`),
+`carolux-seo`/`seo-next` (SEO — `seo-foundation` merged to main), `carolux-copy`/`copy-polish` (copy).
+**Cross-worktree gotcha:** after `main` advances, each worktree needs `git fetch && git pull --ff-only`
+AND `npm install` if a new dependency landed. The remote is the source of truth; a worktree can't
+update the local `main` ref while another worktree has `main` checked out (harmless).
 
 ### Shipped to `main` this session (all live)
-- **Stats polish** (`ebc6a0a`): trimmed caveat + single glow; caveat gated so fine print never
-  precedes the data (desktop→R-49 window, mobile→supports window); equal-width desktop support
-  columns; desktop scroll tunnel `420vh→300vh`. Verify: `scripts/statshot.mjs`, `scripts/mxend.mjs`.
-- **WhyUs redesign** (`7b1cf35`): the 4 pillars are now a deterministic **2×2 quadrant ledger**
-  (one structural cross of hairlines, promoted Roman numerals) stacking to 1 col <640px. Verify:
-  `scripts/whyshot.mjs`.
-- **SEO foundation** (SEO lane, `ca3e6b0…7a88342`): `sitemap.js`, `robots.js`, enriched
-  LocalBusiness + per-service `Service` + `HowTo` schema, `public/llms.txt`, `app/lib/faq.js`.
-  **SEO owns** `schema.js` / `sitemap.js` / `robots.js` / `layout.js` metadata / `faq.js` — coordinate.
-- **FAQ** (`9e59ab5`, `e2f091c`): new **`app/components/Faq.js`** — editorial two-column accordion
-  (sticky heading + hairline-divided Q&A, grid-template-rows expand), before Contact, `id=faq`,
-  renders `FAQ` from `app/lib/faq.js`. Flipped `FAQ_SECTION_LIVE=true` so the **FAQPage schema** is
-  active and matches the visible 9 Q&As. Verify: `scripts/faqshot.mjs`.
+- **Owner photos downscaled** (`05ac1f3`): tony/juan PNG → WebP (40KB/34KB). References updated in `content.js`.
+- **SEO batch** (SEO lane, `4676747…80d2cae`): `/cost-guide` page (Charlotte pricing guide, FAQPage
+  schema), AEO authority pass, all 9 FAQ answers rewritten for AI extractability. `seo-foundation`
+  merged and closed — SEO worktree now on `seo-next`.
+- **Impeccable — FAQ + cost-guide** (`916c6db`, `86a66c8`): `Faq.js` now renders `learnMoreHref`
+  as a small teal link after the answer text (first FAQ item → `/cost-guide`). `cost-guide/page.js`
+  brand violations fixed: side-stripe border removed, identical card grids → hairline ledgers,
+  all `#fff` → `C.surface`/`C.cream`, `borderRadius` normalised to 4px/3px, CTA section teal→navy.
+
+### Prior shipped (still live, earlier sessions)
+- **Stats polish** (`ebc6a0a`), **WhyUs 2×2 ledger** (`7b1cf35`), **SEO foundation**
+  (`ca3e6b0…7a88342`), **FAQ component** (`9e59ab5`, `e2f091c`), **lead capture** (`2e1fe4c`),
+  **social footer buttons + sameAs** (`6430346`, `4cfbc55`).
 
 ### Lead capture — ✅ LIVE on `main` (`2e1fe4c`)
 Estimator email + Contact form POST to a hardened **`app/api/lead/route.js`** (Resend; reuses
