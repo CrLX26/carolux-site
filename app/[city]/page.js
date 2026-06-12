@@ -489,7 +489,7 @@ export default async function CityPage({ params }) {
       <main style={{ backgroundColor: C.cream, color: C.navy }}>
 
         {/* ── Hero ───────────────────────────────────────────────────────── */}
-        <section style={{ maxWidth: 760, margin: "0 auto", padding: "7rem 1.5rem 3rem" }}>
+        <section style={{ maxWidth: 760, margin: "0 auto", padding: "7rem 1.5rem 5rem" }}>
           <p
             style={{
               fontFamily: "var(--font-label)",
@@ -523,13 +523,13 @@ export default async function CityPage({ params }) {
               marginBottom: "1.8rem",
             }}
           >
-            {city.displayName} Insulation Contractor — Free Estimate
+            {city.displayName} Insulation Contractor, Free Estimate
           </h1>
 
           {/* Quick-answer box — AEO snippet target */}
           <div
             style={{
-              background: `${C.teal}0a`,
+              background: `${C.teal}14`,
               border: `1px solid ${C.border}`,
               borderRadius: "4px",
               padding: "1.4rem 1.6rem",
@@ -576,13 +576,13 @@ export default async function CityPage({ params }) {
             borderBottom: `1px solid ${C.border}`,
           }}
         >
-          <div style={{ maxWidth: 760, margin: "0 auto", padding: "4rem 1.5rem" }}>
+          <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(3.5rem, 5vw, 5rem) 1.5rem" }}>
             <h2
               style={{
                 fontFamily: "var(--font-cormorant)",
                 fontSize: "clamp(1.5rem, 3vw, 2rem)",
                 fontWeight: 400,
-                marginBottom: "0.5rem",
+                marginBottom: "0.75rem",
               }}
             >
               Insulation Services in {city.displayName}
@@ -654,13 +654,13 @@ export default async function CityPage({ params }) {
         </section>
 
         {/* ── Why Carolux ────────────────────────────────────────────────── */}
-        <section style={{ maxWidth: 760, margin: "0 auto", padding: "4rem 1.5rem" }}>
+        <section style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(4rem, 6vw, 6rem) 1.5rem" }}>
           <h2
             style={{
               fontFamily: "var(--font-cormorant)",
               fontSize: "clamp(1.5rem, 3vw, 2rem)",
               fontWeight: 400,
-              marginBottom: "0.5rem",
+              marginBottom: "0.75rem",
             }}
           >
             Why {city.displayName} Homeowners Choose Carolux
@@ -739,7 +739,7 @@ export default async function CityPage({ params }) {
             borderBottom: `1px solid ${C.border}`,
           }}
         >
-          <div style={{ maxWidth: 760, margin: "0 auto", padding: "4rem 1.5rem" }}>
+          <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(3rem, 4.5vw, 4.5rem) 1.5rem" }}>
             <h2
               style={{
                 fontFamily: "var(--font-cormorant)",
@@ -748,7 +748,7 @@ export default async function CityPage({ params }) {
                 marginBottom: "2rem",
               }}
             >
-              Common Questions — {city.displayName} Insulation
+              Common Questions: {city.displayName} Insulation
             </h2>
             <div className="carolux-city-faq" style={{ borderTop: `1px solid ${C.border}` }}>
               {city.faq.map(({ q, a }, i) => (
@@ -808,7 +808,7 @@ export default async function CityPage({ params }) {
 
         {/* ── CTA ────────────────────────────────────────────────────────── */}
         <section style={{ backgroundColor: C.navy, textAlign: "center" }}>
-          <div style={{ maxWidth: 600, margin: "0 auto", padding: "5rem 1.5rem" }}>
+          <div style={{ maxWidth: 600, margin: "0 auto", padding: "clamp(5rem, 9vw, 8rem) 1.5rem" }}>
             <h2
               style={{
                 fontFamily: "var(--font-cormorant)",
@@ -845,7 +845,7 @@ export default async function CityPage({ params }) {
                 fontSize: "0.92rem",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                padding: "1rem 2.2rem",
+                padding: "1.1rem 2.8rem",
                 borderRadius: "3px",
                 textDecoration: "none",
               }}
