@@ -43,7 +43,7 @@ function Chevron({ open }) {
   );
 }
 
-function FaqItem({ q, a, defaultOpen }) {
+function FaqItem({ q, a, learnMoreHref, learnMoreLabel, defaultOpen }) {
   const [open, setOpen] = useState(defaultOpen);
   const base = useId();
   const panelId = `${base}-panel`;
@@ -99,19 +99,40 @@ function FaqItem({ q, a, defaultOpen }) {
         }}
       >
         <div style={{ overflow: "hidden" }}>
-          <p
-            style={{
-              margin: 0,
-              paddingBottom: "clamp(22px, 3vh, 32px)",
-              maxWidth: "64ch",
-              fontFamily: "var(--font-dm-sans)",
-              fontSize: "clamp(0.98rem, 1.1vw, 1.05rem)",
-              lineHeight: 1.72,
-              color: C.inkSoft,
-            }}
-          >
-            {a}
-          </p>
+          <div style={{ paddingBottom: "clamp(22px, 3vh, 32px)" }}>
+            <p
+              style={{
+                margin: 0,
+                maxWidth: "64ch",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "clamp(0.98rem, 1.1vw, 1.05rem)",
+                lineHeight: 1.72,
+                color: C.inkSoft,
+              }}
+            >
+              {a}
+            </p>
+            {learnMoreHref && (
+              <a
+                href={learnMoreHref}
+                style={{
+                  display: "inline-block",
+                  marginTop: "0.75rem",
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.88rem",
+                  fontWeight: 500,
+                  color: C.teal,
+                  textDecoration: "none",
+                  borderBottom: `1px solid ${C.teal}`,
+                  lineHeight: 1,
+                  paddingBottom: "2px",
+                  letterSpacing: "0.01em",
+                }}
+              >
+                {learnMoreLabel}
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -170,7 +191,14 @@ export default function Faq() {
         {/* Q&A list — bottom border closes the ledger of hairlines */}
         <Reveal style={{ borderBottom: `1px solid ${C.border}` }}>
           {items.map((item, i) => (
-            <FaqItem key={i} q={item.q} a={item.a} defaultOpen={i === 0} />
+            <FaqItem
+              key={i}
+              q={item.q}
+              a={item.a}
+              learnMoreHref={item.learnMoreHref}
+              learnMoreLabel={item.learnMoreLabel}
+              defaultOpen={i === 0}
+            />
           ))}
         </Reveal>
       </div>
