@@ -22,14 +22,6 @@ const SAME_AS = [
   COMPANY.nextdoor,
 ];
 
-// Interim OG image — best available landscape work photo. TODO (design lane):
-// replace with a purpose-built 1200×630 branded share asset.
-const OG_IMAGE = {
-  url: "/images/crawlspace-after.png",
-  width: 1448,
-  height: 1086,
-};
-
 const C = {
   cream: "#faf8f5",
   surface: "#fefdfb",
@@ -400,12 +392,6 @@ export async function generateMetadata({ params }) {
       siteName: "Carolux Insulation",
       locale: "en_US",
       type: "website",
-      images: [
-        {
-          ...OG_IMAGE,
-          alt: `Carolux Insulation — insulation services in ${city.displayName}, NC`,
-        },
-      ],
     },
   };
 }
