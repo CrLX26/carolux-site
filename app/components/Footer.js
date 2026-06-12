@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { COMPANY, NAV_LINKS } from "../lib/content";
 import { C } from "./sectionKit";
 
@@ -94,6 +94,15 @@ function FootLink({ href, children, external = false }) {
 }
 
 export default function Footer() {
+  const sealRef = useRef(null);
+  useEffect(() => {
+    if (!sealRef.current) return;
+    const s = document.createElement("script");
+    s.type = "text/javascript";
+    s.src = "https://rapidscansecure.com/siteseal/siteseal.js?code=65,AB7E334048042ACCFD2C00CC0BD1F8ACC7787ABA";
+    sealRef.current.appendChild(s);
+  }, []);
+
   return (
     // pb on mobile clears the fixed Call/Estimate bar (Nav, ~60px); md+ has no bar.
     <footer className="pb-20 md:pb-0" style={{ background: C.navyDeep, color: C.cream }}>
@@ -194,6 +203,7 @@ export default function Footer() {
           &copy; {COMPANY.year} {COMPANY.name}. All rights reserved.
         </p>
         <FootLink href="/privacy-policy">Privacy Policy</FootLink>
+        <div ref={sealRef} style={{ display: "flex", alignItems: "center" }} />
       </div>
     </footer>
   );
