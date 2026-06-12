@@ -61,6 +61,7 @@ const costFaqSchema = {
 
 const C = {
   cream: "#faf8f5",
+  surface: "#fefdfb",
   navy: "#1a2b3c",
   teal: "#4a90a4",
   ink: "#2c2c2c",
@@ -220,10 +221,9 @@ export default function CostGuidePage() {
           {/* Quick-answer box — optimised for AI overview / featured snippet */}
           <div
             style={{
-              background: "#fff",
-              border: `1px solid ${C.teal}33`,
-              borderLeft: `4px solid ${C.teal}`,
-              borderRadius: "0.75rem",
+              background: `${C.teal}0a`,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
               padding: "1.4rem 1.6rem",
               marginBottom: "1.2rem",
             }}
@@ -291,14 +291,14 @@ export default function CostGuidePage() {
           </p>
           <div
             style={{
-              borderRadius: "0.85rem",
+              borderRadius: "4px",
               overflow: "hidden",
               border: `1px solid ${C.border}`,
             }}
           >
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.92rem" }}>
               <thead>
-                <tr style={{ backgroundColor: C.navy, color: "#fff" }}>
+                <tr style={{ backgroundColor: C.navy, color: C.cream }}>
                   <th
                     style={{
                       textAlign: "left",
@@ -346,7 +346,7 @@ export default function CostGuidePage() {
                       backgroundColor: row.highlight
                         ? `${C.teal}0d`
                         : i % 2 === 0
-                        ? "#fff"
+                        ? C.surface
                         : C.cream,
                       borderBottom: `1px solid ${C.border}`,
                     }}
@@ -421,9 +421,9 @@ export default function CostGuidePage() {
           <div
             style={{
               marginTop: "1.8rem",
-              background: `${C.teal}0f`,
-              border: `1px solid ${C.teal}30`,
-              borderRadius: "0.75rem",
+              background: `${C.teal}0a`,
+              border: `1px solid ${C.border}`,
+              borderRadius: "4px",
               padding: "1.2rem 1.4rem",
             }}
           >
@@ -461,7 +461,7 @@ export default function CostGuidePage() {
         {/* ── What moves the price ─────────────────────────────────────── */}
         <section
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: C.surface,
             borderTop: `1px solid ${C.border}`,
             borderBottom: `1px solid ${C.border}`,
           }}
@@ -489,39 +489,55 @@ export default function CostGuidePage() {
               Five factors move a project through the range. Every one of them is assessed
               during the free energy audit — that's why we do it before quoting.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              {VARIABLES.map((v) => (
+            <div style={{ borderTop: `1px solid ${C.border}` }}>
+              {VARIABLES.map((v, i) => (
                 <div
                   key={v.factor}
                   style={{
-                    backgroundColor: C.cream,
-                    borderRadius: "0.75rem",
-                    padding: "1.2rem 1.4rem",
-                    border: `1px solid ${C.border}`,
+                    borderBottom: `1px solid ${C.border}`,
+                    padding: "1.5rem 0",
+                    display: "grid",
+                    gridTemplateColumns: "2.5rem 1fr",
+                    gap: "1rem",
+                    alignItems: "start",
                   }}
                 >
-                  <p
+                  <span
                     style={{
-                      fontFamily: "var(--font-dm-sans)",
-                      fontWeight: 600,
-                      color: C.navy,
-                      marginBottom: "0.35rem",
-                      fontSize: "0.97rem",
+                      fontFamily: "var(--font-label)",
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.14em",
+                      color: C.teal,
+                      paddingTop: "3px",
                     }}
                   >
-                    {v.factor}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-dm-sans)",
-                      fontSize: "0.9rem",
-                      color: C.inkSoft,
-                      lineHeight: 1.7,
-                      margin: 0,
-                    }}
-                  >
-                    {v.detail}
-                  </p>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "var(--font-dm-sans)",
+                        fontWeight: 600,
+                        color: C.navy,
+                        margin: "0 0 0.3rem",
+                        fontSize: "0.97rem",
+                      }}
+                    >
+                      {v.factor}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "var(--font-dm-sans)",
+                        fontSize: "0.9rem",
+                        color: C.inkSoft,
+                        lineHeight: 1.7,
+                        margin: 0,
+                      }}
+                    >
+                      {v.detail}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -529,7 +545,7 @@ export default function CostGuidePage() {
         </section>
 
         {/* ── Why no online quote ──────────────────────────────────────── */}
-        <section style={{ backgroundColor: C.navy, color: "#fff" }}>
+        <section style={{ backgroundColor: C.navy, color: C.cream }}>
           <div style={{ maxWidth: 760, margin: "0 auto", padding: "5rem 1.5rem" }}>
             <h2
               style={{
@@ -546,7 +562,7 @@ export default function CostGuidePage() {
                 fontFamily: "var(--font-dm-sans)",
                 fontSize: "clamp(0.95rem, 1.1vw, 1.03rem)",
                 lineHeight: 1.78,
-                color: "rgba(255,255,255,0.78)",
+                color: "rgba(250,248,245,0.82)",
                 marginBottom: "1rem",
               }}
             >
@@ -560,7 +576,7 @@ export default function CostGuidePage() {
                 fontFamily: "var(--font-dm-sans)",
                 fontSize: "clamp(0.95rem, 1.1vw, 1.03rem)",
                 lineHeight: 1.78,
-                color: "rgba(255,255,255,0.78)",
+                color: "rgba(250,248,245,0.82)",
                 marginBottom: "1rem",
               }}
             >
@@ -573,7 +589,7 @@ export default function CostGuidePage() {
                 fontFamily: "var(--font-dm-sans)",
                 fontSize: "clamp(0.95rem, 1.1vw, 1.03rem)",
                 lineHeight: 1.78,
-                color: "rgba(255,255,255,0.78)",
+                color: "rgba(250,248,245,0.82)",
               }}
             >
               Our free energy audit takes about 45 minutes. You get your current R-value reading,
@@ -606,30 +622,22 @@ export default function CostGuidePage() {
           >
             Not everything competitors charge extra for.
           </p>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: "1rem",
-            }}
-          >
+          <div style={{ borderTop: `1px solid ${C.border}` }}>
             {INCLUDED.map(([title, desc]) => (
               <div
                 key={title}
                 style={{
-                  background: "#fff",
-                  borderRadius: "0.75rem",
-                  padding: "1.3rem 1.4rem",
-                  border: `1px solid ${C.border}`,
+                  borderBottom: `1px solid ${C.border}`,
+                  padding: "1.4rem 0",
                 }}
               >
                 <p
                   style={{
                     fontFamily: "var(--font-dm-sans)",
                     fontWeight: 600,
-                    color: C.teal,
-                    marginBottom: "0.4rem",
-                    fontSize: "0.95rem",
+                    color: C.navy,
+                    margin: "0 0 0.35rem",
+                    fontSize: "0.97rem",
                   }}
                 >
                   {title}
@@ -637,7 +645,7 @@ export default function CostGuidePage() {
                 <p
                   style={{
                     fontFamily: "var(--font-dm-sans)",
-                    fontSize: "0.88rem",
+                    fontSize: "0.9rem",
                     color: C.inkSoft,
                     lineHeight: 1.7,
                     margin: 0,
@@ -653,8 +661,7 @@ export default function CostGuidePage() {
         {/* ── CTA ──────────────────────────────────────────────────────── */}
         <section
           style={{
-            backgroundColor: C.teal,
-            color: "#fff",
+            backgroundColor: C.navy,
             textAlign: "center",
           }}
         >
@@ -665,6 +672,7 @@ export default function CostGuidePage() {
                 fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
                 fontWeight: 400,
                 marginBottom: "1rem",
+                color: C.cream,
               }}
             >
               Get Your Accurate Quote
@@ -673,29 +681,29 @@ export default function CostGuidePage() {
               style={{
                 fontFamily: "var(--font-dm-sans)",
                 fontSize: "1rem",
-                color: "rgba(255,255,255,0.82)",
+                color: "rgba(250,248,245,0.72)",
                 lineHeight: 1.7,
-                marginBottom: "2.2rem",
                 maxWidth: 460,
                 margin: "0 auto 2.2rem",
               }}
             >
-              Free energy audit for Charlotte-area homeowners. No commitment — just a clear
+              Free energy audit for Charlotte-area homeowners. No commitment, just a clear
               picture of what your home needs and what it costs.
             </p>
             <a
               href={COMPANY.phoneHref}
               style={{
                 display: "inline-block",
-                backgroundColor: "#fff",
-                color: C.navy,
-                fontFamily: "var(--font-dm-sans)",
+                backgroundColor: C.teal,
+                color: C.cream,
+                fontFamily: "var(--font-label)",
                 fontWeight: 700,
-                fontSize: "1.05rem",
+                fontSize: "0.92rem",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
                 padding: "1rem 2.2rem",
-                borderRadius: "0.75rem",
+                borderRadius: "3px",
                 textDecoration: "none",
-                letterSpacing: "0.01em",
               }}
             >
               Call {COMPANY.phone}
@@ -704,7 +712,7 @@ export default function CostGuidePage() {
               style={{
                 fontFamily: "var(--font-dm-sans)",
                 fontSize: "0.82rem",
-                color: "rgba(255,255,255,0.55)",
+                color: "rgba(250,248,245,0.45)",
                 marginTop: "1.2rem",
               }}
             >
