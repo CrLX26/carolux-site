@@ -15,6 +15,16 @@ export const metadata = {
     siteName: "Carolux Insulation",
     locale: "en_US",
     type: "article",
+    // Interim share image — best available landscape work photo. TODO (design
+    // lane): replace with a purpose-built 1200×630 branded OG asset.
+    images: [
+      {
+        url: "/images/crawlspace-after.png",
+        width: 1448,
+        height: 1086,
+        alt: "Carolux Insulation — Charlotte attic and crawl space insulation pricing",
+      },
+    ],
   },
 };
 
@@ -23,13 +33,14 @@ export const metadata = {
 const costFaqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  dateModified: "2026-06-12",
   mainEntity: [
     {
       "@type": "Question",
       name: "How much does attic insulation cost in Charlotte, NC?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Attic blown-in insulation in Charlotte typically runs $1.00–$5.00+ per square foot installed, depending on the contractor, R-value target, and scope. Specialty insulation companies and owner-operators generally fall in the $1.25–$2.50/sqft range. Large home-services companies with higher overhead often quote $3.00–$5.00/sqft for the same work. Reaching the DOE-recommended R-49 for NC homes typically costs $1.50–$3.00/sqft installed depending on who you hire. Homes that need existing insulation removed first add $1.00–$3.00/sqft. A free energy audit gives you an accurate number for your specific home.",
+        text: "Attic blown-in insulation in Charlotte typically runs $1.00–$5.00+ per square foot installed. Specialty insulation companies and owner-operators generally fall in the $1.25–$2.50/sqft range; large home-services companies with higher overhead often quote $3.00–$5.00/sqft for the same work. Reaching the DOE-recommended R-49 for NC homes typically costs $1.50–$3.00/sqft installed. A free energy audit gives you an accurate number for your specific home.",
       },
     },
     {
@@ -45,7 +56,7 @@ const costFaqSchema = {
       name: "What factors affect insulation cost the most?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The five biggest variables are: your target R-value (higher R means more material), whether existing insulation needs removal first, attic or crawl space accessibility, whether air sealing is needed before insulation goes in, and the type of contractor you hire. Specialty insulation companies typically cost less than large multi-service HVAC companies for the same scope. Air sealing is the step most contractors skip — it's what actually stops air movement and makes the insulation work.",
+        text: "The five biggest variables are your target R-value, whether existing insulation needs removal first, attic or crawl space accessibility, whether air sealing is needed before insulation goes in, and the type of contractor you hire. Specialty insulation companies typically cost less than large multi-service companies for the same scope. Air sealing is the step most contractors skip — it's what makes the insulation actually work.",
       },
     },
     {

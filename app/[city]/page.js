@@ -5,6 +5,31 @@ import { COMPANY } from "../lib/content";
 
 const BASE_URL = "https://caroluxinsulation.com";
 
+// ISO date for schema freshness signals — keep in sync with the visible
+// "Last updated" byline in the hero. Bump when city copy is revised.
+const LAST_UPDATED = "2026-06-12";
+
+// Charlotte metro centroid — every service-area city sits within ~40mi.
+// Anchors the LocalBusiness entity geographically on each city page.
+const GEO = { latitude: 35.2271, longitude: -80.8431 };
+
+// Authoritative off-site profiles — mirrors layout.js `sameAs` so every
+// city-page entity node ties back to the same identities.
+const SAME_AS = [
+  COMPANY.instagram,
+  COMPANY.facebook,
+  COMPANY.googleBusiness,
+  COMPANY.nextdoor,
+];
+
+// Interim OG image — best available landscape work photo. TODO (design lane):
+// replace with a purpose-built 1200×630 branded share asset.
+const OG_IMAGE = {
+  url: "/images/crawlspace-after.png",
+  width: 1448,
+  height: 1086,
+};
+
 const C = {
   cream: "#faf8f5",
   surface: "#fefdfb",
@@ -375,6 +400,12 @@ export async function generateMetadata({ params }) {
       siteName: "Carolux Insulation",
       locale: "en_US",
       type: "website",
+      images: [
+        {
+          ...OG_IMAGE,
+          alt: `Carolux Insulation — insulation services in ${city.displayName}, NC`,
+        },
+      ],
     },
   };
 }
@@ -405,6 +436,8 @@ function buildSchema(slug, city) {
           { "@type": "Person", name: "Tony Kermis" },
           { "@type": "Person", name: "Juan Gonzalez" },
         ],
+        geo: { "@type": "GeoCoordinates", ...GEO },
+        sameAs: SAME_AS,
       },
       {
         "@type": "Service",
@@ -424,11 +457,26 @@ function buildSchema(slug, city) {
       },
       {
         "@type": "FAQPage",
+        dateModified: LAST_UPDATED,
         mainEntity: city.faq.map(({ q, a }) => ({
           "@type": "Question",
           name: q,
           acceptedAnswer: { "@type": "Answer", text: a },
         })),
+      },
+      {
+        // Two-level breadcrumb (Home › City Insulation) — helps Google place
+        // the page in the site hierarchy and can surface a breadcrumb in SERPs.
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: `${city.displayName} Insulation`,
+            item: `${BASE_URL}/${slug}`,
+          },
+        ],
       },
     ],
   };
@@ -799,6 +847,29 @@ export default async function CityPage({ params }) {
                     >
                       {a}
                     </p>
+                    {/* faq[0] is the cost question for every city — link it to
+                        the Charlotte price guide (internal link to the highest-
+                        authority pricing page). */}
+                    {i === 0 && (
+                      <a
+                        href="/cost-guide"
+                        style={{
+                          display: "inline-block",
+                          marginTop: "0.85rem",
+                          fontFamily: "var(--font-dm-sans)",
+                          fontSize: "0.88rem",
+                          fontWeight: 500,
+                          color: C.teal,
+                          textDecoration: "none",
+                          borderBottom: `1px solid ${C.teal}`,
+                          lineHeight: 1,
+                          paddingBottom: "2px",
+                          letterSpacing: "0.01em",
+                        }}
+                      >
+                        See full Charlotte price guide →
+                      </a>
+                    )}
                   </div>
                 </details>
               ))}

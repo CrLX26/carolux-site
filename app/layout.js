@@ -44,6 +44,16 @@ export const metadata = {
     siteName: "Carolux Insulation",
     locale: "en_US",
     type: "website",
+    // Interim share image — best available landscape work photo. TODO (design
+    // lane): replace with a purpose-built 1200×630 branded OG asset.
+    images: [
+      {
+        url: "/images/crawlspace-after.png",
+        width: 1448,
+        height: 1086,
+        alt: "Carolux Insulation — Charlotte-area attic and crawl space insulation",
+      },
+    ],
   },
 };
 
