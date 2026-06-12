@@ -305,14 +305,14 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-11):** `main` = **`4cfbc55`** (Vercel production deploying). See the
-**CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-11"** block for the authoritative latest state. Shipped to
-main since the hero: Stats polish, the WhyUs 2×2 quadrant-ledger, the SEO foundation
-(sitemap/robots/schema/llms.txt/faq.js), the FAQ section + active FAQPage schema, **lead capture**
-(Estimator+Contact → Resend `/api/lead`; `RESEND_API_KEY` set in Vercel prod), **footer social
-buttons**, and the four social profiles in `schema.js` `sameAs`. **Nothing in flight** — all feature
-branches merged. Next (off-site, on hold): claim/fill the Google Business Profile + gather real
-reviews. Cross-worktree: after `main` moves, each worktree needs `git pull --ff-only` + `npm install`
+**Current state (2026-06-12):** `main` = **`596882e`** (Vercel production deploying). See the
+**CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-12"** block for the authoritative latest state. Shipped to
+main since the hero: Stats polish, WhyUs 2×2 ledger, SEO foundation, FAQ + FAQPage schema, lead
+capture (Estimator+Contact → Resend `/api/lead`; `RESEND_API_KEY` set in Vercel prod), social footer
+buttons + `sameAs`, owner photos downscaled (WebP), SEO batch (cost-guide page + FAQ AEO rewrite),
+impeccable fixes (FAQ learnMoreHref, cost-guide brand violations). **Nothing in flight.** Next
+(off-site, on hold): claim/fill the Google Business Profile + gather real reviews.
+Cross-worktree: after `main` moves, each worktree needs `git pull --ff-only` + `npm install`
 if a new dep landed.
 
 **Prior state (2026-06-10):**
@@ -328,7 +328,7 @@ if a new dep landed.
   MotionValues untouched.
 - Design lane branches `hero-polish` / `hero-large-monitor` are level with `main` (can keep
   `hero-polish` as the ongoing lane; `hero-large-monitor` is mergeable/deletable).
-- THREE worktrees: `carolux-site` (design), `carolux-seo`/`seo-foundation` (SEO),
+- THREE worktrees: `carolux-site` (design), `carolux-seo`/`seo-next` (SEO),
   `carolux-copy`/`copy-polish` (wording). See memory: worktree-split for lane rules.
 - Open design polish (impeccable critique, not yet done): Stats stat-strip → one dominant
   stat; hero→alert→stats palette/transition continuity; single primary-CTA colour + louder

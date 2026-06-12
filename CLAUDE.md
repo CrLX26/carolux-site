@@ -7,7 +7,7 @@
 ---
 
 ## 🟢 CURRENT HANDOFF — 2026-06-12 (latest). Read this first.
-**`main` = `86a66c8`, deploying to Vercel production.** Wix domain still untouched (the public
+**`main` = `596882e`, deploying to Vercel production.** Wix domain still untouched (the public
 domain only switches when DNS is repointed). Three worktrees: `carolux-site` (design, on `main`),
 `carolux-seo`/`seo-next` (SEO — `seo-foundation` merged to main), `carolux-copy`/`copy-polish` (copy).
 **Cross-worktree gotcha:** after `main` advances, each worktree needs `git fetch && git pull --ff-only`
@@ -433,14 +433,14 @@ See "Mobile Fixes Applied" table above.
 
 ## Open Tasks / Backlog
 
-- **Before/after captions** — ✅ confirmed real Carolux jobs; city captions safe to add.
+- **Before/after captions** — ✅ real Carolux jobs; city captions added (Ballantyne, Matthews).
 - **Reviews** — replace placeholder reviews with real ones (the "$80 power bill" line is a
   placeholder dollar-savings claim that violates the no-specific-$ rule; it goes when reviews are real).
 - **Growth-levers backlog** (see `GROWTH-LEVERS-PLAN.md`): guarantee seal by CTAs, honest urgency,
   **Insured** trust bar (insured, NOT licensed), click-to-text, referral.
-- **SEO lane** (coordinate, don't build here): FAQ + schema, per-city pages, meta description.
+- **SEO lane** (coordinate, don't build here): per-city pages, meta description. ✅ FAQ + FAQPage schema + cost-guide done.
 - **Perf, if needed:** if Firefox is still janky after the fallback, re-encode the scrub video
-  keyframe-dense + smaller. Owner photos are 1.9MB PNG sources — could be downscaled.
+  keyframe-dense + smaller. Owner photos ✅ downscaled (tony/juan PNG → WebP, 40KB/34KB).
 
 ## Hard content rules (see also memory: legal-tony-and-licensing)
 
