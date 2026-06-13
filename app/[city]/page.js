@@ -176,6 +176,8 @@ export default async function CityPage({ params }) {
         .carolux-city-faq details summary::-webkit-details-marker { display: none; }
         .carolux-city-faq details[open] .faq-indicator { transform: rotate(45deg); }
         .carolux-city-faq .faq-indicator { transition: transform 240ms ease; display: inline-block; }
+        .carolux-cta-btn { transition: background-color 160ms ease, transform 120ms ease; }
+        .carolux-cta-btn:hover { background-color: #3d7d90; transform: translateY(-1px); }
       `}</style>
 
       <Nav />
@@ -253,7 +255,7 @@ export default async function CityPage({ params }) {
           <p
             style={{
               fontFamily: "var(--font-dm-sans)",
-              fontSize: "0.82rem",
+              fontSize: "0.88rem",
               color: C.inkSoft,
               lineHeight: 1.6,
             }}
@@ -324,7 +326,7 @@ export default async function CityPage({ params }) {
                         fontWeight: 600,
                         color: C.navy,
                         margin: "0 0 0.3rem",
-                        fontSize: "0.97rem",
+                        fontSize: "1rem",
                       }}
                     >
                       {s.title}
@@ -332,7 +334,7 @@ export default async function CityPage({ params }) {
                     <p
                       style={{
                         fontFamily: "var(--font-dm-sans)",
-                        fontSize: "0.9rem",
+                        fontSize: "0.93rem",
                         color: C.inkSoft,
                         lineHeight: 1.7,
                         margin: 0,
@@ -402,7 +404,7 @@ export default async function CityPage({ params }) {
                       fontWeight: 600,
                       color: C.navy,
                       margin: "0 0 0.3rem",
-                      fontSize: "0.97rem",
+                      fontSize: "1rem",
                     }}
                   >
                     {title}
@@ -410,7 +412,7 @@ export default async function CityPage({ params }) {
                   <p
                     style={{
                       fontFamily: "var(--font-dm-sans)",
-                      fontSize: "0.9rem",
+                      fontSize: "0.93rem",
                       color: C.inkSoft,
                       lineHeight: 1.7,
                       margin: 0,
@@ -474,7 +476,7 @@ export default async function CityPage({ params }) {
                         flexShrink: 0,
                         fontSize: "1.4rem",
                         lineHeight: 1,
-                        fontWeight: 300,
+                        fontWeight: 400,
                       }}
                     >
                       +
@@ -553,6 +555,7 @@ export default async function CityPage({ params }) {
             </p>
             <a
               href={COMPANY.phoneHref}
+              className="carolux-cta-btn"
               style={{
                 display: "inline-block",
                 backgroundColor: C.teal,
