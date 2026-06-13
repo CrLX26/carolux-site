@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ESTIMATOR } from "../lib/content";
+import { ESTIMATOR, THREE_WAYS } from "../lib/content";
 import { C, Reveal, SectionHeading, Cta, sectionStyle, containerStyle } from "./sectionKit";
 import { useLead, Spinner, ErrorNote, SuccessReveal, CheckBadge, Honeypot, focusRing, ERR_ON_LIGHT } from "./leadForm";
 
@@ -71,6 +71,79 @@ export default function Estimator() {
           }}
         >
           {intro}
+        </Reveal>
+
+        {/* ── Three-ways ledger ──────────────────────────────── */}
+        <Reveal
+          delay={0.16}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
+            gap: "clamp(24px, 3vw, 40px)",
+            marginTop: "clamp(36px, 5vh, 56px)",
+          }}
+        >
+          {THREE_WAYS.map((item, i) => (
+            <div
+              key={i}
+              style={{
+                borderTop: `1.5px solid ${C.border}`,
+                paddingTop: "clamp(18px, 2.4vh, 24px)",
+              }}
+            >
+              <span
+                style={{
+                  display: "block",
+                  fontFamily: "var(--font-label)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: C.teal,
+                  marginBottom: "10px",
+                }}
+              >
+                0{i + 1}
+              </span>
+              <p
+                style={{
+                  margin: "0 0 10px",
+                  fontFamily: "var(--font-cormorant)",
+                  fontSize: "clamp(1.15rem, 1.6vw, 1.35rem)",
+                  fontWeight: 400,
+                  lineHeight: 1.25,
+                  color: C.navy,
+                }}
+              >
+                {item.label}
+              </p>
+              <p
+                style={{
+                  margin: 0,
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "clamp(0.88rem, 1vw, 0.95rem)",
+                  lineHeight: 1.65,
+                  color: C.ink,
+                }}
+              >
+                {item.body}
+              </p>
+              {item.source && (
+                <p
+                  style={{
+                    margin: "10px 0 0",
+                    fontFamily: "var(--font-dm-sans)",
+                    fontSize: "11px",
+                    letterSpacing: "0.03em",
+                    color: C.inkSoft,
+                    opacity: 0.8,
+                  }}
+                >
+                  {item.source}
+                </p>
+              )}
+            </div>
+          ))}
         </Reveal>
 
         <div

@@ -245,15 +245,15 @@ export const OWNERS = {
   ],
 };
 
-// Savings estimator. Formula basis (EPA/DOE ENERGY STAR): air sealing + insulation
-// saves up to ~15% of heating & cooling costs, averaging ~11% of a total energy bill.
-// Rates below are applied to the TOTAL annual bill and are intentionally honest ranges.
+// Savings estimator. NC Climate Zone 3 (Charlotte Piedmont): ENERGY STAR methodology
+// puts air sealing + insulation savings at ~8% of total energy use / ~14% of heating
+// and cooling. Rates below are applied to the TOTAL annual bill and match that range.
 // Email capture POSTs to /api/lead (Resend). Status copy lives in `email*` below.
 export const ESTIMATOR = {
-  eyebrow: "Savings Estimator",
-  title: "What's hiding in your energy bill?",
+  eyebrow: "The Real Cost of an Open Attic",
+  title: "Your attic costs you three ways. Only one shows up on your bill.",
   intro:
-    "Most Charlotte homes leak conditioned air through the attic all year. Enter your average monthly energy bill and we'll estimate what air sealing and proper insulation could put back in your pocket.",
+    "Most Charlotte homes leak conditioned air through the attic all year. You feel it three ways — an AC that works harder, moisture where you don't want it, and a higher bill every month. Enter your average monthly bill and we'll put a number on the one we can measure.",
   billLabel: "Your average monthly energy bill",
   insulationLabel: "Your attic insulation right now",
   insulationOptions: [
@@ -262,22 +262,46 @@ export const ESTIMATOR = {
     { key: "good", label: "Well-insulated" },
   ],
   resultLabel: "Estimated annual savings",
-  tenYearLabel: "Roughly this much over 10 years",
+  tenYearLabel: "Roughly this much back over 10 years",
   cta: "Book Your Free Estimate",
-  emailPrompt: "Want it in writing? Leave your email and we'll send a personalized breakdown.",
+  emailPrompt:
+    "Want it in writing? Leave your email and we'll send a personalized breakdown — including what we'd look for in your attic and crawl space.",
   emailPlaceholder: "you@email.com",
   emailCta: "Email me my estimate",
   emailSending: "Sending",
   emailDone: "Estimate on its way.",
   emailDoneSub: "We'll email your personalized breakdown shortly. Watch your inbox.",
   emailRetry: "Try again",
-  // Savings rate range [low, high] applied to the TOTAL annual bill, by insulation state.
-  rates: { under: [0.08, 0.12], unsure: [0.07, 0.11], good: [0.03, 0.05] },
+  // NC-honest rates [low, high] applied to the TOTAL annual bill (ENERGY STAR CZ3 methodology).
+  rates: { under: [0.06, 0.08], unsure: [0.05, 0.07], good: [0.02, 0.04] },
   billMin: 50,
   billMax: 600,
   source:
-    "Estimate based on EPA ENERGY STAR and U.S. Department of Energy figures for the North Carolina climate. Every home is different; actual savings vary by HVAC system, usage, and the condition of your home.",
+    "Estimates use EPA ENERGY STAR and U.S. Department of Energy figures for North Carolina's climate, where air sealing and insulation save roughly 8% of a typical home's total energy use — about 14% of heating and cooling. Every home is different; actual savings vary with your HVAC, your usage, and the shape your house is in.",
 };
+
+// The "three ways" module — sourced, reusable across Estimator, Stats, Services,
+// /cost-guide, and city pages. Keep the source attributions; they earn the claims.
+export const THREE_WAYS = [
+  {
+    label: "Your AC works harder",
+    body:
+      "Every degree that escapes through the attic, your system has to make again — so it runs longer and wears out sooner. Ducts in a hot attic can lose over 20% of the cooled air before it ever reaches the room.",
+    source: "U.S. Department of Energy · ENERGY STAR",
+  },
+  {
+    label: "Moisture moves in",
+    body:
+      "In our humid summers, an unsealed attic or crawl space can develop moisture problems and biological growth within weeks — damaging wood and quietly ruining the insulation you already have.",
+    source: "U.S. EPA",
+  },
+  {
+    label: "You pay for it monthly",
+    body:
+      "The cooled air you're paying for leaks out the top of the house. That's the one below — the part we can estimate.",
+    source: "",
+  },
+];
 
 // Contact / final CTA. On submit the form POSTs to /api/lead (Resend) and the
 // lead emails to team@. Status copy lives in `form.*` below. The direct call/email
