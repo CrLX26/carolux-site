@@ -81,8 +81,10 @@ function FootLink({ href, children, external = false }) {
         fontSize: "0.95rem",
         lineHeight: 1.6,
         color: hovered || focused ? C.teal : "rgba(250,248,245,0.72)",
-        textDecoration: "none",
-        transition: "color 160ms ease",
+        textDecoration: hovered || focused ? "underline" : "none",
+        textUnderlineOffset: "4px",
+        textDecorationThickness: "1px",
+        transition: "color 160ms ease, text-decoration-color 160ms ease",
         // Keyboard-visible focus ring (not color alone).
         outline: focused ? `2px solid ${C.teal}` : "none",
         outlineOffset: "3px",
