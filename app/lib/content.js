@@ -257,7 +257,7 @@ export const ESTIMATOR = {
   billLabel: "Your average monthly energy bill",
   billHint: "Electric, gas, or combined — whatever you pay each month.",
   insulationLabel: "Your attic insulation right now",
-  insulationHint: "Not sure? Most Charlotte homes built before 2010 are under-insulated.",
+  insulationHint: "Not sure? Most Charlotte homes built before 2010 are often under-insulated.",
   insulationOptions: [
     { key: "under", label: "Under-insulated" },
     { key: "unsure", label: "Not sure" },

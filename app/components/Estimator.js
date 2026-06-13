@@ -8,6 +8,7 @@ import { useLead, Spinner, ErrorNote, SuccessReveal, CheckBadge, Honeypot, focus
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const money = (n) => `$${Math.round(n).toLocaleString()}`;
+const ATTIC_AMBER = "#e8a060"; // heat indicator — not a general brand color
 
 export default function Estimator() {
   const {
@@ -23,14 +24,14 @@ export default function Estimator() {
   const [emailFocused, setEmailFocused] = useState(false);
   const [emailErr, setEmailErr] = useState("");
   const [hp, setHp] = useState(""); // honeypot
-  const [outdoorTemp, setOutdoorTemp] = useState(null);
+  const [dailyHigh, setDailyHigh] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const lead = useLead();
 
   useEffect(() => {
-    fetch("https://api.open-meteo.com/v1/forecast?latitude=35.2271&longitude=-80.8431&current_weather=true&temperature_unit=fahrenheit")
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=35.2271&longitude=-80.8431&daily=temperature_2m_max&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=1")
       .then((r) => r.json())
-      .then((d) => setOutdoorTemp(Math.round(d.current_weather.temperature)))
+      .then((d) => setDailyHigh(Math.round(d.daily.temperature_2m_max[0])))
       .catch(() => {});
   }, []);
 
@@ -48,7 +49,9 @@ export default function Estimator() {
   const low = annual * loRate;
   const high = annual * hiRate;
   const hasResult = clamped > 0;
-  const atticTemp = outdoorTemp !== null ? outdoorTemp + 40 : null;
+  // +40°F delta is a solar-load phenomenon — only valid on warm days (≥78° high).
+  const showAttic = dailyHigh !== null && dailyHigh >= 78;
+  const atticTemp = showAttic ? dailyHigh + 40 : null;
 
   // Email capture POSTs to /api/lead (Resend). Client validates the address, then
   // the status machine (useLead) drives the submitting / success / error states.
@@ -93,19 +96,16 @@ export default function Estimator() {
             </Reveal>
           </div>
 
-          {/* Live Charlotte temperature — desktop only */}
-          {!isMobile && (
+          {/* Charlotte temp panel — desktop */}
+          {!isMobile && dailyHigh !== null && (
             <Reveal delay={0.08} style={{ flex: "0 0 clamp(240px, 24vw, 290px)" }}>
-              <div
-                style={{
-                  background: C.navy,
-                  borderRadius: "4px",
-                  padding: "clamp(28px, 3.2vw, 40px)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0",
-                }}
-              >
+              <div style={{
+                background: C.navy,
+                borderRadius: "4px",
+                padding: "clamp(28px, 3.2vw, 40px)",
+                display: "flex",
+                flexDirection: "column",
+              }}>
                 <span style={{
                   fontFamily: "var(--font-label)",
                   fontSize: "10px",
@@ -115,7 +115,7 @@ export default function Estimator() {
                   color: C.teal,
                   marginBottom: "14px",
                 }}>
-                  Charlotte, NC · Right now
+                  Charlotte, NC · Today
                 </span>
 
                 <div style={{
@@ -126,7 +126,7 @@ export default function Estimator() {
                   letterSpacing: "-0.02em",
                   color: C.cream,
                 }}>
-                  {outdoorTemp !== null ? `${outdoorTemp}°` : "—°"}
+                  {dailyHigh}°
                 </div>
                 <span style={{
                   fontFamily: "var(--font-dm-sans)",
@@ -134,47 +134,138 @@ export default function Estimator() {
                   color: "rgba(250,248,245,0.55)",
                   marginBottom: "20px",
                 }}>
-                  outside
+                  forecast high
                 </span>
 
-                <div style={{
-                  height: "1px",
-                  background: "rgba(250,248,245,0.12)",
-                  marginBottom: "20px",
-                }} />
-
-                <div style={{
-                  fontFamily: "var(--font-cormorant)",
-                  fontSize: "clamp(1.8rem, 2.8vw, 2.4rem)",
-                  fontWeight: 400,
-                  lineHeight: 1,
-                  color: "#e8a060",
-                }}>
-                  {atticTemp !== null ? `~${atticTemp}°` : "—°"}
-                </div>
-                <span style={{
-                  fontFamily: "var(--font-dm-sans)",
-                  fontSize: "0.82rem",
-                  color: "rgba(250,248,245,0.55)",
-                  marginBottom: "20px",
-                }}>
-                  in your attic
-                </span>
+                {showAttic && (
+                  <>
+                    <div style={{
+                      height: "1px",
+                      background: "rgba(250,248,245,0.12)",
+                      marginBottom: "20px",
+                    }} />
+                    <div style={{
+                      fontFamily: "var(--font-cormorant)",
+                      fontSize: "clamp(1.8rem, 2.8vw, 2.4rem)",
+                      fontWeight: 400,
+                      lineHeight: 1,
+                      color: ATTIC_AMBER,
+                    }}>
+                      ~{atticTemp}°
+                    </div>
+                    <span style={{
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize: "0.82rem",
+                      color: "rgba(250,248,245,0.55)",
+                      marginBottom: "20px",
+                    }}>
+                      in your attic · afternoon sun
+                    </span>
+                    <p style={{
+                      margin: "0 0 16px",
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize: "0.88rem",
+                      lineHeight: 1.55,
+                      color: "rgba(250,248,245,0.78)",
+                      fontStyle: "italic",
+                    }}>
+                      Your AC is fighting both.
+                    </p>
+                  </>
+                )}
 
                 <p style={{
                   margin: 0,
                   fontFamily: "var(--font-dm-sans)",
-                  fontSize: "0.88rem",
-                  lineHeight: 1.55,
-                  color: "rgba(250,248,245,0.78)",
-                  fontStyle: "italic",
+                  fontSize: "10px",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.5,
+                  color: "rgba(250,248,245,0.38)",
                 }}>
-                  Your AC is fighting both.
+                  {showAttic
+                    ? "Attics run 40–60°F hotter than outside in direct summer sun · U.S. DOE"
+                    : "Attic temperatures vary with season and sun exposure · U.S. DOE"}
                 </p>
               </div>
             </Reveal>
           )}
         </div>
+
+        {/* Charlotte temp strip — mobile */}
+        {isMobile && dailyHigh !== null && (
+          <Reveal delay={0.12} style={{ marginTop: "clamp(20px, 3vh, 28px)" }}>
+            <div style={{
+              background: C.navy,
+              borderRadius: "4px",
+              padding: "16px 20px",
+            }}>
+              <span style={{
+                fontFamily: "var(--font-label)",
+                fontSize: "10px",
+                fontWeight: 600,
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                color: C.teal,
+              }}>
+                Charlotte Today
+              </span>
+              <div style={{
+                display: "flex",
+                alignItems: "baseline",
+                flexWrap: "wrap",
+                gap: "6px 10px",
+                marginTop: "8px",
+              }}>
+                <span style={{
+                  fontFamily: "var(--font-cormorant)",
+                  fontSize: "1.9rem",
+                  fontWeight: 400,
+                  lineHeight: 1,
+                  color: C.cream,
+                }}>
+                  {dailyHigh}°
+                </span>
+                <span style={{
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.8rem",
+                  color: "rgba(250,248,245,0.5)",
+                }}>
+                  forecast high
+                </span>
+                {showAttic && (
+                  <>
+                    <span style={{ color: "rgba(250,248,245,0.3)", fontSize: "0.9rem" }}>→</span>
+                    <span style={{
+                      fontFamily: "var(--font-cormorant)",
+                      fontSize: "1.9rem",
+                      fontWeight: 400,
+                      lineHeight: 1,
+                      color: ATTIC_AMBER,
+                    }}>
+                      ~{atticTemp}°
+                    </span>
+                    <span style={{
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize: "0.8rem",
+                      color: "rgba(250,248,245,0.5)",
+                    }}>
+                      in your attic · afternoon sun
+                    </span>
+                  </>
+                )}
+              </div>
+              <p style={{
+                margin: "8px 0 0",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "10px",
+                color: "rgba(250,248,245,0.35)",
+                letterSpacing: "0.02em",
+              }}>
+                Attics run 40–60°F hotter in summer sun · U.S. DOE
+              </p>
+            </div>
+          </Reveal>
+        )}
 
         {/* ── Three-ways ledger ──────────────────────────────── */}
         <Reveal
