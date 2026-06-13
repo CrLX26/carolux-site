@@ -18,46 +18,40 @@ export const metadata = {
   },
 };
 
-// Page-level FAQ schema — cost questions not covered by the homepage FAQPage.
-// Intentionally separate from the global @graph in layout.js.
+// Single source for the cost-guide FAQ. Rendered VISIBLY on the page (see the
+// FAQ section in the JSX) AND emitted as FAQPage structured data below, so the
+// schema always mirrors on-page content — Google's requirement for FAQ markup.
+// Answers are ~40-65 words, answer-first, inside the legal guardrails.
+const COST_FAQ = [
+  {
+    q: "How much does attic insulation cost in Charlotte, NC?",
+    a: "Attic blown-in insulation in Charlotte typically runs $1.00–$5.00+ per square foot installed. Specialty insulation companies and owner-operators generally fall in the $1.25–$2.50/sqft range; large home-services companies with higher overhead often quote $3.00–$5.00/sqft for the same work. Reaching the DOE-recommended R-49 for NC homes typically costs $1.50–$3.00/sqft installed. A free energy audit gives you an accurate number for your specific home.",
+  },
+  {
+    q: "How much does crawl space insulation cost in Charlotte, NC?",
+    a: "Crawl space fiberglass batt insulation in Charlotte typically costs $1.00–$3.50 per square foot installed. Adding a vapor barrier runs $1.50–$4.00/sqft for standard poly liner; full encapsulation with sealed vents and a dehumidifier can run $4.00–$10.00/sqft. The total varies based on crawl space accessibility, current conditions, contractor type, and whether removal is needed.",
+  },
+  {
+    q: "What factors affect insulation cost the most?",
+    a: "The five biggest variables are your target R-value, whether existing insulation needs removal first, attic or crawl space accessibility, whether air sealing is needed before insulation goes in, and the type of contractor you hire. Specialty insulation companies typically cost less than large multi-service companies for the same scope. Air sealing is the step most contractors skip — it's what makes the insulation actually work.",
+  },
+  {
+    q: "Why don't insulation contractors give online quotes?",
+    a: "An accurate insulation quote requires measuring your current R-value, checking for moisture issues, assessing attic access, and locating air bypass points — none of which is possible without an in-person visit. Every insulation contractor in Charlotte, including national franchises, requires an in-home assessment before quoting. An online quote based on square footage alone is either too high or too low.",
+  },
+];
+
+// Page-level FAQPage schema, DERIVED from COST_FAQ so structured data and the
+// visible Q&A can never drift. Separate from the global @graph in layout.js.
 const costFaqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   dateModified: "2026-06-12",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "How much does attic insulation cost in Charlotte, NC?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Attic blown-in insulation in Charlotte typically runs $1.00–$5.00+ per square foot installed. Specialty insulation companies and owner-operators generally fall in the $1.25–$2.50/sqft range; large home-services companies with higher overhead often quote $3.00–$5.00/sqft for the same work. Reaching the DOE-recommended R-49 for NC homes typically costs $1.50–$3.00/sqft installed. A free energy audit gives you an accurate number for your specific home.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How much does crawl space insulation cost in Charlotte, NC?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Crawl space fiberglass batt insulation in Charlotte typically costs $1.00–$3.50 per square foot installed. Adding a vapor barrier runs $1.50–$4.00/sqft for standard poly liner; full encapsulation with sealed vents and a dehumidifier can run $4.00–$10.00/sqft. The total varies based on crawl space accessibility, current conditions, contractor type, and whether removal is needed.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What factors affect insulation cost the most?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The five biggest variables are your target R-value, whether existing insulation needs removal first, attic or crawl space accessibility, whether air sealing is needed before insulation goes in, and the type of contractor you hire. Specialty insulation companies typically cost less than large multi-service companies for the same scope. Air sealing is the step most contractors skip — it's what makes the insulation actually work.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Why don't insulation contractors give online quotes?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "An accurate insulation quote requires measuring your current R-value, checking for moisture issues, assessing attic access, and locating air bypass points — none of which is possible without an in-person visit. Every insulation contractor in Charlotte, including national franchises, requires an in-home assessment before quoting. An online quote based on square footage alone is either too high or too low.",
-      },
-    },
-  ],
+  mainEntity: COST_FAQ.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
 };
 
 const C = {
@@ -656,6 +650,100 @@ export default function CostGuidePage() {
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* ── FAQ (visible Q&A — mirrors the FAQPage schema above) ──────── */}
+        {/* Native <details>: answers stay in the server HTML whether open or  */}
+        {/* closed, so crawlers + AI engines always read them. Never JS-gated. */}
+        <section
+          style={{
+            backgroundColor: C.surface,
+            borderTop: `1px solid ${C.border}`,
+            borderBottom: `1px solid ${C.border}`,
+          }}
+        >
+          <div style={{ maxWidth: 760, margin: "0 auto", padding: "5rem 1.5rem" }}>
+            <style>{`
+              .carolux-cost-faq details summary { list-style: none; }
+              .carolux-cost-faq details summary::-webkit-details-marker { display: none; }
+              .carolux-cost-faq details[open] .faq-indicator { transform: rotate(45deg); }
+              .carolux-cost-faq .faq-indicator { transition: transform 240ms ease; display: inline-block; }
+            `}</style>
+            <h2
+              style={{
+                fontFamily: "var(--font-cormorant)",
+                fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                fontWeight: 400,
+                marginBottom: "0.5rem",
+              }}
+            >
+              Charlotte Insulation Cost — Common Questions
+            </h2>
+            <p
+              style={{
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "0.95rem",
+                color: C.inkSoft,
+                lineHeight: 1.65,
+                marginBottom: "2rem",
+              }}
+            >
+              Straight answers on pricing before you book the free audit.
+            </p>
+            <div className="carolux-cost-faq" style={{ borderTop: `1px solid ${C.border}` }}>
+              {COST_FAQ.map(({ q, a }, i) => (
+                <details
+                  key={i}
+                  open={i === 0}
+                  style={{ borderBottom: `1px solid ${C.border}` }}
+                >
+                  <summary
+                    style={{
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize: "clamp(1.05rem, 1.35vw, 1.2rem)",
+                      fontWeight: 600,
+                      lineHeight: 1.4,
+                      color: C.navy,
+                      padding: "clamp(20px, 2.7vh, 28px) 0",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      gap: "1rem",
+                    }}
+                  >
+                    {q}
+                    <span
+                      className="faq-indicator"
+                      style={{
+                        color: C.teal,
+                        flexShrink: 0,
+                        fontSize: "1.4rem",
+                        lineHeight: 1,
+                        fontWeight: 300,
+                      }}
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <div style={{ paddingBottom: "clamp(22px, 3vh, 32px)" }}>
+                    <p
+                      style={{
+                        margin: 0,
+                        maxWidth: "64ch",
+                        fontFamily: "var(--font-dm-sans)",
+                        fontSize: "clamp(0.98rem, 1.1vw, 1.05rem)",
+                        lineHeight: 1.72,
+                        color: C.inkSoft,
+                      }}
+                    >
+                      {a}
+                    </p>
+                  </div>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
 
