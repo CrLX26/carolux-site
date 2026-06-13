@@ -1,27 +1,36 @@
 "use client";
 
-import { useState } from "react";
 import { SERVICE_AREA } from "../lib/content";
 import { CITY_LINKS } from "../lib/cities";
 import { C, Reveal, SectionHeading, sectionStyle, containerStyle } from "./sectionKit";
 
+const cityLinkStyles = `
+  .carolux-city-link {
+    font-family: var(--font-cormorant);
+    font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+    line-height: 1.2;
+    color: ${C.navy};
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+  .carolux-city-link:hover,
+  .carolux-city-link:focus-visible {
+    color: ${C.teal};
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+  .carolux-city-link:focus-visible {
+    outline: 2px solid ${C.teal};
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+`;
+
 function CityLink({ slug, name }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <a
-      href={`/${slug}`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        fontFamily: "var(--font-cormorant)",
-        fontSize: "clamp(1.25rem, 2.4vw, 1.7rem)",
-        lineHeight: 1.2,
-        color: hovered ? C.teal : C.navy,
-        letterSpacing: "-0.01em",
-        textDecoration: "none",
-        transition: "color 160ms ease",
-      }}
-    >
+    <a href={`/${slug}`} className="carolux-city-link">
       {name}
     </a>
   );
@@ -31,6 +40,8 @@ export default function ServiceArea() {
   const { eyebrow, title, note } = SERVICE_AREA;
 
   return (
+    <>
+    <style>{cityLinkStyles}</style>
     <section id="service-area" style={sectionStyle(C.cream)}>
       <div style={containerStyle}>
         <SectionHeading eyebrow={eyebrow} title={title} maxWidth="20ch" />
@@ -77,5 +88,6 @@ export default function ServiceArea() {
         )}
       </div>
     </section>
+    </>
   );
 }
