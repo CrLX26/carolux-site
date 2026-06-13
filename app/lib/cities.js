@@ -341,3 +341,12 @@ export const SLUGS = Object.keys(CITIES);
 export function getCity(slug) {
   return CITIES[slug] ?? null;
 }
+
+// Canonical {slug, name} list for internal links (homepage ServiceArea, footer
+// column, any future nav). Derived from CITIES so a link can never point to a
+// page that doesn't exist — single source of truth, no per-component slug
+// derivation. Order follows CITIES (Charlotte first).
+export const CITY_LINKS = SLUGS.map((slug) => ({
+  slug,
+  name: CITIES[slug].displayName,
+}));

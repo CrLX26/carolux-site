@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 import { SERVICE_AREA } from "../lib/content";
+import { CITY_LINKS } from "../lib/cities";
 import { C, Reveal, SectionHeading, sectionStyle, containerStyle } from "./sectionKit";
 
-function citySlug(name) {
-  return name.toLowerCase().replace(/\s+/g, "-") + "-insulation";
-}
-
-function CityLink({ name }) {
+function CityLink({ slug, name }) {
   const [hovered, setHovered] = useState(false);
   return (
     <a
-      href={`/${citySlug(name)}`}
+      href={`/${slug}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -31,7 +28,7 @@ function CityLink({ name }) {
 }
 
 export default function ServiceArea() {
-  const { eyebrow, title, note, cities } = SERVICE_AREA;
+  const { eyebrow, title, note } = SERVICE_AREA;
 
   return (
     <section id="service-area" style={sectionStyle(C.cream)}>
@@ -51,10 +48,10 @@ export default function ServiceArea() {
             maxWidth: "880px",
           }}
         >
-          {cities.map((city, i) => (
-            <span key={city} style={{ display: "inline-flex", alignItems: "center", gap: "clamp(14px, 1.6vw, 22px)" }}>
-              <CityLink name={city} />
-              {i < cities.length - 1 && (
+          {CITY_LINKS.map((c, i) => (
+            <span key={c.slug} style={{ display: "inline-flex", alignItems: "center", gap: "clamp(14px, 1.6vw, 22px)" }}>
+              <CityLink slug={c.slug} name={c.name} />
+              {i < CITY_LINKS.length - 1 && (
                 <span aria-hidden="true" style={{ width: "5px", height: "5px", borderRadius: "50%", background: C.teal, opacity: 0.7 }} />
               )}
             </span>
