@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { COMPANY, NAV_LINKS } from "../lib/content";
+import { COMPANY, NAV_LINKS, SERVICE_AREA } from "../lib/content";
 import { C } from "./sectionKit";
 
 // ── Social glyphs ─────────────────────────────────────────────────────────────
@@ -9,6 +9,10 @@ import { C } from "./sectionKit";
 // on hover — brand logos in full colour would read like a coupon flyer. Google /
 // Instagram / Facebook are the official marks (Simple Icons); Nextdoor ships only
 // a wordmark, so it gets a clean house glyph (Nextdoor's identity) + an aria-label.
+function citySlug(name) {
+  return name.toLowerCase().replace(/\s+/g, "-") + "-insulation";
+}
+
 const ICON = {
   google:
     "M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z",
@@ -154,6 +158,16 @@ export default function Footer() {
           {NAV_LINKS.map((link) => (
             <FootLink key={link.href} href={link.href}>
               {link.label}
+            </FootLink>
+          ))}
+        </nav>
+
+        {/* Service Areas */}
+        <nav aria-label="Service areas" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <FooterColTitle>Service Areas</FooterColTitle>
+          {SERVICE_AREA.cities.map((city) => (
+            <FootLink key={city} href={`/${citySlug(city)}`}>
+              {city}
             </FootLink>
           ))}
         </nav>
