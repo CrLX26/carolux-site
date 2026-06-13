@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ESTIMATOR, THREE_WAYS } from "../lib/content";
 import { C, Reveal, SectionHeading, Cta, sectionStyle, containerStyle } from "./sectionKit";
 import { useLead, Spinner, ErrorNote, SuccessReveal, CheckBadge, Honeypot, focusRing, ERR_ON_LIGHT } from "./leadForm";
@@ -11,7 +11,7 @@ const money = (n) => `$${Math.round(n).toLocaleString()}`;
 
 export default function Estimator() {
   const {
-    eyebrow, title, intro, billLabel, insulationLabel, insulationOptions,
+    eyebrow, title, intro, billLabel, billHint, insulationLabel, insulationHint, insulationOptions,
     resultLabel, tenYearLabel, cta, emailPrompt, emailPlaceholder, emailCta,
     emailSending, emailDone, emailDoneSub, rates, billMin, billMax, source,
   } = ESTIMATOR;
@@ -23,7 +23,23 @@ export default function Estimator() {
   const [emailFocused, setEmailFocused] = useState(false);
   const [emailErr, setEmailErr] = useState("");
   const [hp, setHp] = useState(""); // honeypot
+  const [outdoorTemp, setOutdoorTemp] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const lead = useLead();
+
+  useEffect(() => {
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=35.2271&longitude=-80.8431&current_weather=true&temperature_unit=fahrenheit")
+      .then((r) => r.json())
+      .then((d) => setOutdoorTemp(Math.round(d.current_weather.temperature)))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const raw = parseFloat(bill) || 0;
   const clamped = raw > 0 ? Math.min(billMax, Math.max(billMin, raw)) : 0;
@@ -32,6 +48,7 @@ export default function Estimator() {
   const low = annual * loRate;
   const high = annual * hiRate;
   const hasResult = clamped > 0;
+  const atticTemp = outdoorTemp !== null ? outdoorTemp + 40 : null;
 
   // Email capture POSTs to /api/lead (Resend). Client validates the address, then
   // the status machine (useLead) drives the submitting / success / error states.
@@ -56,22 +73,108 @@ export default function Estimator() {
   return (
     <section id="estimator" style={sectionStyle(C.creamDeep)}>
       <div style={containerStyle}>
-        <SectionHeading eyebrow={eyebrow} title={title} align="left" maxWidth="20ch" />
+        {/* ── Header: text left + live temp panel right ──────── */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(32px, 4vw, 56px)", alignItems: "flex-start" }}>
+          <div style={{ flex: "1 1 300px", minWidth: 0 }}>
+            <SectionHeading eyebrow={eyebrow} title={title} align="left" maxWidth="none" />
+            <Reveal
+              as="p"
+              delay={0.1}
+              style={{
+                margin: "clamp(16px, 2.5vh, 24px) 0 0",
+                maxWidth: "52ch",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "clamp(1rem, 1.2vw, 1.1rem)",
+                lineHeight: 1.75,
+                color: C.ink,
+              }}
+            >
+              {intro}
+            </Reveal>
+          </div>
 
-        <Reveal
-          as="p"
-          delay={0.1}
-          style={{
-            margin: "clamp(16px, 2.5vh, 24px) 0 0",
-            maxWidth: "58ch",
-            fontFamily: "var(--font-dm-sans)",
-            fontSize: "clamp(1rem, 1.2vw, 1.1rem)",
-            lineHeight: 1.75,
-            color: C.ink,
-          }}
-        >
-          {intro}
-        </Reveal>
+          {/* Live Charlotte temperature — desktop only */}
+          {!isMobile && (
+            <Reveal delay={0.08} style={{ flex: "0 0 clamp(240px, 24vw, 290px)" }}>
+              <div
+                style={{
+                  background: C.navy,
+                  borderRadius: "4px",
+                  padding: "clamp(28px, 3.2vw, 40px)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0",
+                }}
+              >
+                <span style={{
+                  fontFamily: "var(--font-label)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: C.teal,
+                  marginBottom: "14px",
+                }}>
+                  Charlotte, NC · Right now
+                </span>
+
+                <div style={{
+                  fontFamily: "var(--font-cormorant)",
+                  fontSize: "clamp(3.2rem, 5vw, 4.4rem)",
+                  fontWeight: 400,
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                  color: C.cream,
+                }}>
+                  {outdoorTemp !== null ? `${outdoorTemp}°` : "—°"}
+                </div>
+                <span style={{
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.82rem",
+                  color: "rgba(250,248,245,0.55)",
+                  marginBottom: "20px",
+                }}>
+                  outside
+                </span>
+
+                <div style={{
+                  height: "1px",
+                  background: "rgba(250,248,245,0.12)",
+                  marginBottom: "20px",
+                }} />
+
+                <div style={{
+                  fontFamily: "var(--font-cormorant)",
+                  fontSize: "clamp(1.8rem, 2.8vw, 2.4rem)",
+                  fontWeight: 400,
+                  lineHeight: 1,
+                  color: "#e8a060",
+                }}>
+                  {atticTemp !== null ? `~${atticTemp}°` : "—°"}
+                </div>
+                <span style={{
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.82rem",
+                  color: "rgba(250,248,245,0.55)",
+                  marginBottom: "20px",
+                }}>
+                  in your attic
+                </span>
+
+                <p style={{
+                  margin: 0,
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.88rem",
+                  lineHeight: 1.55,
+                  color: "rgba(250,248,245,0.78)",
+                  fontStyle: "italic",
+                }}>
+                  Your AC is fighting both.
+                </p>
+              </div>
+            </Reveal>
+          )}
+        </div>
 
         {/* ── Three-ways ledger ──────────────────────────────── */}
         <Reveal
@@ -211,9 +314,13 @@ export default function Estimator() {
                 />
                 <span style={{ fontFamily: "var(--font-dm-sans)", fontSize: "0.9rem", color: C.inkSoft }}>/mo</span>
               </div>
-              {raw > 0 && raw !== clamped && (
+              {raw > 0 && raw !== clamped ? (
                 <p style={{ margin: "8px 0 0", fontFamily: "var(--font-dm-sans)", fontSize: "12px", color: C.inkSoft }}>
                   Showing the estimate for {money(clamped)}/mo — the typical NC range.
+                </p>
+              ) : (
+                <p style={{ margin: "8px 0 0", fontFamily: "var(--font-dm-sans)", fontSize: "12px", color: C.inkSoft }}>
+                  {billHint}
                 </p>
               )}
             </div>
@@ -261,6 +368,9 @@ export default function Estimator() {
                   );
                 })}
               </div>
+              <p style={{ margin: "10px 0 0", fontFamily: "var(--font-dm-sans)", fontSize: "12px", color: C.inkSoft }}>
+                {insulationHint}
+              </p>
             </div>
           </Reveal>
 
@@ -424,14 +534,14 @@ export default function Estimator() {
                     minHeight: "52px",
                     border: `1.5px solid ${C.navy}`,
                     borderRadius: "3px",
-                    background: C.navy,
-                    color: "#ffffff",
+                    background: "transparent",
+                    color: C.navy,
                     cursor: lead.busy ? "wait" : "pointer",
-                    opacity: lead.busy ? 0.85 : 1,
+                    opacity: lead.busy ? 0.7 : 1,
                     transition: "background 160ms ease, transform 160ms ease, opacity 160ms ease",
                   }}
-                  onMouseEnter={(e) => { if (lead.busy) return; e.currentTarget.style.background = C.navyDeep; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = C.navy; e.currentTarget.style.transform = "none"; }}
+                  onMouseEnter={(e) => { if (lead.busy) return; e.currentTarget.style.background = C.navy; e.currentTarget.style.color = "#ffffff"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.navy; e.currentTarget.style.transform = "none"; }}
                 >
                   {lead.busy ? (<><Spinner size={15} />{emailSending}</>) : emailCta}
                 </button>
