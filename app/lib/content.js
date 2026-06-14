@@ -95,7 +95,7 @@ export const SERVICES = [
     number: "02",
     title: "Crawl Space & Vapor Barrier",
     description:
-      "A wet or open crawl space drives up your energy bills, causes wood rot, and pulls humid air into your living space. We encapsulate your crawl space with a heavy-duty vapor barrier and insulate the perimeter walls, keeping moisture out and conditioned air in. Every job includes a full inspection, drainage assessment, and attention to building code — no shortcuts, no surprises.",
+      "A wet or open crawl space drives up your energy bills, causes wood rot, and pulls humid air into your living space. We lay a heavy-duty, professional-grade vapor barrier across the crawl space floor to block ground moisture from rising into the structure, and fit fiberglass batt between the floor joists to hold conditioned air where it belongs. Every job includes a full inspection, drainage assessment, and attention to building code. No shortcuts, no surprises.",
     cta: "Get a Free Crawl Space Quote",
   },
   {
@@ -153,7 +153,7 @@ export const PACKAGES = [
     tagline: "Maximum savings, one visit",
     features: [
       "Complete attic insulation + air seal",
-      "Full crawl space encapsulation",
+      "Crawl space vapor barrier + batt",
       "Priority scheduling",
       "Both owners on every job",
       "2-year workmanship guarantee",
@@ -166,7 +166,7 @@ export const PACKAGES = [
     tagline: "Stop moisture before it starts",
     features: [
       "Heavy-duty vapor barrier",
-      "Crawl space perimeter insulation",
+      "Fiberglass batt between floor joists",
       "Full moisture & drainage inspection",
       "Code-compliant installation",
       "2-year workmanship guarantee",
