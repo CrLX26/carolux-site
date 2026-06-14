@@ -105,7 +105,7 @@ export default function Services() {
                         paddingBottom: "2px",
                       }}
                     >
-                      Learn more about attic insulation →
+                      {service.learnMoreLabel || "Learn more"} →
                     </a>
                   )}
                 </div>
