@@ -64,7 +64,7 @@ const ATTIC_FAQ = [
   },
   {
     q: "Why does Carolux air-seal the attic before insulating?",
-    a: "Insulation slows heat transfer, but it does not stop air leaks. Gaps around recessed lights, plumbing penetrations, and top plates let conditioned air bypass the insulation entirely. Sealing those first is what makes the R-value actually perform. Carolux includes air sealing on every full install, at no extra charge. Most contractors skip it or bill it separately.",
+    a: "Insulation slows heat transfer, but it does not stop air leaks. Gaps around recessed lights, plumbing penetrations, and top plates let conditioned air bypass the insulation entirely. Sealing those first is what makes the R-value actually perform. Carolux includes air sealing on every full install, at no extra charge. Many contractors skip it or bill it separately.",
   },
 ];
 
@@ -158,7 +158,7 @@ const PROCESS = [
 const INCLUDED = [
   [
     "Air Sealing First",
-    "On every new install and full replacement, before insulation, at no extra charge. Sealing the bypasses is what makes the R-value hold. Most contractors skip it.",
+    "On every new install and full replacement, before insulation, at no extra charge. Sealing the bypasses is what makes the R-value hold. Many contractors skip it.",
   ],
   [
     "DOE R-49 Target",
@@ -450,7 +450,7 @@ export default function AtticInsulationPage() {
               marginBottom: "2rem",
             }}
           >
-            Things most contractors charge extra for, or skip.
+            Things many contractors charge extra for, or skip.
           </p>
           <div style={{ borderTop: `1px solid ${C.border}` }}>
             {INCLUDED.map(([title, desc]) => (

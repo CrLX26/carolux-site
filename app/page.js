@@ -30,6 +30,7 @@ export default function Home() {
         <WhyUs />
         <Packages />
         <Owners />
+        {/* WI-003: Reviews self-handles REVIEWS_LIVE — shows an honest placeholder until real reviews exist. */}
         <Reviews />
         <ServiceArea />
         <Faq />

@@ -133,7 +133,7 @@ export const WHY_US = [
     roman: "II",
     title: "Air Sealing, Not Upsold",
     description:
-      "We include air sealing on every full installation, at no extra charge. Most contractors skip it or charge extra. It's the highest-impact step in the job, and the one that separates a real upgrade from a temporary fix.",
+      "We include air sealing on every full installation, at no extra charge. Many contractors skip it or charge extra. It's the highest-impact step in the job, and the one that separates a real upgrade from a temporary fix.",
   },
   {
     roman: "III",
@@ -190,6 +190,13 @@ export const PACKAGES = [
     featured: false,
   },
 ];
+
+// WI-003: these reviews are PLACEHOLDER (not real → FTC Endorsement Guides). While REVIEWS_LIVE
+// is false, Reviews.js renders an HONEST "reviews coming soon" placeholder instead (the #reviews
+// section stays because Nav.js — locked — hardcodes that anchor). To go live: gather REAL reviews,
+// replace this array, set REVIEWS_LIVE = true, AND add Review/AggregateRating schema (only from
+// genuine reviews — self-applied ratings violate Google policy).
+export const REVIEWS_LIVE = false;
 
 export const REVIEWS = [
   {
@@ -256,7 +263,7 @@ export const OWNERS = {
       name: "Juan Gonzalez",
       role: "Co-Owner · Operations & Customer Care",
       photo: "/images/juan-profile-1.webp",
-      bio: "Juan runs the schedule, the follow-through, and the part most contractors drop: keeping you in the loop from the first call to the final walkthrough.",
+      bio: "Juan runs the schedule, the follow-through, and the part many contractors drop: keeping you in the loop from the first call to the final walkthrough.",
     },
   ],
 };
@@ -282,13 +289,15 @@ export const ESTIMATOR = {
   resultLabel: "Estimated annual savings",
   tenYearLabel: "Roughly this much back over 10 years",
   cta: "Book Your Free Estimate",
+  // WI-002: honest copy. The form notifies the owners (team@); it does NOT send the
+  // homeowner an automated email. (Option B = build an outbound homeowner email — still open.)
   emailPrompt:
-    "Want it in writing? Leave your email and we'll send a personalized breakdown — including what we'd look for in your attic and crawl space.",
+    "Want us to follow up? Leave your email and an owner will reach out, usually within 24 hours, to set up your free in-home assessment.",
   emailPlaceholder: "you@email.com",
   emailCta: "Send my estimate",
   emailSending: "Sending",
-  emailDone: "Estimate on its way.",
-  emailDoneSub: "We'll email your personalized breakdown shortly. Watch your inbox.",
+  emailDone: "Got it. We'll be in touch.",
+  emailDoneSub: "An owner will reach out within 24 hours to set up your free assessment, usually by phone or email.",
   emailRetry: "Try again",
   // NC-honest rates [low, high] applied to the TOTAL annual bill (ENERGY STAR CZ3 methodology).
   rates: { under: [0.06, 0.08], unsure: [0.05, 0.07], good: [0.02, 0.04] },

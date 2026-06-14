@@ -255,7 +255,7 @@ export default function AirSealingPage() {
               }}
             >
               <strong>Air sealing is the step that makes insulation actually work, and it's the one
-              most contractors skip.</strong>{" "}
+              many contractors skip.</strong>{" "}
               Carolux seals the air leaks across your attic floor, around recessed lights, the
               attic hatch, top plates, and penetrations, before any insulation goes in. It's
               included with every full install, at no extra charge. Combined with insulation it can
@@ -372,7 +372,7 @@ export default function AirSealingPage() {
                 marginBottom: "1.2rem",
               }}
             >
-              Why Most Contractors Skip Air Sealing
+              Why Many Contractors Skip Air Sealing
             </h2>
             <p
               style={{

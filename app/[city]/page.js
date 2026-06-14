@@ -155,7 +155,7 @@ const SERVICES = [
 
 const WHY_US = [
   ["I", "Owner-Operated", (city) => `Tony and Juan are on the job at every ${city.displayName} project — not a crew you've never met. You get the owners' direct contact and they pick up the phone.`],
-  ["II", "Air Sealing Included", () => "Air sealing on every full installation at no extra charge. Most contractors skip it or bill it separately. It's the highest-impact step and the one that separates a real upgrade from a temporary fix."],
+  ["II", "Air Sealing Included", () => "Air sealing on every full installation at no extra charge. Many contractors skip it or bill it separately. It's the highest-impact step and the one that separates a real upgrade from a temporary fix."],
   ["III", "2-Year Guarantee", () => "If anything Carolux installed isn't performing correctly within two years, the owners come back and make it right. No questions, no hassle, no fine print."],
   ["IV", "Inspector-Grade Diagnosis", () => "Tony spent years as a North Carolina home inspector before Carolux. He reads the whole house — moisture, airflow, where your money is escaping — before recommending anything."],
 ];

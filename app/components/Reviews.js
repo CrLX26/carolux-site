@@ -1,9 +1,40 @@
 "use client";
 
-import { REVIEWS } from "../lib/content";
+import { REVIEWS, REVIEWS_LIVE } from "../lib/content";
 import { C, Reveal, StarIcon, SectionHeading, sectionStyle, containerStyle } from "./sectionKit";
 
 export default function Reviews() {
+  // WI-003: until genuine reviews exist, render an HONEST placeholder (no fabricated
+  // testimonials/ratings). The section stays because Nav.js (locked) hardcodes the
+  // #reviews anchor — hiding it would dead-end that link. Flip REVIEWS_LIVE in content.js
+  // (+ replace REVIEWS with real ones + add Review schema) to show real testimonials.
+  if (!REVIEWS_LIVE) {
+    return (
+      <section id="reviews" style={sectionStyle(C.creamDeep)}>
+        <div style={containerStyle}>
+          <SectionHeading eyebrow="Customer Reviews" title="Real reviews, coming soon" maxWidth="22ch" />
+          <Reveal delay={0.1}>
+            <p
+              style={{
+                maxWidth: "56ch",
+                margin: "clamp(28px, 4vh, 44px) auto 0",
+                textAlign: "center",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "clamp(1rem, 1.3vw, 1.15rem)",
+                lineHeight: 1.7,
+                color: C.inkSoft,
+              }}
+            >
+              Carolux is owner-operated and just getting started, so we're still earning our first
+              reviews. As we complete jobs, genuine customer reviews will appear here. We'll only ever
+              post real ones, from real Charlotte-area homes. Until then, the owners are one call away.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="reviews" style={sectionStyle(C.creamDeep)}>
       <div style={containerStyle}>

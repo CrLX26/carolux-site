@@ -3,12 +3,12 @@ import Footer from "../components/Footer";
 import { COMPANY, SERVICE_AREA } from "../lib/content";
 
 export const metadata = {
-  title: "Insulation Cost in Charlotte, NC — What to Expect | Carolux",
+  title: "Insulation Cost in Charlotte, NC: What to Expect | Carolux",
   description:
     "Honest price ranges for attic and crawl space insulation in Charlotte, NC. What affects your total, why no online quote is accurate, and how to get a firm price.",
   alternates: { canonical: "/cost-guide" },
   openGraph: {
-    title: "Insulation Cost in Charlotte, NC — What to Expect | Carolux",
+    title: "Insulation Cost in Charlotte, NC: What to Expect | Carolux",
     description:
       "Honest price ranges for attic and crawl space insulation in Charlotte, NC. What affects your total and how to get a firm price.",
     url: "https://caroluxinsulation.com/cost-guide",
@@ -33,7 +33,7 @@ const COST_FAQ = [
   },
   {
     q: "What factors affect insulation cost the most?",
-    a: "The five biggest variables are your target R-value, whether existing insulation needs removal first, attic or crawl space accessibility, whether air sealing is needed before insulation goes in, and the type of contractor you hire. Specialty insulation companies typically cost less than large multi-service companies for the same scope. Air sealing is the step most contractors skip — it's what makes the insulation actually work.",
+    a: "The five biggest variables are your target R-value, whether existing insulation needs removal first, attic or crawl space accessibility, whether air sealing is needed before insulation goes in, and the type of contractor you hire. Specialty insulation companies typically cost less than large multi-service companies for the same scope. Air sealing is the step many contractors skip, and it's what makes the insulation actually work.",
   },
   {
     q: "Why don't insulation contractors give online quotes?",
@@ -137,7 +137,7 @@ const VARIABLES = [
 const INCLUDED = [
   [
     "Air Sealing First",
-    "On every new install and full replacement — before insulation. Sealing the bypasses is what makes the R-value work. Most contractors skip it.",
+    "On every new install and full replacement, before insulation. Sealing the bypasses is what makes the R-value work. Many contractors skip it.",
   ],
   [
     "Written Scope",

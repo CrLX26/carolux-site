@@ -113,9 +113,11 @@ const MOTION_ITEMS = [
 ];
 
 // ── Logo reel names ───────────────────────────────────────────────────────────
+// WI-006: generic placeholders only. A reel of real brands (ENERGY STAR, Angi,
+// manufacturers) implies partnerships/certifications Carolux does NOT have. Demo pattern only.
 const LOGOS = [
-  "HomeAdvisor", "Angi", "ENERGY STAR", "Owens Corning",
-  "CertainTeed", "Atlas", "Johns Manville", "Knauf",
+  "Logo One", "Logo Two", "Logo Three", "Logo Four",
+  "Logo Five", "Logo Six", "Logo Seven", "Logo Eight",
 ];
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -1217,10 +1219,10 @@ export default function DesignReference() {
                   <div style={{ width: "24px", height: "1px", background: "#f45800" }} />
                 </div>
                 <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 400, color: "#313131", lineHeight: 1.1, letterSpacing: "-0.025em", margin: "0 0 16px" }}>
-                  Charlotte's most trusted insulation company
+                  A trusted local insulation company
                 </p>
                 <p style={{ fontFamily: "var(--font-dm-sans)", fontSize: "14px", color: "#aaaaaa", lineHeight: 1.7, margin: 0 }}>
-                  Owner-operated since 2009. Every job done by Tony and Juan personally.
+                  Owner-operated. Every job done by Tony and Juan personally.
                 </p>
               </div>
             </DemoCard>
@@ -1334,7 +1336,7 @@ export default function DesignReference() {
             <DemoCard label="Dark Card Surface  ·  bg #1d1d1d, border #4b5563, light text hierarchy" source="sweepingcorp">
               <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
                 {[
-                  { title: "47%", sub: "Avg. Energy Savings", badge: "Verified", badgeColor: "#aad902" },
+                  { title: "R-49", sub: "DOE Attic Target for NC", badge: "DOE", badgeColor: "#aad902" },
                   { title: "2-Year", sub: "Workmanship Guarantee", badge: "Carolux Promise", badgeColor: "#4a90a4" },
                 ].map(({ title, sub, badge, badgeColor }) => (
                   <div key={title} style={{ background: "#1d1d1d", border: "1px solid #4b5563", borderRadius: "8px", padding: "24px 20px", width: "180px" }}>
