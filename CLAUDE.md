@@ -7,13 +7,31 @@
 ---
 
 ## 🟢 CURRENT HANDOFF — 2026-06-13 (latest). Read this first.
-**`main` = `d4bbb9d` (estimator-reframe merged + this docs commit), deploying to Vercel production.**
+**`main` = `dc3b792` (service pages + estimator-reframe merged), deploying to Vercel production.**
 Wix domain still untouched (the public domain only switches when DNS is repointed). Three worktrees:
-`carolux-site` (design, now back on `main`), `carolux-seo`/`seo-next` (SEO — `seo-foundation` merged
-to main), `carolux-copy`/`copy-polish` (copy).
+`carolux-site` (design, on `main`), `carolux-seo`/`seo-next` (SEO — pushed encapsulation fixes to
+schema.js/llms.txt this session), `carolux-copy`/`copy-polish` (copy).
 **Cross-worktree gotcha:** after `main` advances, each worktree needs `git fetch && git pull --ff-only`
 AND `npm install` if a new dependency landed. The remote is the source of truth; a worktree can't
 update the local `main` ref while another worktree has `main` checked out (harmless).
+
+### ✅ MERGED to main this session (2026-06-13) — dedicated service pages (PR #6)
+Three SEO/AEO service pages, cloned from the cost-guide + city templates; SEO-reviewed (PASS) +
+design-taste pass done before merge. `main` ff'd to `dc3b792`.
+- `/services/attic-insulation`, `/services/crawl-space-insulation`, `/services/air-sealing`
+  (+ each has a static `opengraph-image.js`).
+- Each: answer-first quick-answer, process / why-NC / cost / FAQ; native `<details>` FAQ (answers in
+  server HTML); `@graph` schema (LocalBusiness + Service + FAQPage-from-on-page-array + Breadcrumb);
+  unique metadata/canonical.
+- Crawl page: batt + ground vapor barrier ONLY, states plainly Carolux does NOT encapsulate.
+  Air-sealing: "included with every full install at no extra charge" + top-off caveat disclosed.
+- Internal mesh (bidirectional): homepage `Services.js` (data-driven `learnMoreLabel`) + 13 city
+  pages → service pages; service pages cross-link each other + 13 cities + `/cost-guide`. Added to
+  `sitemap.js`.
+- Accuracy fix: removed false "we encapsulate" + perimeter-wall claims from `content.js` (homepage
+  card + 2 Packages features). SEO lane separately fixed `schema.js` + `llms.txt` encapsulation claims.
+- **Cellulose** stays in copy (owner's call) but is a REVISIT: real support needs carolux-tools
+  estimator changes (PRODUCTS.md lists cellulose as future). See master TODO.
 
 ### ✅ MERGED to main this session (2026-06-13) — estimator-reframe (fast-forward, 4 commits)
 - `63310d2` feat(estimator): reframe with three-ways ledger and NC-honest rates
