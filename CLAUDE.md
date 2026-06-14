@@ -6,15 +6,57 @@
 
 ---
 
-## 🟢 CURRENT HANDOFF — 2026-06-12 (latest). Read this first.
-**`main` = `596882e`, deploying to Vercel production.** Wix domain still untouched (the public
-domain only switches when DNS is repointed). Three worktrees: `carolux-site` (design, on `main`),
-`carolux-seo`/`seo-next` (SEO — `seo-foundation` merged to main), `carolux-copy`/`copy-polish` (copy).
+## 🟢 CURRENT HANDOFF — 2026-06-13 (latest). Read this first.
+**`main` = `d4bbb9d` (estimator-reframe merged + this docs commit), deploying to Vercel production.**
+Wix domain still untouched (the public domain only switches when DNS is repointed). Three worktrees:
+`carolux-site` (design, now back on `main`), `carolux-seo`/`seo-next` (SEO — `seo-foundation` merged
+to main), `carolux-copy`/`copy-polish` (copy).
 **Cross-worktree gotcha:** after `main` advances, each worktree needs `git fetch && git pull --ff-only`
 AND `npm install` if a new dependency landed. The remote is the source of truth; a worktree can't
 update the local `main` ref while another worktree has `main` checked out (harmless).
 
-### Shipped to `main` this session (all live)
+### ✅ MERGED to main this session (2026-06-13) — estimator-reframe (fast-forward, 4 commits)
+- `63310d2` feat(estimator): reframe with three-ways ledger and NC-honest rates
+- `9bc1083` Estimator reframe: THREE_WAYS ledger, live Charlotte temp panel, UX clarity
+- `9388290` Temp panel honesty fix: daily high, showAttic gate, mobile strip, DOE source
+- `d4bbb9d` impeccable: estimator polish — all P1/P2/P3 fixes + copy
+
+**What this shipped:**
+- `app/components/Estimator.js` — complete reframe: THREE_WAYS savings ledger replacing single-metric; live Charlotte daily high temperature panel via Open-Meteo (lat=35.2271, lon=-80.8431); `showAttic` gate (only shows heat-loss panel when daily high ≥78°F + +40°F attic delta); `tempError` fallback card; mobile strip line "Your AC is fighting both." gated on `showAttic`; result card CTA now conditional on `hasResult`; email error fallback shows phone + email contact; all impeccable P1/P2/P3 findings addressed.
+- `app/lib/content.js` — `insulationHint` updated to "Most homes here were last insulated 10–20 years ago — it's worth checking."; email CTA relabeled to "Send my estimate".
+- Impeccable critique snapshot: `.impeccable/critique/2026-06-13T23-59-19Z__app-components-estimator-js.md`
+
+### ⚠️ OPEN TO-DOS (carry forward until resolved)
+
+**1. Email lead capture: UI over-promises (P1 — fix before launch)**
+`/api/lead/route.js` sends ONE email to `team@caroluxinsulation.com` when homeowner submits the
+Estimator email form — the submitter's email is set as `replyTo` but they receive NO outbound email.
+THREE copy keys in `content.js` `ESTIMATOR` over-promise an automated email the system never sends:
+  - `emailPrompt` (pre-submit pitch): "Want it in writing? Leave your email and we'll send a personalized breakdown…"
+  - `emailDone`: "Estimate on its way."
+  - `emailDoneSub`: "We'll email your personalized breakdown shortly. Watch your inbox."
+The homeowner only gets a response if Tony/Juan manually reply to the team@ notification. Two options:
+  - **Option A (5 min):** Reword all three keys to be honest — pitch becomes "Leave your email and
+    we'll be in touch", success becomes "We got it. Expect a call or email from us within 24 hours."
+    (no code change needed)
+  - **Option B (1–2 hrs):** Add a second `resend.emails.send()` in `route.js` to fire an actual
+    confirmation email TO the homeowner's address with their estimate numbers formatted. This makes
+    the existing copy true AND creates a Carolux-branded touchpoint in their inbox before a competitor
+    calls. The conversion win.
+
+**2. CTA copy mismatch (minor)**
+Estimator section CTA says "Book Your Free Estimate" (scrolls to Contact). Contact section submit
+button label comes from `CONTACT.form.submit` key in `content.js`. These may be inconsistent —
+verify and align so the journey feels intentional.
+
+**3. `estimator-reframe` → `main` merge — ✅ DONE this session (2026-06-13).**
+Fast-forwarded `main` to `d4bbb9d` and pushed to origin. `carolux-site` is back on `main`.
+`carolux-seo`/`carolux-copy` worktrees still need `git fetch && git pull --ff-only` to catch up
+their local `main` ref (no new deps, npm install not required).
+
+**4. Services section — NEXT UP (changes incoming per user 2026-06-13).** Branch off `main` for it.
+
+### Shipped to `main` (previous session, 2026-06-12 — still live)
 - **Owner photos downscaled** (`05ac1f3`): tony/juan PNG → WebP (40KB/34KB). References updated in `content.js`.
 - **SEO batch** (SEO lane, `4676747…80d2cae`): `/cost-guide` page (Charlotte pricing guide, FAQPage
   schema), AEO authority pass, all 9 FAQ answers rewritten for AI extractability. `seo-foundation`
@@ -29,7 +71,7 @@ update the local `main` ref while another worktree has `main` checked out (harml
   (`ca3e6b0…7a88342`), **FAQ component** (`9e59ab5`, `e2f091c`), **lead capture** (`2e1fe4c`),
   **social footer buttons + sameAs** (`6430346`, `4cfbc55`).
 
-### Lead capture — ✅ LIVE on `main` (`2e1fe4c`)
+### Lead capture — ✅ LIVE on `main` (`2e1fe4c`) — ⚠️ see Open To-Do #1 above
 Estimator email + Contact form POST to a hardened **`app/api/lead/route.js`** (Resend; reuses
 carolux-tools' account + verified sender; honeypot, per-IP rate limit, HTML-escape, validation).
 Shared kit **`app/components/leadForm.js`** (`useLead` state machine, Spinner, ErrorNote,
@@ -37,6 +79,8 @@ SuccessReveal, CheckBadge, Honeypot). `RESEND_API_KEY` is set in the carolux-sit
 production** env (preview env not set — non-blocking). Production verified: honeypot→200,
 missing-fields→400 (key read), and a labeled prod test delivered to team@. PR #5 closed. `resend` in
 package.json; `.env.local` has the key (UTF-8 BOM — extract with `grep -ao`). Verify: `scripts/leadshot.mjs`.
+**Gap:** only team@ receives the Resend email. Homeowner sees "Watch your inbox" but receives nothing
+automatically. See Open To-Do #1 for fix options.
 
 ### Social buttons — ✅ LIVE on `main` (`6430346`)
 Footer brand-column icon row (Google, Instagram, Facebook, Nextdoor; monochrome cream→teal; Nextdoor
@@ -44,13 +88,11 @@ Footer brand-column icon row (Google, Instagram, Facebook, Nextdoor; monochrome 
 nextdoor). SEO added the same four to `schema.js` `sameAs` (`4cfbc55`, derives from `COMPANY.*` so it
 stays in sync). Verify: `scripts/footshot.mjs`.
 
-### Nothing left in flight — all this session's feature branches are merged to `main`.
-
 ### Path-to-live backlog (from the launch audit, not yet done)
 Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); desktop thermal XOR verified
 Chromium-only (check Firefox/Safari); Vercel Deployment Protection off + DNS repoint.
 Owner photos ✅ downscaled (tony/juan PNG → WebP, 40KB/34KB). Before/after photos ✅ confirmed
-real Carolux jobs — city captions are safe to add. Lead capture ✅ DONE and live.
+real Carolux jobs — city captions are safe to add. Lead capture ✅ DONE and live (⚠️ outbound gap — see above).
 Site stays on Wix until explicitly ready to cut over — do NOT touch DNS.
 
 ### Highest-leverage NEXT (off-site, user-owned — ON HOLD per user 2026-06-11)

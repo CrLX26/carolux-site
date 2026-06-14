@@ -305,13 +305,16 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-12):** `main` = **`596882e`** (Vercel production deploying). See the
-**CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-12"** block for the authoritative latest state. Shipped to
+**Current state (2026-06-13):** `main` = **`596882e`** (Vercel production deploying). See the
+**CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-13"** block for the authoritative latest state. Shipped to
 main since the hero: Stats polish, WhyUs 2×2 ledger, SEO foundation, FAQ + FAQPage schema, lead
 capture (Estimator+Contact → Resend `/api/lead`; `RESEND_API_KEY` set in Vercel prod), social footer
 buttons + `sameAs`, owner photos downscaled (WebP), SEO batch (cost-guide page + FAQ AEO rewrite),
-impeccable fixes (FAQ learnMoreHref, cost-guide brand violations). **Nothing in flight.** Next
-(off-site, on hold): claim/fill the Google Business Profile + gather real reviews.
+impeccable fixes (FAQ learnMoreHref, cost-guide brand violations), **estimator-reframe** (merged
+2026-06-13: THREE_WAYS ledger, live Charlotte temp panel, impeccable polish — `main` now at
+`d4bbb9d`). ⚠️ Open launch-blocker: Estimator email capture over-promises (homeowner gets no
+automated email) — see CLAUDE.md Open To-Do #1. NEXT: services-section changes. Next (off-site, on
+hold): claim/fill the Google Business Profile + gather real reviews.
 Cross-worktree: after `main` moves, each worktree needs `git pull --ff-only` + `npm install`
 if a new dep landed.
 
