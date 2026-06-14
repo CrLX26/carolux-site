@@ -257,7 +257,7 @@ export const ESTIMATOR = {
   billLabel: "Your average monthly energy bill",
   billHint: "Electric, gas, or combined — whatever you pay each month.",
   insulationLabel: "Your attic insulation right now",
-  insulationHint: "Not sure? Most Charlotte homes built before 2010 are often under-insulated.",
+  insulationHint: "Most homes here were last insulated 10–20 years ago — it's worth checking.",
   insulationOptions: [
     { key: "under", label: "Under-insulated" },
     { key: "unsure", label: "Not sure" },
@@ -269,7 +269,7 @@ export const ESTIMATOR = {
   emailPrompt:
     "Want it in writing? Leave your email and we'll send a personalized breakdown — including what we'd look for in your attic and crawl space.",
   emailPlaceholder: "you@email.com",
-  emailCta: "Send to my inbox",
+  emailCta: "Send my estimate",
   emailSending: "Sending",
   emailDone: "Estimate on its way.",
   emailDoneSub: "We'll email your personalized breakdown shortly. Watch your inbox.",

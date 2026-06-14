@@ -25,6 +25,7 @@ export default function Estimator() {
   const [emailErr, setEmailErr] = useState("");
   const [hp, setHp] = useState(""); // honeypot
   const [dailyHigh, setDailyHigh] = useState(null);
+  const [tempError, setTempError] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const lead = useLead();
 
@@ -32,7 +33,7 @@ export default function Estimator() {
     fetch("https://api.open-meteo.com/v1/forecast?latitude=35.2271&longitude=-80.8431&daily=temperature_2m_max&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=1")
       .then((r) => r.json())
       .then((d) => setDailyHigh(Math.round(d.daily.temperature_2m_max[0])))
-      .catch(() => {});
+      .catch(() => setTempError(true));
   }, []);
 
   useEffect(() => {
@@ -97,7 +98,7 @@ export default function Estimator() {
           </div>
 
           {/* Charlotte temp panel — desktop */}
-          {!isMobile && dailyHigh !== null && (
+          {!isMobile && (dailyHigh !== null || tempError) && (
             <Reveal delay={0.08} style={{ flex: "0 0 clamp(240px, 24vw, 290px)" }}>
               <div style={{
                 background: C.navy,
@@ -115,43 +116,42 @@ export default function Estimator() {
                   color: C.teal,
                   marginBottom: "14px",
                 }}>
-                  Charlotte, NC · Today
+                  Charlotte, NC
                 </span>
 
-                <div style={{
-                  fontFamily: "var(--font-cormorant)",
-                  fontSize: "clamp(3.2rem, 5vw, 4.4rem)",
-                  fontWeight: 400,
-                  lineHeight: 1,
-                  letterSpacing: "-0.02em",
-                  color: C.cream,
-                }}>
-                  {dailyHigh}°
-                </div>
-                <span style={{
-                  fontFamily: "var(--font-dm-sans)",
-                  fontSize: "0.82rem",
-                  color: "rgba(250,248,245,0.55)",
-                  marginBottom: "20px",
-                }}>
-                  forecast high
-                </span>
-
-                {showAttic && (
+                {tempError ? (
+                  <>
+                    <p style={{
+                      margin: "0 0 20px",
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize: "0.95rem",
+                      lineHeight: 1.6,
+                      color: "rgba(250,248,245,0.82)",
+                    }}>
+                      Charlotte summers routinely push attics past 120°F — well above what your AC is designed to fight.
+                    </p>
+                    <p style={{
+                      margin: 0,
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize: "10px",
+                      letterSpacing: "0.02em",
+                      lineHeight: 1.5,
+                      color: "rgba(250,248,245,0.38)",
+                    }}>
+                      Attic temperatures vary with season and sun exposure · U.S. DOE
+                    </p>
+                  </>
+                ) : (
                   <>
                     <div style={{
-                      height: "1px",
-                      background: "rgba(250,248,245,0.12)",
-                      marginBottom: "20px",
-                    }} />
-                    <div style={{
                       fontFamily: "var(--font-cormorant)",
-                      fontSize: "clamp(1.8rem, 2.8vw, 2.4rem)",
+                      fontSize: "clamp(3.2rem, 5vw, 4.4rem)",
                       fontWeight: 400,
                       lineHeight: 1,
-                      color: ATTIC_AMBER,
+                      letterSpacing: "-0.02em",
+                      color: C.cream,
                     }}>
-                      ~{atticTemp}°
+                      {dailyHigh}°
                     </div>
                     <span style={{
                       fontFamily: "var(--font-dm-sans)",
@@ -159,33 +159,60 @@ export default function Estimator() {
                       color: "rgba(250,248,245,0.55)",
                       marginBottom: "20px",
                     }}>
-                      in your attic · afternoon sun
+                      forecast high
                     </span>
+
+                    {showAttic && (
+                      <>
+                        <div style={{
+                          height: "1px",
+                          background: "rgba(250,248,245,0.12)",
+                          marginBottom: "20px",
+                        }} />
+                        <div style={{
+                          fontFamily: "var(--font-cormorant)",
+                          fontSize: "clamp(1.8rem, 2.8vw, 2.4rem)",
+                          fontWeight: 400,
+                          lineHeight: 1,
+                          color: ATTIC_AMBER,
+                        }}>
+                          ~{atticTemp}°
+                        </div>
+                        <span style={{
+                          fontFamily: "var(--font-dm-sans)",
+                          fontSize: "0.82rem",
+                          color: "rgba(250,248,245,0.55)",
+                          marginBottom: "20px",
+                        }}>
+                          in your attic · afternoon sun
+                        </span>
+                        <p style={{
+                          margin: "0 0 16px",
+                          fontFamily: "var(--font-dm-sans)",
+                          fontSize: "0.88rem",
+                          lineHeight: 1.55,
+                          color: "rgba(250,248,245,0.78)",
+                          fontStyle: "italic",
+                        }}>
+                          Your AC is fighting both.
+                        </p>
+                      </>
+                    )}
+
                     <p style={{
-                      margin: "0 0 16px",
+                      margin: 0,
                       fontFamily: "var(--font-dm-sans)",
-                      fontSize: "0.88rem",
-                      lineHeight: 1.55,
-                      color: "rgba(250,248,245,0.78)",
-                      fontStyle: "italic",
+                      fontSize: "10px",
+                      letterSpacing: "0.02em",
+                      lineHeight: 1.5,
+                      color: "rgba(250,248,245,0.38)",
                     }}>
-                      Your AC is fighting both.
+                      {showAttic
+                        ? "Attics run 40–60°F hotter than outside in direct summer sun · U.S. DOE"
+                        : "Attic temperatures vary with season and sun exposure · U.S. DOE"}
                     </p>
                   </>
                 )}
-
-                <p style={{
-                  margin: 0,
-                  fontFamily: "var(--font-dm-sans)",
-                  fontSize: "10px",
-                  letterSpacing: "0.02em",
-                  lineHeight: 1.5,
-                  color: "rgba(250,248,245,0.38)",
-                }}>
-                  {showAttic
-                    ? "Attics run 40–60°F hotter than outside in direct summer sun · U.S. DOE"
-                    : "Attic temperatures vary with season and sun exposure · U.S. DOE"}
-                </p>
               </div>
             </Reveal>
           )}
@@ -254,6 +281,17 @@ export default function Estimator() {
                   </>
                 )}
               </div>
+              {showAttic && (
+                <p style={{
+                  margin: "6px 0 0",
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.85rem",
+                  fontStyle: "italic",
+                  color: "rgba(250,248,245,0.78)",
+                }}>
+                  Your AC is fighting both.
+                </p>
+              )}
               <p style={{
                 margin: "8px 0 0",
                 fontFamily: "var(--font-dm-sans)",
@@ -533,11 +571,13 @@ export default function Estimator() {
                   : "Enter your monthly bill to see your estimate."}
               </p>
 
-              <div style={{ marginTop: "clamp(22px, 3vh, 30px)" }}>
-                <Cta href="#contact" variant="solid" ringColor={C.cream}>
-                  {cta}
-                </Cta>
-              </div>
+              {hasResult && (
+                <div style={{ marginTop: "clamp(22px, 3vh, 30px)" }}>
+                  <Cta href="#contact" variant="solid" ringColor={C.cream}>
+                    {cta}
+                  </Cta>
+                </div>
+              )}
             </div>
           </Reveal>
         </div>
@@ -638,6 +678,14 @@ export default function Estimator() {
                 </button>
               </div>
               <ErrorNote>{emailErr || (lead.status === "error" ? lead.error : "")}</ErrorNote>
+              {lead.status === "error" && (
+                <p style={{ margin: "8px 0 0", fontFamily: "var(--font-dm-sans)", fontSize: "12px", color: C.inkSoft }}>
+                  Or reach us directly:{" "}
+                  <a href="tel:+17042282729" style={{ color: C.teal, textDecoration: "none" }}>(704) 228-2729</a>
+                  {" · "}
+                  <a href="mailto:team@caroluxinsulation.com" style={{ color: C.teal, textDecoration: "none" }}>team@caroluxinsulation.com</a>
+                </p>
+              )}
             </form>
           )}
 
