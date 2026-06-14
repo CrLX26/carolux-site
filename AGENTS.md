@@ -305,19 +305,28 @@ that requires its own decisions.
 - Stash uncommitted changes before switching branches
 - Deploy command if needed manually: vercel --prod --yes
 
-**Current state (2026-06-13):** `main` = **`dc3b792`** (Vercel production deploying). See the
-**CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-13"** block for the authoritative latest state. Shipped to
-main since the hero: Stats polish, WhyUs 2×2 ledger, SEO foundation, FAQ + FAQPage schema, lead
-capture (Estimator+Contact → Resend `/api/lead`; `RESEND_API_KEY` set in Vercel prod), social footer
-buttons + `sameAs`, owner photos downscaled (WebP), SEO batch (cost-guide page + FAQ AEO rewrite),
-impeccable fixes, **estimator-reframe** (THREE_WAYS ledger, live Charlotte temp panel), and
-**3 dedicated service pages** (`/services/attic-insulation`, `/services/crawl-space-insulation`,
-`/services/air-sealing` — SEO-reviewed + design-taste passed; encapsulation claims removed
-site-wide). ⚠️ Open launch-blocker: Estimator email capture over-promises (homeowner gets no
-automated email) — see CLAUDE.md Open To-Do #1. Cellulose copy = a revisit (needs carolux-tools
-changes). Next (off-site, on hold): claim/fill the Google Business Profile + gather real reviews.
-Cross-worktree: after `main` moves, each worktree needs `git pull --ff-only` + `npm install`
-if a new dep landed.
+**Current state (2026-06-14):** `main` = **`4dc394f`** (Vercel production deploying). See the
+**CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-14"** block for the authoritative latest state.
+
+**⚠️ SESSION MODEL CHANGED 2026-06-14 — read this:** the old 3-worktree split (design / SEO / copy)
+was **consolidated into a 3-SESSION model**: (1) **site-dev** = the website (design + SEO + copy, all
+in this ONE `carolux-site` worktree — the `carolux-seo`/`carolux-copy` worktrees were removed),
+(2) **tools-dev** = the estimator (`carolux-tools`, separate repo, read-only from here), (3) the
+**Legal/Risk/Integration spine** (`carolux-legal`). Launch website work from the WRAPPER folder
+`H:\Claude Code Folders\Carolux Pro Website` (memory continuity). Cross-project risk/security/legal
+work is tracked in **`H:\Claude Code Folders\RISK-REGISTER.md`** (each lane flips its own rows).
+Full detail: CLAUDE.md handoff + memory [[worktree-split]].
+
+Shipped to main since the hero: Stats polish, WhyUs 2×2 ledger, SEO foundation, FAQ + FAQPage schema,
+lead capture (Estimator+Contact → Resend `/api/lead`; `RESEND_API_KEY` set in Vercel prod), social
+footer buttons + `sameAs`, owner photos WebP, SEO batch (cost-guide + FAQ AEO), impeccable fixes,
+**estimator-reframe** (THREE_WAYS ledger, live Charlotte temp panel), **3 service pages** (attic /
+crawl-space / air-sealing; encapsulation claims removed site-wide), and **WI-005 footer Services +
+WI-006 design-reference noindex**. ⚠️ Open launch-blockers (register): WI-002 estimator email
+over-promise, WI-003 placeholder reviews + `$80` claim. In flight (NOT merged): branch
+`privacy-policy-service-providers` (privacy additions pending NC attorney). Cellulose copy = a
+revisit (needs carolux-tools changes). Next (off-site, on hold): claim/fill the Google Business
+Profile + gather real reviews.
 
 **Prior state (2026-06-10):**
 - ✅ LIVE on `main` @ `08496cc` (Vercel production deploying). `main` = `hero-polish` =
@@ -332,8 +341,9 @@ if a new dep landed.
   MotionValues untouched.
 - Design lane branches `hero-polish` / `hero-large-monitor` are level with `main` (can keep
   `hero-polish` as the ongoing lane; `hero-large-monitor` is mergeable/deletable).
-- THREE worktrees: `carolux-site` (design), `carolux-seo`/`seo-next` (SEO),
-  `carolux-copy`/`copy-polish` (wording). See memory: worktree-split for lane rules.
+- ~~THREE worktrees~~ **(superseded 2026-06-14:** consolidated to a single `carolux-site` worktree +
+  the 3-SESSION model — see the current "GIT & DEPLOYMENT WORKFLOW" state block above and memory
+  [[worktree-split]]). This 2026-06-10 block is kept only as historical hero-context.
 - Open design polish (impeccable critique, not yet done): Stats stat-strip → one dominant
   stat; hero→alert→stats palette/transition continuity; single primary-CTA colour + louder
   phone link; pinned-scroll length / always-reachable estimate CTA.

@@ -6,14 +6,66 @@
 
 ---
 
-## 🟢 CURRENT HANDOFF — 2026-06-13 (latest). Read this first.
-**`main` = `dc3b792` (service pages + estimator-reframe merged), deploying to Vercel production.**
-Wix domain still untouched (the public domain only switches when DNS is repointed). Three worktrees:
-`carolux-site` (design, on `main`), `carolux-seo`/`seo-next` (SEO — pushed encapsulation fixes to
-schema.js/llms.txt this session), `carolux-copy`/`copy-polish` (copy).
-**Cross-worktree gotcha:** after `main` advances, each worktree needs `git fetch && git pull --ff-only`
-AND `npm install` if a new dependency landed. The remote is the source of truth; a worktree can't
-update the local `main` ref while another worktree has `main` checked out (harmless).
+## 🟢 CURRENT HANDOFF — 2026-06-14 (latest). Read this first.
+**You are the `site-dev` session.** `main` = **`4dc394f`**, deploying to Vercel production. Wix domain
+still untouched (the public domain only switches when DNS is repointed — do NOT touch DNS).
+
+### 🧭 THE 3-SESSION MODEL (set 2026-06-14 — this replaced the old 5-worktree setup)
+Carolux runs THREE Claude Code sessions. Full detail in memory [[worktree-split]].
+1. **site-dev (THIS session)** — builds the website. **Design, SEO, AND copy all happen here** (one
+   repo). The old separate `carolux-seo` + `carolux-copy` worktrees were RETIRED 2026-06-14 — the
+   website is now a SINGLE worktree at `…\Carolux Pro Website\carolux-site` on `main`.
+2. **tools-dev** — builds the estimator (`H:\Claude Code Folders\carolux-tools`, SEPARATE repo).
+   Runs in parallel. **READ-ONLY to this session — never edit carolux-tools from here.**
+3. **Legal / Risk / Integration ("the spine")** — `carolux-legal` session. Doesn't build. Owns the
+   risk register, runs cross-cutting legal/risk/security audits as sub-agents, routes work.
+
+⚠️ **LAUNCH RULE:** start website work from the **wrapper folder** `H:\Claude Code Folders\Carolux
+Pro Website` — that cwd holds the real memory store. Launching from `…\carolux-site` hits an EMPTY
+memory store (this was the cause of past continuity loss). Git commands `cd` into `carolux-site`.
+
+### 📌 COORDINATION FILES OUTSIDE THIS REPO (read these — the state isn't all in here)
+- **`H:\Claude Code Folders\RISK-REGISTER.md`** — cross-project risk / security / legal register; it
+  is THE bus. site-dev owns + fixes the rows tagged `design`, and **flips its own rows' Status**.
+  Curated by the spine. The authoritative list of open launch work lives here, not in CLAUDE.md.
+- **`H:\Claude Code Folders\CAROLUX_MASTER_TODO.md`** — whole-business roadmap (site + estimator +
+  marketing + legal + finances). Has a pointer to the register.
+- **`H:\Claude Code Folders\carolux-legal\RISK-LANE-CHARTER.md`** — the spine's charter (how the
+  lanes coordinate). **`…\carolux-legal\LEGAL-AUDIT-site-and-tools.md`** — the full both-projects audit.
+- **`H:\Claude Code Folders\carolux-marketing\CAROLUX_MARKETING.md`** — marketing brain + GBP plan
+  (§2). **`D:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`** — master doc map. See [[reference-master-docs]].
+- Estimator specifics: `carolux-tools\CLAUDE.md`, `LAUNCH_READINESS.md`, `CAROLUX_TOOLS_TODO.md`, `PRODUCTS.md`.
+
+### ▶️ THE DESIGN BOARD — site-dev's open rows (authoritative = RISK-REGISTER.md)
+Launch blockers + important items owned by THIS session, all waiting (most need an owner decision):
+- **WI-002 🔴** Estimator email over-promises (UI says "watch your inbox"; system emails only team@).
+  `api/lead/route.js:119-127` + `content.js` `emailPrompt`/`emailDone`/`emailDoneSub`. Fix A (reword,
+  no-regret) or B (send the homeowner an email). Owner parked the A/B call.
+- **WI-003 🔴** Placeholder reviews: `content.js:188` ("$80" exact-$ claim) + `Reviews.js:62-67`
+  (hardcoded 5-star). FTC issue. Plan: hide the Reviews section behind a flag until REAL reviews.
+- **WI-004 🟠** `llms.txt` missing the 3 service pages (`public/llms.txt`). SEO is site-dev's now.
+- **WI-006 🟠** `/design-reference`: noindex ✅ shipped (`4dc394f`); STILL OPEN = scrub the fabricated
+  "47% Verified" stat + ENERGY STAR/Owens Corning logo reel, or delete the route (decision).
+- **WI-007 🟠** RapidScan site-seal script in `Footer.js:104-107` — spine decides disclose/keep/drop,
+  THEN site-dev implements.
+- **WI-008 🟠** ~50MB dead tracked assets in `public/`. ⚠️ The register row erroneously lists
+  `house-thermal4.webp` as dead — it is IN USE (Hero + all-page schema/OG image). Delete the verified
+  set only; KEEP house-thermal4.webp.
+- **WI-009 🟡** em dash in `cost-guide/page.js` `<title>`. **WI-010 🟡** cellulose copy vs tools gap
+  (owner keeps copy). **WI-026/WI-027** air-sealing top-off disclosure / soften "most contractors".
+- **WI-011 🟠** Privacy-policy additions — staged on branch (see In-Flight below), pending NC attorney.
+
+### ✅ SHIPPED to main this session (2026-06-14)
+- **Reorg → 3-session model** (docs/process only): retired seo/copy worktrees; created the risk
+  register + spine charter; SEO knowledge captured to memory [[seo-aeo-conventions]].
+- **WI-005 + WI-006 noindex** (`4dc394f`): footer Services column via new single-source `SERVICE_LINKS`
+  in `content.js`; `app/design-reference/layout.js` noindex/nofollow. Built-HTML verified.
+
+### 🔶 IN FLIGHT — branch `privacy-policy-service-providers` (`40f928a`, NOT merged)
+Privacy-policy "Service Providers / AI processing" additions applied to `content.js` PRIVACY_POLICY
+(new §7, DNT sentence, §2 assessment-details, renumbered 7/8/9→8/9/10). Per
+`carolux-legal/privacy-policy-additions-FINAL.md`. **Do NOT merge until an NC attorney glances**;
+then bump `lastUpdated` (held at "June 3, 2026" with a `// PENDING` comment). Tracked = WI-011.
 
 ### ✅ MERGED to main this session (2026-06-13) — dedicated service pages (PR #6)
 Three SEO/AEO service pages, cloned from the cost-guide + city templates; SEO-reviewed (PASS) +
@@ -44,35 +96,12 @@ design-taste pass done before merge. `main` ff'd to `dc3b792`.
 - `app/lib/content.js` — `insulationHint` updated to "Most homes here were last insulated 10–20 years ago — it's worth checking."; email CTA relabeled to "Send my estimate".
 - Impeccable critique snapshot: `.impeccable/critique/2026-06-13T23-59-19Z__app-components-estimator-js.md`
 
-### ⚠️ OPEN TO-DOS (carry forward until resolved)
-
-**1. Email lead capture: UI over-promises (P1 — fix before launch)**
-`/api/lead/route.js` sends ONE email to `team@caroluxinsulation.com` when homeowner submits the
-Estimator email form — the submitter's email is set as `replyTo` but they receive NO outbound email.
-THREE copy keys in `content.js` `ESTIMATOR` over-promise an automated email the system never sends:
-  - `emailPrompt` (pre-submit pitch): "Want it in writing? Leave your email and we'll send a personalized breakdown…"
-  - `emailDone`: "Estimate on its way."
-  - `emailDoneSub`: "We'll email your personalized breakdown shortly. Watch your inbox."
-The homeowner only gets a response if Tony/Juan manually reply to the team@ notification. Two options:
-  - **Option A (5 min):** Reword all three keys to be honest — pitch becomes "Leave your email and
-    we'll be in touch", success becomes "We got it. Expect a call or email from us within 24 hours."
-    (no code change needed)
-  - **Option B (1–2 hrs):** Add a second `resend.emails.send()` in `route.js` to fire an actual
-    confirmation email TO the homeowner's address with their estimate numbers formatted. This makes
-    the existing copy true AND creates a Carolux-branded touchpoint in their inbox before a competitor
-    calls. The conversion win.
-
-**2. CTA copy mismatch (minor)**
-Estimator section CTA says "Book Your Free Estimate" (scrolls to Contact). Contact section submit
-button label comes from `CONTACT.form.submit` key in `content.js`. These may be inconsistent —
-verify and align so the journey feels intentional.
-
-**3. `estimator-reframe` → `main` merge — ✅ DONE this session (2026-06-13).**
-Fast-forwarded `main` to `d4bbb9d` and pushed to origin. `carolux-site` is back on `main`.
-`carolux-seo`/`carolux-copy` worktrees still need `git fetch && git pull --ff-only` to catch up
-their local `main` ref (no new deps, npm install not required).
-
-**4. Services section — NEXT UP (changes incoming per user 2026-06-13).** Branch off `main` for it.
+### ⚠️ OPEN WORK = the DESIGN BOARD above + `RISK-REGISTER.md`
+The register is the single source of open work — read it for the authoritative, current list (and
+flip your own rows as you ship). The two big launch blockers for site-dev: WI-002 (email
+over-promise) and WI-003 (placeholder reviews). One minor item NOT in the register: the Estimator CTA
+"Book Your Free Estimate" vs the Contact submit label (`CONTACT.form.submit`) — align the wording
+when next editing `content.js`.
 
 ### Shipped to `main` (previous session, 2026-06-12 — still live)
 - **Owner photos downscaled** (`05ac1f3`): tony/juan PNG → WebP (40KB/34KB). References updated in `content.js`.
@@ -89,7 +118,7 @@ their local `main` ref (no new deps, npm install not required).
   (`ca3e6b0…7a88342`), **FAQ component** (`9e59ab5`, `e2f091c`), **lead capture** (`2e1fe4c`),
   **social footer buttons + sameAs** (`6430346`, `4cfbc55`).
 
-### Lead capture — ✅ LIVE on `main` (`2e1fe4c`) — ⚠️ see Open To-Do #1 above
+### Lead capture — ✅ LIVE on `main` (`2e1fe4c`) — ⚠️ see WI-002 (Design Board / RISK-REGISTER.md)
 Estimator email + Contact form POST to a hardened **`app/api/lead/route.js`** (Resend; reuses
 carolux-tools' account + verified sender; honeypot, per-IP rate limit, HTML-escape, validation).
 Shared kit **`app/components/leadForm.js`** (`useLead` state machine, Spinner, ErrorNote,
@@ -98,7 +127,7 @@ production** env (preview env not set — non-blocking). Production verified: ho
 missing-fields→400 (key read), and a labeled prod test delivered to team@. PR #5 closed. `resend` in
 package.json; `.env.local` has the key (UTF-8 BOM — extract with `grep -ao`). Verify: `scripts/leadshot.mjs`.
 **Gap:** only team@ receives the Resend email. Homeowner sees "Watch your inbox" but receives nothing
-automatically. See Open To-Do #1 for fix options.
+automatically. See **WI-002** in the Design Board / `RISK-REGISTER.md` for fix options (A reword / B outbound email).
 
 ### Social buttons — ✅ LIVE on `main` (`6430346`)
 Footer brand-column icon row (Google, Instagram, Facebook, Nextdoor; monochrome cream→teal; Nextdoor
@@ -106,7 +135,9 @@ Footer brand-column icon row (Google, Instagram, Facebook, Nextdoor; monochrome 
 nextdoor). SEO added the same four to `schema.js` `sameAs` (`4cfbc55`, derives from `COMPANY.*` so it
 stays in sync). Verify: `scripts/footshot.mjs`.
 
-### Path-to-live backlog (from the launch audit, not yet done)
+### Path-to-live backlog (from the launch audit) — now tracked in `RISK-REGISTER.md`
+*These items are superseded by the register (WI rows); kept here for context. Reviews = WI-003,
+DNS/Vercel = WI-012.*
 Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); desktop thermal XOR verified
 Chromium-only (check Firefox/Safari); Vercel Deployment Protection off + DNS repoint.
 Owner photos ✅ downscaled (tony/juan PNG → WebP, 40KB/34KB). Before/after photos ✅ confirmed
