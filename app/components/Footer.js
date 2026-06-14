@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { COMPANY, NAV_LINKS } from "../lib/content";
+import { COMPANY, NAV_LINKS, SERVICE_LINKS } from "../lib/content";
 import { CITY_LINKS } from "../lib/cities";
 import { C } from "./sectionKit";
 
@@ -158,6 +158,16 @@ export default function Footer() {
           {NAV_LINKS.map((link) => (
             <FootLink key={link.href} href={link.href}>
               {link.label}
+            </FootLink>
+          ))}
+        </nav>
+
+        {/* Services */}
+        <nav aria-label="Services" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <FooterColTitle>Services</FooterColTitle>
+          {SERVICE_LINKS.map((s) => (
+            <FootLink key={s.slug} href={s.slug}>
+              {s.name}
             </FootLink>
           ))}
         </nav>

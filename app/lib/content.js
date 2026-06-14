@@ -112,6 +112,16 @@ export const SERVICES = [
   },
 ];
 
+// Canonical {slug, name} list for the dedicated service pages — single source for
+// internal links (footer Services column, any future nav/mesh). Mirrors the
+// CITY_LINKS pattern in cities.js so a link can never point at a page that
+// doesn't exist.
+export const SERVICE_LINKS = [
+  { slug: "/services/attic-insulation", name: "Attic Insulation" },
+  { slug: "/services/crawl-space-insulation", name: "Crawl Space Insulation" },
+  { slug: "/services/air-sealing", name: "Air Sealing" },
+];
+
 export const WHY_US = [
   {
     roman: "I",
