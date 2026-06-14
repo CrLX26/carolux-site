@@ -89,6 +89,25 @@ export default function Services() {
                   <Cta href="#contact" variant="outline">
                     {service.cta}
                   </Cta>
+                  {service.learnMore && (
+                    <a
+                      href={service.learnMore}
+                      style={{
+                        display: "inline-block",
+                        marginTop: "16px",
+                        fontFamily: "var(--font-dm-sans)",
+                        fontSize: "0.9rem",
+                        fontWeight: 500,
+                        color: C.teal,
+                        textDecoration: "none",
+                        borderBottom: `1px solid ${C.teal}`,
+                        lineHeight: 1,
+                        paddingBottom: "2px",
+                      }}
+                    >
+                      Learn more about attic insulation →
+                    </a>
+                  )}
                 </div>
               </LiftCard>
             </Reveal>

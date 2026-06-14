@@ -132,6 +132,7 @@ const SERVICES = [
   {
     num: "01",
     title: "Blown-In Attic Insulation",
+    href: "/services/attic-insulation",
     getDesc: (city) =>
       `Fiberglass or cellulose blown to R-49 — the DOE standard for North Carolina. Air sealing is done before any material goes in, at no extra charge. Most ${city.displayName} attics finish in a single day.`,
   },
@@ -342,6 +343,25 @@ export default async function CityPage({ params }) {
                     >
                       {s.getDesc(city)}
                     </p>
+                    {s.href && (
+                      <a
+                        href={s.href}
+                        style={{
+                          display: "inline-block",
+                          marginTop: "0.7rem",
+                          fontFamily: "var(--font-dm-sans)",
+                          fontSize: "0.85rem",
+                          fontWeight: 500,
+                          color: C.teal,
+                          textDecoration: "none",
+                          borderBottom: `1px solid ${C.teal}`,
+                          lineHeight: 1,
+                          paddingBottom: "2px",
+                        }}
+                      >
+                        Learn more about attic insulation →
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}
