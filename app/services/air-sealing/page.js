@@ -19,7 +19,7 @@ const SAME_AS = [
 ];
 
 export const metadata = {
-  title: "Attic Air Sealing in Charlotte, NC | Carolux",
+  title: "Charlotte Attic Air Sealing: Done Before Insulation | Carolux",
   description:
     "Attic air sealing in Charlotte, NC: we seal the leaks insulation can't, around lights, hatches, and top plates. Included with every full install. Free estimate.",
   alternates: { canonical: "/services/air-sealing" },
@@ -133,7 +133,7 @@ const PROCESS = [
   ],
   [
     "Seal the bypasses",
-    "We seal each opening with the right material for the spot, caulk or foam, and fire-rated sealant where heat sources require it, keeping the required clearances around non-IC light fixtures and flues.",
+    "We seal each opening with the right material for the spot, from caulk to fire-rated sealant where heat sources require it, keeping the required clearances around non-IC light fixtures and flues.",
   ],
   [
     "Then insulate",
