@@ -26,7 +26,7 @@ const business = {
   "@id": `${BASE_URL}/#business`,
   name: COMPANY.name,
   description:
-    "Owner-operated insulation company serving Charlotte, Gastonia, and the surrounding North Carolina Piedmont. Blown-in attic insulation, fiberglass batt, crawl space encapsulation and vapor barriers, plus air sealing on every full install. Fully insured; 2-year workmanship guarantee.",
+    "Owner-operated insulation company serving Charlotte, Gastonia, and the surrounding North Carolina Piedmont. Blown-in attic insulation, fiberglass batt, crawl space vapor barriers, plus air sealing on every full install. Fully insured; 2-year workmanship guarantee.",
   url: BASE_URL,
   telephone: "+17042282729",
   email: COMPANY.email,
@@ -51,7 +51,7 @@ const business = {
   knowsAbout: [
     "Blown-in attic insulation",
     "Fiberglass batt insulation",
-    "Crawl space encapsulation",
+    "Crawl space vapor barriers",
     "Vapor barriers",
     "Air sealing",
     "Home energy efficiency",
