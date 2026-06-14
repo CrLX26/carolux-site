@@ -133,12 +133,15 @@ const SERVICES = [
     num: "01",
     title: "Blown-In Attic Insulation",
     href: "/services/attic-insulation",
+    linkLabel: "Learn more about attic insulation",
     getDesc: (city) =>
       `Fiberglass or cellulose blown to R-49 — the DOE standard for North Carolina. Air sealing is done before any material goes in, at no extra charge. Most ${city.displayName} attics finish in a single day.`,
   },
   {
     num: "02",
     title: "Crawl Space & Vapor Barrier",
+    href: "/services/crawl-space-insulation",
+    linkLabel: "Learn more about crawl space insulation",
     getDesc: (city) =>
       `Heavy-duty vapor barrier to stop ground moisture from migrating into the floor structure above. North Carolina's humid summers make crawl space moisture a real cost driver for homes in ${city.displayName} and throughout ${city.county}.`,
   },
@@ -359,7 +362,7 @@ export default async function CityPage({ params }) {
                           paddingBottom: "2px",
                         }}
                       >
-                        Learn more about attic insulation →
+                        {s.linkLabel || "Learn more"} →
                       </a>
                     )}
                   </div>

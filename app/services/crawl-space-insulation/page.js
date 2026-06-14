@@ -9,12 +9,9 @@ const BASE_URL = "https://caroluxinsulation.com";
 // byline in the hero. Bump when the page copy is revised.
 const LAST_UPDATED = "2026-06-13";
 
-// Charlotte metro centroid — anchors the LocalBusiness entity geographically,
-// same coordinates the city pages use.
+// Charlotte metro centroid — same coordinates the other pages use.
 const GEO = { latitude: 35.2271, longitude: -80.8431 };
 
-// Authoritative off-site profiles — mirrors layout.js `sameAs` so this page's
-// business node ties back to the same identities.
 const SAME_AS = [
   COMPANY.instagram,
   COMPANY.facebook,
@@ -23,64 +20,59 @@ const SAME_AS = [
 ];
 
 export const metadata = {
-  title: "Charlotte Attic Insulation, Blown-In to R-49 | Carolux",
+  title: "Charlotte Crawl Space Insulation & Vapor Barrier | Carolux",
   description:
-    "Blown-in attic insulation in Charlotte, NC, installed to the DOE-recommended R-49. Air sealing included on every full install, at no extra charge. Free estimate.",
-  alternates: { canonical: "/services/attic-insulation" },
+    "Crawl space fiberglass batt insulation and professional-grade vapor barrier in Charlotte, NC. Block ground moisture, protect your floors. Free estimate.",
+  alternates: { canonical: "/services/crawl-space-insulation" },
   openGraph: {
-    title: "Charlotte Attic Insulation, Blown-In to R-49 | Carolux",
+    title: "Charlotte Crawl Space Insulation & Vapor Barrier | Carolux",
     description:
-      "Blown-in attic insulation in Charlotte, NC, to the DOE-recommended R-49. Air sealing included on every full install, at no extra charge.",
-    url: `${BASE_URL}/services/attic-insulation`,
+      "Crawl space fiberglass batt insulation and professional-grade vapor barrier in Charlotte, NC. Block ground moisture and protect your floors.",
+    url: `${BASE_URL}/services/crawl-space-insulation`,
     siteName: "Carolux Insulation",
     locale: "en_US",
     type: "article",
   },
 };
 
-// Single source for this page's FAQ. Rendered VISIBLY in the JSX below AND
-// emitted as FAQPage structured data, so the schema can never drift from the
-// on-page Q&A. Answers are ~50-65 words, answer-first, inside the legal
-// guardrails (insured-not-licensed, Tony = former inspector, air sealing
-// "included with every full install at no extra charge", % + DOE/ENERGY STAR
-// with "results vary", no spray foam, never knock competitors).
-const ATTIC_FAQ = [
+// Single source for this page's FAQ. Rendered VISIBLY below AND emitted as
+// FAQPage structured data, so the schema can't drift from the on-page Q&A.
+// Legal guardrails: insured-not-licensed, Tony = former inspector, no exact-$
+// savings (% + DOE/ENERGY STAR + "results vary"), never "mold" (use "wood rot"
+// / "moisture" / "musty"), Carolux does NOT do encapsulation, no spray foam,
+// never knock competitors.
+const CRAWL_FAQ = [
   {
-    q: "How much does attic insulation cost in Charlotte, NC?",
-    a: "Attic blown-in insulation in Charlotte typically runs $1.00–$5.00+ per square foot installed. Owner-operated specialty crews generally fall in the $1.25–$2.50/sqft range; large multi-service companies with more overhead often quote higher for the same R-49 install. The exact number depends on your current R-value, square footage, and whether old material needs removal. A free energy audit gives you a firm, all-in price.",
+    q: "How much does crawl space insulation cost in Charlotte, NC?",
+    a: "Crawl space fiberglass batt insulation in Charlotte typically runs $1.00–$3.50 per square foot installed, and a vapor barrier adds roughly $1.50–$4.00/sqft. The total depends on the size of the space, how accessible it is, current moisture conditions, and whether old material needs removal. A free assessment gives you a firm, all-in number for your specific crawl space.",
     learnMore: true,
   },
   {
-    q: "What R-value should an attic have in Charlotte, NC?",
-    a: "The U.S. Department of Energy recommends R-49 for attics in North Carolina's climate zone, which covers all of Charlotte and the surrounding counties. Most homes built before 2010 fall short, often sitting at R-19 to R-38. That gap is where conditioned air, and money, quietly escapes through the ceiling year-round.",
+    q: "What's the difference between a vapor barrier and crawl space encapsulation?",
+    a: "A vapor barrier is a heavy-duty liner laid across the crawl space ground and up the foundation to block rising moisture. Full encapsulation is a larger, costlier scope that also seals the vents, conditions the air, and usually adds a dehumidifier. Carolux installs professional-grade vapor barriers and floor-joist batt; we do not do full encapsulation. For most Charlotte homes, a properly installed vapor barrier handles the moisture problem at a fraction of the cost.",
   },
   {
-    q: "How long does attic insulation take to install?",
-    a: "Most Charlotte attic insulation jobs finish in a single day. Air sealing the ceiling bypasses comes first, then the blown-in material goes in to the R-49 target. Larger or harder-to-access attics can run longer. Both owners, Tony and Juan, are on site start to finish and walk the finished work with you before leaving.",
+    q: "Do I need a vapor barrier in my crawl space in North Carolina?",
+    a: "For most North Carolina homes with a vented crawl space and a bare dirt floor, yes. The state's humid climate drives ground moisture up into the wood structure year-round. A heavy-duty vapor barrier is the most cost-effective way to keep the subfloor and joists dry and reduce the humidity load on your HVAC system.",
   },
   {
-    q: "Do I need to remove old attic insulation before adding new?",
-    a: "Not always. If the existing insulation is dry and simply below R-49, new blown-in material can usually go right on top. If it's moisture-damaged, contaminated, or compacted to near-zero performance, removal first is the better path. Carolux checks the condition during the free assessment and tells you which applies, before any commitment.",
+    q: "What kind of insulation goes in a crawl space?",
+    a: "Carolux installs fiberglass batt between the floor joists, hand-cut to fit so it won't sag or leave gaps. It slows heat transfer through the floor and helps steady the temperature in the rooms above. The batt is paired with a ground vapor barrier, which handles the moisture control that insulation alone cannot.",
   },
   {
-    q: "Why does Carolux air-seal the attic before insulating?",
-    a: "Insulation slows heat transfer, but it does not stop air leaks. Gaps around recessed lights, plumbing penetrations, and top plates let conditioned air bypass the insulation entirely. Sealing those first is what makes the R-value actually perform. Carolux includes air sealing on every full install, at no extra charge. Most contractors skip it or bill it separately.",
+    q: "Can a damp crawl space affect the rest of my home?",
+    a: "Yes. A large share of the air on your main floor can rise from the crawl space below, so ground moisture there raises humidity throughout the home, strains the HVAC, and over time leads to wood rot and soft floors. Controlling moisture at the source, with a vapor barrier, protects the whole structure above it.",
   },
 ];
 
-// Page schema, DERIVED from the same constants used to render the page, so the
-// structured data and visible content stay locked together. Separate from the
-// global @graph in layout.js.
 const schema = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      // Same @id as layout.js / the city pages so Google reads this as the same
-      // entity, not a duplicate listing.
       "@type": "LocalBusiness",
       "@id": `${BASE_URL}/#business`,
       name: "Carolux Insulation LLC",
-      url: `${BASE_URL}/services/attic-insulation`,
+      url: `${BASE_URL}/services/crawl-space-insulation`,
       telephone: "+17042282729",
       email: "team@caroluxinsulation.com",
       image: `${BASE_URL}/images/house-thermal4.webp`,
@@ -95,17 +87,17 @@ const schema = {
     },
     {
       "@type": "Service",
-      name: "Attic Insulation in Charlotte, NC",
-      serviceType: "Attic Insulation",
+      name: "Crawl Space Insulation & Vapor Barrier in Charlotte, NC",
+      serviceType: "Crawl Space Insulation",
       description:
-        "Blown-in attic insulation (fiberglass or cellulose) installed to the DOE-recommended R-49 across Charlotte, NC and surrounding counties. Air sealing included on every full install at no extra charge. Owner-operated, fully insured, 2-year workmanship guarantee.",
+        "Crawl space fiberglass batt insulation and professional-grade vapor barrier installation across Charlotte, NC and surrounding counties. Full moisture and drainage inspection included. Owner-operated, fully insured, 2-year workmanship guarantee.",
       provider: { "@id": `${BASE_URL}/#business` },
       areaServed: CITY_LINKS.map((c) => ({ "@type": "City", name: `${c.name}, NC` })),
     },
     {
       "@type": "FAQPage",
       dateModified: LAST_UPDATED,
-      mainEntity: ATTIC_FAQ.map(({ q, a }) => ({
+      mainEntity: CRAWL_FAQ.map(({ q, a }) => ({
         "@type": "Question",
         name: q,
         acceptedAnswer: { "@type": "Answer", text: a },
@@ -118,8 +110,8 @@ const schema = {
         {
           "@type": "ListItem",
           position: 2,
-          name: "Attic Insulation",
-          item: `${BASE_URL}/services/attic-insulation`,
+          name: "Crawl Space Insulation",
+          item: `${BASE_URL}/services/crawl-space-insulation`,
         },
       ],
     },
@@ -138,39 +130,39 @@ const C = {
 
 const PROCESS = [
   [
-    "Inspect and measure",
-    "Tony reads the whole attic the way a home inspector would: current R-value, moisture, ventilation, and where air is bypassing the ceiling. You get the actual numbers, not a guess off the square footage.",
+    "Inspect and assess",
+    "Tony checks the crawl space the way an inspector would: standing water, grading and drainage, existing insulation, the condition of the joists and subfloor, and how the space ventilates. You get the real condition, not a guess.",
   ],
   [
-    "Air-seal the bypasses",
-    "Before any material goes in, we seal the gaps around recessed lights, plumbing penetrations, and top plates. On every full install this is included at no extra charge. It's the step that makes the insulation actually hold.",
+    "Lay the vapor barrier",
+    "We roll a heavy-duty, professional-grade Americover vapor barrier across the crawl space floor and up to the foundation, overlapping and sealing the seams. It blocks ground moisture from rising into the wood structure above. This is not the thin poly sold at big-box stores.",
   ],
   [
-    "Blow in to R-49",
-    "We install blown-in fiberglass or cellulose to an even depth across the whole attic floor, reaching the DOE-recommended R-49 for North Carolina. Where soffit vents are present, we set baffles first so the eaves keep breathing.",
+    "Fit the floor-joist batt",
+    "Where it's called for, we hand-cut and fit fiberglass batt snugly between the floor joists so it won't sag or leave gaps. It slows heat transfer through the floor and steadies the rooms above.",
   ],
   [
     "Verify and clean up",
-    "We confirm depth at multiple points, walk the finished work with you, and bag and haul everything out. The attic is cleaner when we leave than when we arrived.",
+    "We confirm full coverage, check the seams, walk the finished work with you, and haul out any old material. Nothing left behind under the house.",
   ],
 ];
 
 const INCLUDED = [
   [
-    "Air Sealing First",
-    "On every new install and full replacement, before insulation, at no extra charge. Sealing the bypasses is what makes the R-value hold. Most contractors skip it.",
+    "Professional-Grade Vapor Barrier",
+    "Heavy-duty Americover barrier, available in multiple thicknesses, American-made with virgin resins. Not the commodity 6-mil poly from a hardware store.",
   ],
   [
-    "DOE R-49 Target",
-    "We install to the Department of Energy's recommended R-49 for North Carolina attics, not a code minimum that's already behind the standard.",
+    "Full Moisture & Drainage Inspection",
+    "We assess standing water, grading, and airflow before lining anything, so the barrier solves the actual problem instead of covering it.",
   ],
   [
-    "Soffit Baffles Where Needed",
-    "Where soffit vents are present, we set baffles to keep the eave airflow path open, so the attic still breathes properly after it's insulated.",
+    "Floor-Joist Batt Where Needed",
+    "Hand-fitted fiberglass batt between the joists, cut to fit, with no sagging or gaps. Carolux does not do perimeter-wall insulation or full encapsulation.",
   ],
   [
-    "Full Cleanup and Haul-Off",
-    "We bag and remove old material and debris. Nothing left behind in the attic or on the driveway.",
+    "Seams Sealed Properly",
+    "Overlapped and taped at the seams and the foundation wall, so moisture can't find a way around the liner.",
   ],
   [
     "2-Year Workmanship Guarantee",
@@ -182,7 +174,7 @@ const INCLUDED = [
   ],
 ];
 
-export default function AtticInsulationPage() {
+export default function CrawlSpaceInsulationPage() {
   const cityCount = CITY_LINKS.length;
 
   return (
@@ -192,13 +184,11 @@ export default function AtticInsulationPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      {/* FAQ details/summary reset — keeps answers in the server HTML whether */}
-      {/* open or closed, so crawlers and AI engines always read them.         */}
       <style>{`
-        .carolux-attic-faq details summary { list-style: none; }
-        .carolux-attic-faq details summary::-webkit-details-marker { display: none; }
-        .carolux-attic-faq details[open] .faq-indicator { transform: rotate(45deg); }
-        .carolux-attic-faq .faq-indicator { transition: transform 240ms ease; display: inline-block; }
+        .carolux-crawl-faq details summary { list-style: none; }
+        .carolux-crawl-faq details summary::-webkit-details-marker { display: none; }
+        .carolux-crawl-faq details[open] .faq-indicator { transform: rotate(45deg); }
+        .carolux-crawl-faq .faq-indicator { transition: transform 240ms ease; display: inline-block; }
         .carolux-cta-btn { transition: background-color 160ms ease, transform 120ms ease; }
         .carolux-cta-btn:hover { background-color: #3d7d90; transform: translateY(-1px); }
         .carolux-city-link { transition: color 140ms ease; }
@@ -222,7 +212,7 @@ export default function AtticInsulationPage() {
               marginBottom: "1.2rem",
             }}
           >
-            Charlotte, NC · Attic Insulation
+            Charlotte, NC · Crawl Space Insulation
           </p>
           <p
             style={{
@@ -244,7 +234,7 @@ export default function AtticInsulationPage() {
               marginBottom: "1.8rem",
             }}
           >
-            Attic Insulation in Charlotte, NC
+            Crawl Space Insulation &amp; Vapor Barrier in Charlotte, NC
           </h1>
 
           {/* Quick-answer box — AI overview / featured snippet target */}
@@ -266,13 +256,13 @@ export default function AtticInsulationPage() {
                 margin: 0,
               }}
             >
-              <strong>Attic insulation is the highest-impact energy upgrade for most Charlotte
-              homes.</strong>{" "}
-              Carolux installs blown-in fiberglass or cellulose to the DOE-recommended R-49 and
-              air-seals the ceiling bypasses first, at no extra charge, on every full install.
-              Proper air sealing plus insulation can cut heating and cooling energy use by up to
-              about 15% (EPA ENERGY STAR). Every home is different and results vary. Free energy
-              audit with a same-day written quote.
+              <strong>A vapor barrier is the highest-value first step for most Charlotte crawl
+              spaces.</strong>{" "}
+              Carolux lays a heavy-duty, professional-grade Americover vapor barrier across the
+              ground to block rising moisture, and fits fiberglass batt between the floor joists.
+              North Carolina's humid summers push ground moisture up into the wood above, driving
+              up energy bills and causing wood rot. Every home is different and results vary. Free
+              assessment with a same-day written quote.
             </p>
           </div>
           <p
@@ -305,7 +295,7 @@ export default function AtticInsulationPage() {
                 marginBottom: "0.5rem",
               }}
             >
-              How a Carolux Attic Job Works
+              How a Carolux Crawl Space Job Works
             </h2>
             <p
               style={{
@@ -316,7 +306,7 @@ export default function AtticInsulationPage() {
                 marginBottom: "2rem",
               }}
             >
-              Four steps, every one done by the owners. Most attics finish in a single day.
+              Four steps, every one done by the owners.
             </p>
             <div style={{ borderTop: `1px solid ${C.border}` }}>
               {PROCESS.map(([title, desc], i) => (
@@ -373,7 +363,7 @@ export default function AtticInsulationPage() {
           </div>
         </section>
 
-        {/* ── Why R-49 matters in NC ───────────────────────────────────── */}
+        {/* ── Why crawl space moisture matters in NC ───────────────────── */}
         <section style={{ backgroundColor: C.navy, color: C.cream }}>
           <div style={{ maxWidth: 760, margin: "0 auto", padding: "5rem 1.5rem" }}>
             <h2
@@ -384,7 +374,7 @@ export default function AtticInsulationPage() {
                 marginBottom: "1.2rem",
               }}
             >
-              Why R-49 Matters in North Carolina
+              Why Crawl Space Moisture Matters in North Carolina
             </h2>
             <p
               style={{
@@ -395,9 +385,9 @@ export default function AtticInsulationPage() {
                 marginBottom: "1rem",
               }}
             >
-              The U.S. Department of Energy recommends R-49 in the attic for North Carolina's
-              climate zone, roughly 16 to 18 inches of blown-in insulation. It's the level where
-              the ceiling stops being the weak point in the home's thermal envelope.
+              North Carolina summers are humid, and a vented crawl space with a bare dirt floor
+              pulls that moisture straight up from the ground. Without a barrier, it migrates into
+              the subfloor, the joists, and eventually the air your family breathes.
             </p>
             <p
               style={{
@@ -408,10 +398,9 @@ export default function AtticInsulationPage() {
                 marginBottom: "1rem",
               }}
             >
-              Most Charlotte-area homes built before 2010 were insulated to the code minimum of
-              their era, often R-19 to R-38, and blown-in material settles over the years. The
-              result shows up as a hot upstairs in summer, cold rooms in winter, and an HVAC
-              system that runs longer than it should.
+              Over time, persistent ground moisture leads to wood rot, soft floors, musty air, and
+              a heavier load on your HVAC as it works against the extra humidity. The damage builds
+              slowly, which is why most homeowners don't notice until it's well along.
             </p>
             <p
               style={{
@@ -421,10 +410,10 @@ export default function AtticInsulationPage() {
                 color: "rgba(250,248,245,0.82)",
               }}
             >
-              Bringing the attic up to R-49 and sealing the air bypasses first can reduce heating
-              and cooling energy use by up to about 15%, according to EPA ENERGY STAR. Every home
-              is different and results vary, but the attic is almost always where the largest,
-              fastest return is.
+              A heavy-duty vapor barrier across the ground keeps that moisture below the house where
+              it belongs. Paired with floor-joist batt, it makes the floors more comfortable and
+              helps the whole home hold conditioned air. Every home is different and results vary,
+              but moisture control is almost always the first thing a damp crawl space needs.
             </p>
           </div>
         </section>
@@ -439,7 +428,7 @@ export default function AtticInsulationPage() {
               marginBottom: "0.5rem",
             }}
           >
-            What Every Attic Install Includes
+            What Every Crawl Space Job Includes
           </h2>
           <p
             style={{
@@ -450,7 +439,7 @@ export default function AtticInsulationPage() {
               marginBottom: "2rem",
             }}
           >
-            Things most contractors charge extra for, or skip.
+            Professional-grade materials and an honest assessment, not a one-size quote.
           </p>
           <div style={{ borderTop: `1px solid ${C.border}` }}>
             {INCLUDED.map(([title, desc]) => (
@@ -502,7 +491,7 @@ export default function AtticInsulationPage() {
                 marginBottom: "0.5rem",
               }}
             >
-              Before and After: A Real Carolux Attic
+              Before and After: A Real Carolux Crawl Space
             </h2>
             <p
               style={{
@@ -524,8 +513,8 @@ export default function AtticInsulationPage() {
             >
               <figure style={{ margin: 0 }}>
                 <img
-                  src="/images/attic-before-2.png"
-                  alt="Charlotte attic before Carolux insulation, showing thin, settled coverage between the joists"
+                  src="/images/crawlspace-before.jpg"
+                  alt="Charlotte crawl space before Carolux, bare dirt floor exposed to ground moisture"
                   loading="lazy"
                   style={{
                     width: "100%",
@@ -544,14 +533,14 @@ export default function AtticInsulationPage() {
                     marginTop: "0.6rem",
                   }}
                 >
-                  <strong style={{ color: C.navy }}>Before:</strong> original insulation settled
-                  and uneven, well short of R-49.
+                  <strong style={{ color: C.navy }}>Before:</strong> bare dirt floor, exposed to
+                  ground moisture.
                 </figcaption>
               </figure>
               <figure style={{ margin: 0 }}>
                 <img
-                  src="/images/attic-after-2.png"
-                  alt="Charlotte attic after Carolux blown-in insulation installed to the R-49 target"
+                  src="/images/crawlspace-after.png"
+                  alt="Charlotte crawl space after Carolux heavy-duty vapor barrier installation"
                   loading="lazy"
                   style={{
                     width: "100%",
@@ -570,8 +559,8 @@ export default function AtticInsulationPage() {
                     marginTop: "0.6rem",
                   }}
                 >
-                  <strong style={{ color: C.navy }}>After:</strong> even blown-in coverage
-                  installed to the R-49 target.
+                  <strong style={{ color: C.navy }}>After:</strong> heavy-duty vapor barrier sealed
+                  across the crawl space.
                 </figcaption>
               </figure>
             </div>
@@ -588,7 +577,7 @@ export default function AtticInsulationPage() {
               marginBottom: "1rem",
             }}
           >
-            What an Attic Job Costs
+            What a Crawl Space Job Costs
           </h2>
           <p
             style={{
@@ -599,10 +588,10 @@ export default function AtticInsulationPage() {
               marginBottom: "1.2rem",
             }}
           >
-            Attic insulation in Charlotte is priced per square foot installed. The total depends
-            on your current R-value, the square footage, whether old material needs removal, and
-            how accessible the attic is. Rather than guess from square footage alone, we measure
-            on site and put a firm, all-in number in writing the same day.
+            Crawl space work in Charlotte is priced per square foot installed. The total depends on
+            the size of the space, how accessible it is, the current moisture conditions, and
+            whether old material needs removal. We measure on site and put a firm, all-in number in
+            writing the same day.
           </p>
           <a
             href="/cost-guide"
@@ -639,10 +628,10 @@ export default function AtticInsulationPage() {
                 marginBottom: "2rem",
               }}
             >
-              Attic Insulation in Charlotte: Common Questions
+              Charlotte Crawl Space Insulation: Common Questions
             </h2>
-            <div className="carolux-attic-faq" style={{ borderTop: `1px solid ${C.border}` }}>
-              {ATTIC_FAQ.map(({ q, a, learnMore }, i) => (
+            <div className="carolux-crawl-faq" style={{ borderTop: `1px solid ${C.border}` }}>
+              {CRAWL_FAQ.map(({ q, a, learnMore }, i) => (
                 <details key={i} open={i === 0} style={{ borderBottom: `1px solid ${C.border}` }}>
                   <summary
                     style={{
@@ -713,7 +702,7 @@ export default function AtticInsulationPage() {
           </div>
         </section>
 
-        {/* ── Service area / city mesh ─────────────────────────────────── */}
+        {/* ── Related + service-area / city mesh ───────────────────────── */}
         <section style={{ maxWidth: 760, margin: "0 auto", padding: "5rem 1.5rem" }}>
           <h2
             style={{
@@ -723,7 +712,7 @@ export default function AtticInsulationPage() {
               marginBottom: "1rem",
             }}
           >
-            Attic Insulation Across the Charlotte Area
+            Crawl Space Work Across the Charlotte Area
           </h2>
           <p
             style={{
@@ -731,18 +720,17 @@ export default function AtticInsulationPage() {
               fontSize: "clamp(0.95rem, 1.1vw, 1.03rem)",
               color: C.ink,
               lineHeight: 1.78,
-              marginBottom: "1.6rem",
+              marginBottom: "1.2rem",
             }}
           >
-            Carolux installs attic insulation throughout Charlotte and the surrounding North
-            Carolina communities. Both owners are on every job, wherever it is. Many homes pair it
-            with{" "}
-            <a href="/services/air-sealing" style={{ color: C.teal, textDecoration: "none", fontWeight: 500, borderBottom: `1px solid ${C.teal}` }}>
-              air sealing
+            Carolux installs crawl space vapor barriers and floor-joist batt throughout Charlotte
+            and the surrounding North Carolina communities. Many homes also benefit from{" "}
+            <a href="/services/attic-insulation" style={{ color: C.teal, textDecoration: "none", fontWeight: 500, borderBottom: `1px solid ${C.teal}` }}>
+              attic insulation
             </a>{" "}
             and{" "}
-            <a href="/services/crawl-space-insulation" style={{ color: C.teal, textDecoration: "none", fontWeight: 500, borderBottom: `1px solid ${C.teal}` }}>
-              crawl space work
+            <a href="/services/air-sealing" style={{ color: C.teal, textDecoration: "none", fontWeight: 500, borderBottom: `1px solid ${C.teal}` }}>
+              air sealing
             </a>
             , assessed in the same free visit.
           </p>
@@ -764,9 +752,7 @@ export default function AtticInsulationPage() {
                 >
                   {c.name}
                 </a>
-                {i < CITY_LINKS.length - 1 && (
-                  <span style={{ color: C.inkSoft }}> · </span>
-                )}
+                {i < CITY_LINKS.length - 1 && <span style={{ color: C.inkSoft }}> · </span>}
               </span>
             ))}
           </p>
@@ -784,7 +770,7 @@ export default function AtticInsulationPage() {
                 color: C.cream,
               }}
             >
-              Get Your Free Attic Assessment
+              Get Your Free Crawl Space Assessment
             </h2>
             <p
               style={{
@@ -796,9 +782,9 @@ export default function AtticInsulationPage() {
                 margin: "0 auto 2.2rem",
               }}
             >
-              Free energy audit for Charlotte-area homeowners. No commitment, just a clear picture
-              of what your attic needs and what it costs. An owner gets back to you within a few
-              hours.
+              Free assessment for Charlotte-area homeowners. We check moisture, drainage, and
+              access, then put a firm price in writing the same day. An owner gets back to you
+              within a few hours.
             </p>
             <a
               href={COMPANY.phoneHref}

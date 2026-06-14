@@ -90,6 +90,7 @@ export const SERVICES = [
       "We install fiberglass or cellulose blown-in insulation in your attic, filling every gap and cavity to reach the R-49 level recommended by the Department of Energy for North Carolina. On every full install, before we blow a single bag, we seal the air leaks (around light fixtures, plumbing penetrations, and top plates) because insulation without air sealing is money left on the table. Proper air sealing and insulation can save up to ~15% on heating and cooling (EPA ENERGY STAR), though every home is different.",
     cta: "Get a Free Attic Assessment",
     learnMore: "/services/attic-insulation",
+    learnMoreLabel: "Learn more about attic insulation",
   },
   {
     number: "02",
@@ -97,6 +98,8 @@ export const SERVICES = [
     description:
       "A wet or open crawl space drives up your energy bills, causes wood rot, and pulls humid air into your living space. We lay a heavy-duty, professional-grade vapor barrier across the crawl space floor to block ground moisture from rising into the structure, and fit fiberglass batt between the floor joists to hold conditioned air where it belongs. Every job includes a full inspection, drainage assessment, and attention to building code. No shortcuts, no surprises.",
     cta: "Get a Free Crawl Space Quote",
+    learnMore: "/services/crawl-space-insulation",
+    learnMoreLabel: "Learn more about crawl space insulation",
   },
   {
     number: "03",
@@ -104,6 +107,8 @@ export const SERVICES = [
     description:
       "Hand-fitted fiberglass batt set snug between your crawl space floor joists — no gaps, no slumping, no air slipping through. It steadies the floors above, softens sound between levels, and keeps conditioned air where it belongs. Tony and Juan cut and place every piece themselves.",
     cta: "Get a Batt Quote",
+    learnMore: "/services/crawl-space-insulation",
+    learnMoreLabel: "See crawl space insulation details",
   },
 ];
 
