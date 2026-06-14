@@ -89,6 +89,7 @@ export const SERVICES = [
     description:
       "We install fiberglass or cellulose blown-in insulation in your attic, filling every gap and cavity to reach the R-49 level recommended by the Department of Energy for North Carolina. On every full install, before we blow a single bag, we seal the air leaks (around light fixtures, plumbing penetrations, and top plates) because insulation without air sealing is money left on the table. Proper air sealing and insulation can save up to ~15% on heating and cooling (EPA ENERGY STAR), though every home is different.",
     cta: "Get a Free Attic Assessment",
+    learnMore: "/services/attic-insulation",
   },
   {
     number: "02",
