@@ -7,15 +7,21 @@
 ---
 
 ## 🟢 CURRENT HANDOFF — 2026-06-14 (latest). Read this first.
-**You are the `site-dev` session.** `main` = **`b812811`**, deploying to Vercel production. Wix domain
+**You are the `site-dev` session.** `main` = **`3c2ad26`**, deploying to Vercel production. Wix domain
 still untouched (the public domain only switches when DNS is repointed — do NOT touch DNS).
 
 > **Shipped 2026-06-15 (after the 06-14 handoff below):** `fc6fce7` truthfulness cluster (WI-002/003/
-> 006/009/027 site side) → `6751e25` privacy cluster (WI-007/044/057/011 edits 2-4) → **`b812811`
-> legal scaffolding (WI-056 savings copy → ENERGY STAR 11% Claim A · WI-047 `/terms-of-service` page +
-> footer/sitemap, §11/§12 `[ATTORNEY REVIEW]` before DNS · WI-045 Vercel Web Analytics cookieless +
-> privacy §6 disclosure — spine to bless §6 wording).** All on the Vercel URL, NOT the public apex.
-> Register rows for all of the above are flipped `done`. Authoritative open list = `RISK-REGISTER.md`.
+> 006/009/027 site side) → `6751e25` privacy cluster (WI-007/044/057/011 edits 2-4) → `b812811`
+> legal scaffolding (WI-056 savings copy → ENERGY STAR 11% Claim A · WI-047 `/terms-of-service` page ·
+> WI-045 Vercel Web Analytics cookieless + privacy §6) → **`3c2ad26` FTC disclaimer + SMS consent
+> (WI-059 FTC 16 CFR 460.19 savings disclaimer on all site savings claims · WI-041 SMS consent checkbox
+> on Contact + record in team@ email · WI-035 site "Workmanship Guarantee" · WI-001 stray EXIF photo
+> removed · WI-060/WI-055 site halves verified clean).** All on the Vercel URL, NOT the public apex.
+> **🛎️ Open flags for spine/owner:** (1) privacy §6 Vercel-Analytics wording → spine to bless (WI-045);
+> (2) guarantee number 2yr-site vs 1yr-contract → owner/tools reconcile (WI-035); (3) durable SMS-consent
+> store gated on WI-014; (4) NC-attorney glance on ToS §11/§12 + the SMS label before DNS cutover.
+> Cross rows (WI-059/060/041/035/001/055) stay `in-progress` — design halves done, tools/owner halves open.
+> Authoritative open list = `RISK-REGISTER.md`.
 
 ### 🧭 THE 3-SESSION MODEL (set 2026-06-14 — this replaced the old 5-worktree setup)
 Carolux runs THREE Claude Code sessions. Full detail in memory [[worktree-split]].
