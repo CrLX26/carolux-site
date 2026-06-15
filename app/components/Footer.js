@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { COMPANY, NAV_LINKS, SERVICE_LINKS } from "../lib/content";
 import { CITY_LINKS } from "../lib/cities";
 import { C } from "./sectionKit";
@@ -98,15 +98,8 @@ function FootLink({ href, children, external = false }) {
 }
 
 export default function Footer() {
-  const sealRef = useRef(null);
-  useEffect(() => {
-    if (!sealRef.current) return;
-    const s = document.createElement("script");
-    s.type = "text/javascript";
-    s.src = "https://rapidscansecure.com/siteseal/siteseal.js?code=65,AB7E334048042ACCFD2C00CC0BD1F8ACC7787ABA";
-    sealRef.current.appendChild(s);
-  }, []);
-
+  // WI-007: RapidScan site-seal script removed (spine ruling = REMOVE — undisclosed third-party
+  // data flow + perf/supply-chain risk + unsubstantiated "secure/verified" claim, negligible benefit).
   return (
     // pb on mobile clears the fixed Call/Estimate bar (Nav, ~60px); md+ has no bar.
     <footer className="pb-20 md:pb-0" style={{ background: C.navyDeep, color: C.cream }}>
@@ -227,7 +220,6 @@ export default function Footer() {
           &copy; {COMPANY.year} {COMPANY.name}. All rights reserved.
         </p>
         <FootLink href="/privacy-policy">Privacy Policy</FootLink>
-        <div ref={sealRef} style={{ display: "flex", alignItems: "center" }} />
       </div>
     </footer>
   );

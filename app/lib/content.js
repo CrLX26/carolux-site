@@ -411,12 +411,17 @@ export const SERVICE_AREA = {
   ],
 };
 
-// Privacy Policy — VERBATIM from Carolux_Privacy_Policy.pdf (Last Updated June 3, 2026).
-// Do not paraphrase legal text. Em dashes here are original to the document.
+// Privacy Policy. Base text from Carolux_Privacy_Policy.pdf; updated 2026-06-15 with the spine-
+// reconciled accuracy edits (§6 analytics WI-044 + §7 security WI-011 edit 2 + §8 deletion WI-011
+// edit 3) and the A2P carrier blocks 3/4 (WI-057, VERBATIM — do not paraphrase). The "Service
+// Providers" section (WI-011 edit 1) is intentionally HELD OUT until the A2P registration clears
+// (its "we share with vendors" language conflicts with the carrier's verbatim "no transfer" block
+// the validator is vetting). Keep this in sync with the live Wix policy. Sources of truth:
+// carolux-legal/PRIVACY-POLICY-EDITS-RECONCILED.md + A2P-POLICY-BLOCKS.md.
 export const PRIVACY_POLICY = {
   org: "Carolux Insulation LLC",
   title: "Privacy Policy & Messaging Terms and Conditions",
-  lastUpdated: "June 3, 2026",
+  lastUpdated: "June 15, 2026",
   sections: [
     {
       heading: "1. Who We Are",
@@ -459,19 +464,19 @@ export const PRIVACY_POLICY = {
     {
       heading: "6. Cookies and Analytics",
       body: [
-        "Our website uses cookies and analytics tools to understand how visitors use our site and to improve your experience. This may include analytics data collected by our website platform and Google Analytics. You can control cookie settings through your browser settings.",
+        "Our website does not currently use advertising or analytics cookies, and we do not use Google Analytics or third-party advertising trackers. We may use only the strictly necessary cookies required for the site to function. We do not currently respond to \"Do Not Track\" browser signals. If we add website analytics in the future, we will update this policy first and will prefer a privacy-respecting, cookieless tool.",
       ],
     },
     {
       heading: "7. Data Security",
       body: [
-        "We take reasonable steps to protect your information. We store customer information in password-protected systems and limit access to authorized personnel only.",
+        "We take reasonable steps to protect your information. Proposals and job-site photos are stored with our cloud providers and shared with you through unique, hard-to-guess web links. We limit access to your personal information to personnel who need it to perform their job functions.",
       ],
     },
     {
       heading: "8. Your Rights",
       body: [
-        "You may contact us at any time to request access to, correction of, or deletion of your personal information by emailing team@caroluxinsulation.com or calling (704) 228-2729.",
+        "You may contact us at any time to request access to or correction of your personal information. You may also request deletion of your personal information, which we will honor to the extent reasonably practicable and subject to any legal, warranty, or business records obligations. Email team@caroluxinsulation.com or call (704) 228-2729.",
       ],
     },
     {
@@ -486,6 +491,25 @@ export const PRIVACY_POLICY = {
       list: [
         "Customer data is not shared with 3rd parties for promotional or marketing purposes.",
         "Mobile opt-in and consent are never shared with anyone for any purpose. Any information sharing that may be mentioned elsewhere in this policy excludes mobile opt-in data.",
+      ],
+    },
+    {
+      // WI-057: carrier-required A2P block 3 (verbatim — do not paraphrase). Source of truth:
+      // carolux-legal/A2P-POLICY-BLOCKS.md.
+      heading: "Contact for Messaging Support",
+      body: [
+        "If you have questions about this messaging program, contact us at team@caroluxinsulation.com or call (704) 228-2729.",
+      ],
+    },
+    {
+      // WI-057: carrier-required A2P block 4 (verbatim — do not paraphrase). NOTE: the "safeguards
+      // to prevent unauthorized access" claim is only fully accurate once the proposal/photo storage
+      // hardening (WI-013, tools) is deployed — that must land before DNS cutover (WI-012). The
+      // Service-Providers disclosure (WI-011 edit 1) is intentionally HELD until A2P clears, so this
+      // "no transfer ... under any circumstances" absolute does not yet conflict with it.
+      heading: "Data Protection",
+      body: [
+        "We do not transfer consumer data to external organizations under any circumstances. We maintain administrative, technical, and physical safeguards to prevent unauthorized access, use, or disclosure of personal information. Mobile opt-in data is never shared with third parties for any purpose, including with consent.",
       ],
     },
   ],
