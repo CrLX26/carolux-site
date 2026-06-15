@@ -7,8 +7,15 @@
 ---
 
 ## 🟢 CURRENT HANDOFF — 2026-06-14 (latest). Read this first.
-**You are the `site-dev` session.** `main` = **`4dc394f`**, deploying to Vercel production. Wix domain
+**You are the `site-dev` session.** `main` = **`b812811`**, deploying to Vercel production. Wix domain
 still untouched (the public domain only switches when DNS is repointed — do NOT touch DNS).
+
+> **Shipped 2026-06-15 (after the 06-14 handoff below):** `fc6fce7` truthfulness cluster (WI-002/003/
+> 006/009/027 site side) → `6751e25` privacy cluster (WI-007/044/057/011 edits 2-4) → **`b812811`
+> legal scaffolding (WI-056 savings copy → ENERGY STAR 11% Claim A · WI-047 `/terms-of-service` page +
+> footer/sitemap, §11/§12 `[ATTORNEY REVIEW]` before DNS · WI-045 Vercel Web Analytics cookieless +
+> privacy §6 disclosure — spine to bless §6 wording).** All on the Vercel URL, NOT the public apex.
+> Register rows for all of the above are flipped `done`. Authoritative open list = `RISK-REGISTER.md`.
 
 ### 🧭 THE 3-SESSION MODEL (set 2026-06-14 — this replaced the old 5-worktree setup)
 Carolux runs THREE Claude Code sessions. Full detail in memory [[worktree-split]].
