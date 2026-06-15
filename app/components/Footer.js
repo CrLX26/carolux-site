@@ -219,7 +219,10 @@ export default function Footer() {
         >
           &copy; {COMPANY.year} {COMPANY.name}. All rights reserved.
         </p>
-        <FootLink href="/privacy-policy">Privacy Policy</FootLink>
+        <span style={{ display: "inline-flex", flexWrap: "wrap", gap: "10px 20px", alignItems: "center" }}>
+          <FootLink href="/privacy-policy">Privacy Policy</FootLink>
+          <FootLink href="/terms-of-service">Terms of Use</FootLink>
+        </span>
       </div>
     </footer>
   );

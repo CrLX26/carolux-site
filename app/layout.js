@@ -1,4 +1,5 @@
 import { Gloock, Manrope, Jost } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { schemaGraph } from "./lib/schema";
 
@@ -56,6 +57,9 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
         />
+        {/* WI-045: Vercel Web Analytics — cookieless, first-party, no consent banner needed
+            (spine ruling, carolux-legal/SITE-LEGAL-RULINGS.md). Disclosed in privacy policy §6. */}
+        <Analytics />
       </body>
     </html>
   );

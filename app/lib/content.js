@@ -268,9 +268,11 @@ export const OWNERS = {
   ],
 };
 
-// Savings estimator. NC Climate Zone 3 (Charlotte Piedmont): ENERGY STAR methodology
-// puts air sealing + insulation savings at ~8% of total energy use / ~14% of heating
-// and cooling. Rates below are applied to the TOTAL annual bill and match that range.
+// Savings estimator. Cited benchmark (WI-056) = EPA ENERGY STAR for combined air sealing +
+// insulation: an average of 15% on heating and cooling, ~11% of the total energy bill
+// (Claim A, verbatim — carolux-legal/SAVINGS-METHODOLOGY.md §3A). The calculator below
+// intentionally shows a CONSERVATIVE personalized range (rates < 11%, keyed to the home's
+// insulation state) that sits under that benchmark — defensible, never overstated.
 // Email capture POSTs to /api/lead (Resend). Status copy lives in `email*` below.
 export const ESTIMATOR = {
   eyebrow: "The Real Cost of an Open Attic",
@@ -304,7 +306,7 @@ export const ESTIMATOR = {
   billMin: 50,
   billMax: 600,
   source:
-    "Estimates use EPA ENERGY STAR and U.S. Department of Energy figures for North Carolina's climate, where air sealing and insulation save roughly 8% of a typical home's total energy use — about 14% of heating and cooling. Every home is different; actual savings vary with your HVAC, your usage, and the shape your house is in.",
+    "Air sealing and attic insulation can reduce heating and cooling costs by an average of 15%, or about 11% of your total energy bill, based on EPA ENERGY STAR data for combined air sealing and insulation improvements. Results vary by home, climate zone, and existing insulation level. The figure above is a conservative estimate based on the bill you entered.",
 };
 
 // The "three ways" module — sourced, reusable across Estimator, Stats, Services,
@@ -413,7 +415,8 @@ export const SERVICE_AREA = {
 
 // Privacy Policy. Base text from Carolux_Privacy_Policy.pdf; updated 2026-06-15 with the spine-
 // reconciled accuracy edits (§6 analytics WI-044 + §7 security WI-011 edit 2 + §8 deletion WI-011
-// edit 3) and the A2P carrier blocks 3/4 (WI-057, VERBATIM — do not paraphrase). The "Service
+// edit 3), the A2P carrier blocks 3/4 (WI-057, VERBATIM — do not paraphrase), and the §6 Vercel
+// Web Analytics disclosure (WI-045 — cookieless analytics now live; spine to bless wording). The "Service
 // Providers" section (WI-011 edit 1) is intentionally HELD OUT until the A2P registration clears
 // (its "we share with vendors" language conflicts with the carrier's verbatim "no transfer" block
 // the validator is vetting). Keep this in sync with the live Wix policy. Sources of truth:
@@ -462,9 +465,13 @@ export const PRIVACY_POLICY = {
       ],
     },
     {
+      // WI-045: discloses Vercel Web Analytics now that it is live (cookieless, the spine-endorsed
+      // tool — carolux-legal/SITE-LEGAL-RULINGS.md). This is the "policy-first" update §6 promised.
+      // ⚠️ legal/risk owns the exact wording of this document — flag for spine glance before DNS
+      // cutover (WI-012). Next.js-specific by design: the Wix policy has no Vercel Analytics.
       heading: "6. Cookies and Analytics",
       body: [
-        "Our website does not currently use advertising or analytics cookies, and we do not use Google Analytics or third-party advertising trackers. We may use only the strictly necessary cookies required for the site to function. We do not currently respond to \"Do Not Track\" browser signals. If we add website analytics in the future, we will update this policy first and will prefer a privacy-respecting, cookieless tool.",
+        "Our website does not use advertising cookies, third-party advertising trackers, or Google Analytics. We use Vercel Web Analytics, a privacy-respecting, cookieless tool that measures anonymized, aggregate site traffic without using cookies and without tracking you across other websites. Apart from any strictly necessary cookies required for the site to function, we do not place advertising or analytics cookies on your device. We do not currently respond to \"Do Not Track\" browser signals.",
       ],
     },
     {
@@ -526,4 +533,112 @@ export const PRIVACY_POLICY = {
   },
   disclaimer:
     "This policy does not constitute legal advice. Carolux Insulation LLC recommends periodic review by a qualified attorney.",
+};
+
+// Website Terms of Use (WI-047). NOT the Service Agreement — the signed Service Agreement v4 governs
+// the actual work. Server-rendered + indexable (like the privacy policy). Full text is the spine
+// ruling in carolux-legal/SITE-LEGAL-RULINGS.md (§1–§15). ⚠️ Sections 11 (Disclaimer) and 12
+// (Limitation of Liability) are flagged [ATTORNEY REVIEW] — an NC attorney must glance at both
+// BEFORE the public DNS cutover (WI-012). Deploying to the Vercel URL (not the apex) is fine now.
+// No arbitration / class-action waiver — deliberately omitted, consistent with the Service Agreement.
+export const TERMS_OF_SERVICE = {
+  org: "Carolux Insulation LLC",
+  title: "Terms of Use",
+  lastUpdated: "June 15, 2026",
+  sections: [
+    {
+      heading: "1. Acceptance of These Terms",
+      body: [
+        "By accessing or using caroluxinsulation.com (the \"Site\"), you agree to these Terms of Use. If you do not agree, please do not use the Site.",
+      ],
+    },
+    {
+      heading: "2. Who We Are",
+      body: [
+        "The Site is operated by Carolux Insulation LLC (\"Carolux,\" \"we,\" \"us\"), a North Carolina limited liability company serving the Charlotte and Gastonia, NC area. Contact: team@caroluxinsulation.com, (704) 228-2729.",
+      ],
+    },
+    {
+      heading: "3. The Site Is Informational; Estimates Are Not Binding Quotes",
+      body: [
+        "The Site provides general information about our insulation services and tools (including an online estimator) to help you understand options and approximate costs. Any prices, cost ranges, savings figures, or estimates shown on the Site or produced by the estimator are general estimates for planning only and are not a binding quote or an offer to contract. A binding price and scope are set only in a written Service Agreement signed by you and Carolux.",
+      ],
+    },
+    {
+      heading: "4. No Professional or Guaranteed-Results Advice",
+      body: [
+        "Energy-savings, cost, and R-value figures on the Site are general industry estimates (for example, from the U.S. Department of Energy or EPA ENERGY STAR), and actual results vary by home; we do not guarantee specific savings. The Site does not provide engineering, legal, tax, or other professional advice.",
+      ],
+    },
+    {
+      heading: "5. Acceptable Use",
+      body: [
+        "You agree not to misuse the Site, including attempting to disrupt it, access it or its data without authorization, scrape or harvest data, submit false information, or use it to violate any law. The estimator and contact forms are for genuine service inquiries.",
+      ],
+    },
+    {
+      heading: "6. Submissions and the Estimator",
+      body: [
+        "Information you submit through a form is a request, not a contract. You agree the information you provide is accurate. Our written estimates may be drafted with the help of AI and are reviewed by a person before they reach you; figures remain estimates (see Sections 3 and 4).",
+      ],
+    },
+    {
+      heading: "7. Intellectual Property",
+      body: [
+        "The Site's content, design, text, and logos are owned by Carolux or used with permission and are protected by law. You may not copy, reproduce, or reuse them without our written permission. Third-party product and manufacturer names are the trademarks of their respective owners and are used only to describe the products we install; their use does not imply any partnership or endorsement.",
+      ],
+    },
+    {
+      heading: "8. Third-Party Links and Services",
+      body: [
+        "The Site may link to or rely on third-party services we do not control. We are not responsible for third-party content, and your use of third-party services is governed by their terms.",
+      ],
+    },
+    {
+      heading: "9. Text Messages and Communications",
+      body: [
+        "If you opt in to text messages, your consent and our messaging practices are described at the point of opt-in and in our Privacy Policy. You can reply STOP to opt out at any time.",
+      ],
+    },
+    {
+      heading: "10. Privacy",
+      body: [
+        "Your use of the Site is also governed by our Privacy Policy, which explains what we collect and the service providers we work with.",
+      ],
+    },
+    {
+      // [ATTORNEY REVIEW] — NC attorney to glance before public DNS cutover (WI-012).
+      heading: "11. Disclaimer",
+      body: [
+        "The Site is provided \"as is\" and \"as available.\" To the fullest extent permitted by law, Carolux disclaims warranties that the Site will be uninterrupted, error-free, or secure. This does not limit any rights you have under North Carolina consumer-protection law, and it does not affect the warranties in your signed Service Agreement.",
+      ],
+    },
+    {
+      // [ATTORNEY REVIEW] — NC attorney to glance before public DNS cutover (WI-012).
+      heading: "12. Limitation of Liability",
+      body: [
+        "To the fullest extent permitted by North Carolina law, Carolux is not liable for indirect, incidental, or consequential damages arising from your use of the Site. Nothing in these Terms limits liability that cannot be limited by law (including liability for personal injury, gross negligence, or willful misconduct, or remedies under the North Carolina Unfair and Deceptive Trade Practices Act), and nothing here limits or replaces the terms of your signed Service Agreement.",
+      ],
+    },
+    {
+      heading: "13. Changes to These Terms",
+      body: [
+        "We may update these Terms; the \"last updated\" date on this page reflects the current version. Continued use of the Site after a change means you accept the updated Terms.",
+      ],
+    },
+    {
+      heading: "14. Governing Law and Venue",
+      body: [
+        "These Terms are governed by the laws of the State of North Carolina, and any dispute relating to the Site will be brought in the state or federal courts located in Gaston County, North Carolina.",
+      ],
+    },
+    {
+      heading: "15. Contact",
+      body: [
+        "Questions about these Terms: team@caroluxinsulation.com or (704) 228-2729.",
+      ],
+    },
+  ],
+  disclaimer:
+    "These Terms of Use govern your use of this website. They are separate from, and do not replace, the written Service Agreement that governs any insulation work Carolux performs for you.",
 };
