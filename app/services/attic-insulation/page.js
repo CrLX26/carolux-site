@@ -275,6 +275,20 @@ export default function AtticInsulationPage() {
               audit with a same-day written quote.
             </p>
           </div>
+          {/* WI-059: FTC R-Value Rule (16 CFR 460.19) — required verbatim disclaimer for savings claims. */}
+          <p
+            style={{
+              fontFamily: "var(--font-dm-sans)",
+              fontSize: "0.82rem",
+              fontStyle: "italic",
+              color: C.inkSoft,
+              lineHeight: 1.6,
+              margin: "0 0 1rem",
+            }}
+          >
+            Savings vary. Find out why in the seller&apos;s fact sheet on R-values. Higher R-values
+            mean greater insulating power.
+          </p>
           <p
             style={{
               fontFamily: "var(--font-dm-sans)",

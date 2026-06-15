@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { COMPANY, CONTACT } from "../lib/content";
+import { COMPANY, CONTACT, SMS_CONSENT } from "../lib/content";
 import {
   C,
   Reveal,
@@ -90,6 +90,7 @@ export default function Contact() {
   const [msgFocused, setMsgFocused] = useState(false);
   const [tried, setTried] = useState(false);
   const [hp, setHp] = useState(""); // honeypot
+  const [smsConsent, setSmsConsent] = useState(false); // WI-041: unchecked by default
   const lead = useLead();
 
   const nameErr = tried && !name.trim();
@@ -108,6 +109,12 @@ export default function Contact() {
       address: address.trim(),
       message: message.trim(),
       company: hp,
+      // WI-041: SMS/TCPA consent record. Submission is allowed either way; we send the
+      // boolean (incl. false) plus the exact versioned text shown, so team@ has the record.
+      smsConsent,
+      consentVersion: SMS_CONSENT.version,
+      consentScope: SMS_CONSENT.scope,
+      consentText: `${SMS_CONSENT.lead} ${SMS_CONSENT.body}`,
     });
   };
 
@@ -292,6 +299,42 @@ export default function Contact() {
                   }}
                 />
               </div>
+
+              {/* WI-041: SMS/TCPA consent — unchecked by default, never blocks submission. The
+                  visible text must stay identical to SMS_CONSENT.body (that string is the record). */}
+              <label
+                htmlFor="lead-sms-consent"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "10px",
+                  marginTop: "clamp(16px, 2.5vw, 22px)",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "12px",
+                  lineHeight: 1.55,
+                  color: "rgba(250,248,245,0.6)",
+                }}
+              >
+                <input
+                  id="lead-sms-consent"
+                  name="lead-sms-consent"
+                  type="checkbox"
+                  checked={smsConsent}
+                  onChange={(e) => setSmsConsent(e.target.checked)}
+                  disabled={lead.busy}
+                  style={{ width: "18px", height: "18px", marginTop: "1px", flex: "0 0 auto", accentColor: C.teal, cursor: "pointer" }}
+                />
+                <span>
+                  <strong style={{ color: "rgba(250,248,245,0.82)", fontWeight: 600 }}>{SMS_CONSENT.lead}</strong>{" "}
+                  I agree to receive text messages from Carolux Insulation LLC at the number I provided
+                  about my estimate, scheduling, and appointment updates. Consent is not a condition of any
+                  purchase. Message frequency varies; message &amp; data rates may apply. Reply STOP to opt
+                  out or HELP for help. See our{" "}
+                  <a href="/privacy-policy" style={{ color: C.teal, textDecoration: "underline" }}>Privacy Policy</a>.
+                </span>
+              </label>
 
               <button
                 type="submit"

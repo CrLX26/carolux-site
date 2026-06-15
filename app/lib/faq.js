@@ -40,7 +40,7 @@ export const FAQ = {
     {
       // Strengthened opener — "It can" is not extractable by AI systems.
       q: "Will new insulation actually lower my energy bills?",
-      a: "Yes — the EPA's ENERGY STAR program estimates that air sealing plus proper insulation reduces heating and cooling costs by up to 15%. Results vary by home; they depend on your HVAC efficiency, habits, and how under-insulated your attic is now. Carolux provides an honest projection during the free energy audit.",
+      a: "Yes. The EPA's ENERGY STAR program estimates that air sealing plus proper insulation reduces heating and cooling costs by up to 15%. Results vary by home; they depend on your HVAC efficiency, habits, and how under-insulated your attic is now. Carolux provides an honest projection during the free energy audit. Savings vary. Find out why in the seller's fact sheet on R-values. Higher R-values mean greater insulating power.",
     },
     {
       // Answer-first — "if...then yes" buried the answer.

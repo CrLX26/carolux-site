@@ -107,12 +107,28 @@ export async function POST(req) {
     const maybeEmail = clip(body?.email, 200).trim();
     replyTo = EMAIL_RE.test(maybeEmail) ? maybeEmail : undefined;
     subject = `Free estimate request: ${name}`;
+
+    // WI-041: TCPA consent record. Capture the boolean (incl. false), the exact versioned text shown,
+    // and server-side proof (timestamp, IP, user-agent, source URL). This email IS the record until a
+    // durable private store lands (gated on the WI-014 storage decision). COMPANY.smsEnabled stays
+    // false, so nothing is actually texted — this only captures consent ahead of an SMS launch.
+    const smsConsent = body?.smsConsent === true;
+    const ua = clip(req.headers.get("user-agent") || "", 400);
+    const sourceUrl = clip(req.headers.get("referer") || req.headers.get("origin") || "", 300);
+    const consentLine = smsConsent
+      ? `YES — opted in (${clip(body?.consentVersion, 40) || "unversioned"} · ${clip(body?.consentScope, 60) || "n/a"})`
+      : "No — not opted in (do not text)";
+    const consentProof = `${new Date().toISOString()} · IP ${ip} · ${sourceUrl || "no-referer"} · ${ua || "no-ua"}`;
+
     html = shell(
       "New estimate request",
       row("Name", name) +
         row("Phone", phone) +
         row("Address", clip(body?.address, 200)) +
-        row("Details", clip(body?.message, 4000)),
+        row("Details", clip(body?.message, 4000)) +
+        row("SMS consent", consentLine) +
+        (smsConsent ? row("Consent text", clip(body?.consentText, 1000)) : "") +
+        row("Consent proof", consentProof),
     );
   }
 

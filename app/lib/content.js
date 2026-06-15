@@ -77,10 +77,18 @@ export const STATS = [
   },
 ];
 
+// WI-059: FTC R-Value Rule (16 CFR 460.19) — REQUIRED verbatim disclaimer wherever the site makes a
+// quantified energy-savings claim (the "up to 15%" / "~11%" ENERGY STAR figures). Do NOT paraphrase.
+// Single-sourced so every savings claim carries the identical text. Carolux must also keep an R-value
+// fact sheet available (today /cost-guide carries the R-value facts; a dedicated fact sheet is an
+// owner/content follow-up). Spec: carolux-legal/NC-CONSULT-ANSWERS.md #12.
+export const FTC_SAVINGS_DISCLAIMER =
+  "Savings vary. Find out why in the seller's fact sheet on R-values. Higher R-values mean greater insulating power.";
+
 // Shown beneath the stat numbers. Keeps the brand promise that every figure is
-// an average, never a guarantee (legal + honesty rule).
+// an average, never a guarantee (legal + honesty rule) + the FTC 460.19 disclaimer (WI-059).
 export const STATS_CAVEAT =
-  "EPA/DOE averages, not a guarantee. Results vary by home.";
+  "EPA/DOE averages, not a guarantee. " + FTC_SAVINGS_DISCLAIMER;
 
 export const SERVICES = [
   {
@@ -137,9 +145,10 @@ export const WHY_US = [
   },
   {
     roman: "III",
-    title: "2-Year Guarantee",
+    // WI-035: "Workmanship Guarantee" (not a broad performance guarantee) per NC consult #14/#24.
+    title: "2-Year Workmanship Guarantee",
     description:
-      "We stand behind our work. If anything we've installed isn't performing the way it should within two years, we come back and make it right. No questions, no hassle.",
+      "We stand behind our workmanship. If something we installed isn't done right within two years, we come back and make it right. No questions, no hassle. This covers our work, not pre-existing conditions in your home.",
   },
   {
     roman: "IV",
@@ -306,7 +315,8 @@ export const ESTIMATOR = {
   billMin: 50,
   billMax: 600,
   source:
-    "Air sealing and attic insulation can reduce heating and cooling costs by an average of 15%, or about 11% of your total energy bill, based on EPA ENERGY STAR data for combined air sealing and insulation improvements. Results vary by home, climate zone, and existing insulation level. The figure above is a conservative estimate based on the bill you entered.",
+    "Air sealing and attic insulation can reduce heating and cooling costs by an average of 15%, or about 11% of your total energy bill, based on EPA ENERGY STAR data for combined air sealing and insulation improvements. Results vary by home, climate zone, and existing insulation level. The figure above is a conservative estimate based on the bill you entered. " +
+    FTC_SAVINGS_DISCLAIMER,
 };
 
 // The "three ways" module — sourced, reusable across Estimator, Stats, Services,
@@ -335,6 +345,22 @@ export const THREE_WAYS = [
 // Contact / final CTA. On submit the form POSTs to /api/lead (Resend) and the
 // lead emails to team@. Status copy lives in `form.*` below. The direct call/email
 // CTAs stay as an always-available fallback.
+// WI-041: SMS/TCPA consent. Versioned so the exact text shown IS the stored record. Spine ruling +
+// label verbatim: carolux-legal/SITE-LEGAL-RULINGS.md. Checkbox is unchecked by default (affirmative
+// opt-in); form submission is NEVER blocked on it. Covers TRANSACTIONAL / relationship texts only —
+// marketing texts would need a separate, distinct checkbox. `COMPANY.smsEnabled` stays false until SMS
+// actually launches; this only CAPTURES consent ahead of that. The durable authoritative record (a
+// private store) is gated on the WI-014 storage decision; until then consent is recorded in the
+// /api/lead email to team@ (server timestamp + IP + user-agent + exact text + version + scope).
+export const SMS_CONSENT = {
+  version: "sms-consent-v1",
+  date: "2026-06-14",
+  scope: "transactional+relationship",
+  lead: "Text me about my request.",
+  body:
+    "I agree to receive text messages from Carolux Insulation LLC at the number I provided about my estimate, scheduling, and appointment updates. Consent is not a condition of any purchase. Message frequency varies; message & data rates may apply. Reply STOP to opt out or HELP for help. See our Privacy Policy.",
+};
+
 export const CONTACT = {
   eyebrow: "Free, No-Obligation",
   title: "Get your free estimate",
