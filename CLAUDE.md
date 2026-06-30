@@ -7,8 +7,24 @@
 ---
 
 ## 🟢 CURRENT HANDOFF — 2026-06-14 (latest). Read this first.
-**You are the `site-dev` session.** `main` = **`3c2ad26`**, deploying to Vercel production. Wix domain
-still untouched (the public domain only switches when DNS is repointed — do NOT touch DNS).
+**You are the `site-dev` session.** `main` = **`0008cea`**, deploying to Vercel production.
+
+> **🚀 GO-LIVE IN PROGRESS — 2026-06-30 (owner-authorized, A2P approved).** The public DNS cutover (WI-012)
+> is greenlit for TODAY. **Design pre-reqs are DONE + deployed** (`0008cea`): **WI-011 Edit 1** (privacy
+> "Service Providers" / AI-processing disclosure, carrier block left verbatim — carve-out reconciles it) +
+> **WI-048** (ADA skip link + `id="main"` landmarks). **Remaining is OWNER/infra, not design:** (1) design
+> sign-off the live Vercel build; (2) owner turns OFF Vercel Deployment Protection; (3) Vercel → add apex
+> `caroluxinsulation.com`, copy DNS records; (4) Namecheap → point apex + `www` at them (lower TTL first);
+> (5) verify apex serves the Next.js site. **Fast-follows (NOT blockers):** NC-attorney glance on ToS §11/§12
+> + the Service-Providers wording; §545 carrier-block question flagged to spine (WI-011 note). Full sequence =
+> the WI-012 row in `RISK-REGISTER.md`.
+
+`main` deploys to the Vercel URL until step 4 repoints DNS — until then the public apex is still Wix.
+
+> **Shipped 2026-06-15→30 (after the 06-14 handoff below):** `fc6fce7` truthfulness · `6751e25` privacy
+> cluster · `b812811` legal scaffolding (WI-056/047/045) · `3c2ad26` FTC disclaimer + SMS consent
+> (WI-059/041/035/001) · **`0008cea` launch prep (WI-011 Edit 1 + WI-048).** Authoritative open list =
+> `RISK-REGISTER.md`.
 
 > **Shipped 2026-06-15 (after the 06-14 handoff below):** `fc6fce7` truthfulness cluster (WI-002/003/
 > 006/009/027 site side) → `6751e25` privacy cluster (WI-007/044/057/011 edits 2-4) → `b812811`
