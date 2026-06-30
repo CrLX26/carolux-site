@@ -207,7 +207,7 @@ export default function AtticInsulationPage() {
 
       <Nav />
 
-      <main style={{ backgroundColor: C.cream, color: C.navy }}>
+      <main id="main" style={{ backgroundColor: C.cream, color: C.navy }}>
 
         {/* ── Hero ─────────────────────────────────────────────────────── */}
         <section style={{ maxWidth: 760, margin: "0 auto", padding: "7rem 1.5rem 3rem" }}>

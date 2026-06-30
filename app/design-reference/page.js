@@ -622,7 +622,7 @@ export default function DesignReference() {
         </aside>
 
         {/* ── Main ──────────────────────────────────────────────────────────── */}
-        <main style={{ flex: 1, padding: "52px clamp(1.5rem, 4vw, 4rem)", maxWidth: "860px" }}>
+        <main id="main" style={{ flex: 1, padding: "52px clamp(1.5rem, 4vw, 4rem)", maxWidth: "860px" }}>
 
           {/* ════════════════════ COLORS ════════════════════ */}
           <section style={{ marginBottom: "80px" }}>

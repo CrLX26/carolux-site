@@ -450,7 +450,7 @@ export const SERVICE_AREA = {
 export const PRIVACY_POLICY = {
   org: "Carolux Insulation LLC",
   title: "Privacy Policy & Messaging Terms and Conditions",
-  lastUpdated: "June 15, 2026",
+  lastUpdated: "June 30, 2026",
   sections: [
     {
       heading: "1. Who We Are",
@@ -476,6 +476,30 @@ export const PRIVACY_POLICY = {
       ],
       after: [
         "We do not sell, rent, or share your personal information with third parties for marketing purposes.",
+      ],
+    },
+    {
+      // WI-011 Edit 1 (Service Providers / AI-processing disclosure) — ported VERBATIM from
+      // carolux-legal/PRIVACY-POLICY-EDITS-RECONCILED.md. A2P APPROVED 2026-06-30 → hold lifted.
+      // The carve-out (2nd body paragraph) defines processors as NOT "external organizations," which
+      // reconciles this with the verbatim carrier "Data Protection" block below so the two do not
+      // contradict (FTC §5 internal consistency). Carrier blocks left verbatim per that doc's rules.
+      // NC-attorney glance on this wording = recommended FAST-FOLLOW, not a launch blocker.
+      heading: "Service Providers",
+      body: [
+        "To operate our business and deliver the services you request, we share limited information with the categories of service providers below, who act on our behalf and process your information only as needed to perform services for Carolux Insulation LLC.",
+        "For clarity, these service providers are not \"external organizations\" or third parties to whom we sell or transfer your data; giving them information so they can perform services for us is not a sale or transfer of your personal information.",
+      ],
+      list: [
+        "AI processing: an AI provider (Anthropic) assists in drafting estimate narratives using your name, property address, year built, and job date only. No photos, phone number, or email are shared with the AI provider. Pricing is never set by AI; a person reviews every estimate before it is delivered.",
+        "Document storage: proposal documents and job-site photos are stored with a cloud storage provider (Vercel).",
+        "E-signature: service agreements are delivered and signed through an electronic signature platform (SignWell).",
+        "Email delivery: customer communications are sent via Resend and Google Workspace.",
+        "CRM: customer and job records are managed in Pipedrive.",
+        "Billing: payment records are maintained in Wave.",
+      ],
+      after: [
+        "Each provider is permitted to use your information only to provide services to Carolux Insulation LLC, as set out in our agreements with them.",
       ],
     },
     {

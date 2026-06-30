@@ -52,6 +52,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${manrope.variable} ${gloock.variable} ${jost.variable}`}>
       <body className="min-h-dvh flex flex-col">
+        {/* WI-048: skip link — first focusable element; targets each page's <main id="main">. */}
+        <a href="#main" className="skip-link">Skip to main content</a>
         {children}
         <script
           type="application/ld+json"

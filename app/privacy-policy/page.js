@@ -94,7 +94,7 @@ export default function PrivacyPolicyPage() {
   return (
     <>
       <Nav />
-      <main style={{ background: C.cream, minHeight: "100svh" }}>
+      <main id="main" style={{ background: C.cream, minHeight: "100svh" }}>
         <article
           style={{
             maxWidth: "760px",

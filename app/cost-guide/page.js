@@ -171,7 +171,7 @@ export default function CostGuidePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(costFaqSchema) }}
       />
       <Nav />
-      <main style={{ backgroundColor: C.cream, color: C.navy }}>
+      <main id="main" style={{ backgroundColor: C.cream, color: C.navy }}>
 
         {/* ── Hero ─────────────────────────────────────────────────────── */}
         <section
