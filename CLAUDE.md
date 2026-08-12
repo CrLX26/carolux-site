@@ -7,19 +7,26 @@
 ---
 
 ## 🟢 CURRENT HANDOFF — 2026-06-14 (latest). Read this first.
-**You are the `site-dev` session.** `main` = **`0008cea`**, deploying to Vercel production.
+**You are the `site-dev` session.** `main` = **`0008cea`** (HEAD `477fa2e`) — **LIVE in production.**
 
-> **🚀 GO-LIVE IN PROGRESS — 2026-06-30 (owner-authorized, A2P approved).** The public DNS cutover (WI-012)
-> is greenlit for TODAY. **Design pre-reqs are DONE + deployed** (`0008cea`): **WI-011 Edit 1** (privacy
-> "Service Providers" / AI-processing disclosure, carrier block left verbatim — carve-out reconciles it) +
-> **WI-048** (ADA skip link + `id="main"` landmarks). **Remaining is OWNER/infra, not design:** (1) design
-> sign-off the live Vercel build; (2) owner turns OFF Vercel Deployment Protection; (3) Vercel → add apex
-> `caroluxinsulation.com`, copy DNS records; (4) Namecheap → point apex + `www` at them (lower TTL first);
-> (5) verify apex serves the Next.js site. **Fast-follows (NOT blockers):** NC-attorney glance on ToS §11/§12
-> + the Service-Providers wording; §545 carrier-block question flagged to spine (WI-011 note). Full sequence =
-> the WI-012 row in `RISK-REGISTER.md`.
-
-`main` deploys to the Vercel URL until step 4 repoints DNS — until then the public apex is still Wix.
+> **✅ SITE IS LIVE — DNS cutover COMPLETE. Verified 2026-08-12 (do not trust older "go-live pending / apex
+> still Wix" wording anywhere in this file — that was the pre-cutover snapshot).** `caroluxinsulation.com`
+> now serves THIS Next.js/Vercel site; Wix is retired. Live checks 2026-08-12: apex `200`, no Vercel
+> Deployment Protection, footer Privacy + ToS present, `/api/lead` alive + `RESEND_API_KEY` present in prod
+> (missing-fields → `400` not `503`). **The repo has been idle since 2026-06-30** (last commit `477fa2e`);
+> the launch shipped at the 06-30 cutover and nothing has deployed since.
+>
+> **⚠️ LIVE-BUSINESS REALITY 2026-08-12 (owner):** live ~2 months, **1 estimate call, ZERO revenue.** Owner
+> is spinning up **Meta ads** (separate session) → the site's lead/comms path MUST be bulletproof before ad
+> spend. **Comms audit 2026-08-12 (site-dev):** plumbing is CONFIGURED — form/estimator → `/api/lead` →
+> Resend → team@; route alive, key present, site publicly reachable. **BUT delivery to team@ is UNCONFIRMED**
+> (Resend returns `200`=accepted, which is NOT proof of inbox delivery). A labeled test lead was POSTed to
+> prod 2026-08-12 (`200 {ok:true}`) — **owner must confirm it landed in team@ (inbox AND spam).**
+> **Top suspects for low leads → prioritize:** (1) **email deliverability** — likely `caroluxinsulation.com`
+> SPF/DKIM/DMARC not set for Resend, so Google Workspace spam-files mail "sent as itself" (owner/Resend-
+> dashboard fix); (2) **no auto-reply to the homeowner** (WI-002 Option B, still deferred) — a paid lead gets
+> zero confirmation; build this before ads; (3) single notification channel (team@ only). **NEXT SITE WORK is
+> conversion/comms, not new features.** SMS "Text Us" stays off (`smsEnabled=false`).
 
 > **Shipped 2026-06-15→30 (after the 06-14 handoff below):** `fc6fce7` truthfulness · `6751e25` privacy
 > cluster · `b812811` legal scaffolding (WI-056/047/045) · `3c2ad26` FTC disclaimer + SMS consent

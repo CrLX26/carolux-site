@@ -8,12 +8,15 @@
 
 ## WHAT THIS PROJECT IS
 
-The new Carolux Insulation marketing website — a Next.js App Router single-page
-site built to replace the current Wix site at caroluxinsulation.com. Currently
-hosted at a Vercel preview URL (not yet connected to the real domain).
+The Carolux Insulation marketing website — a Next.js App Router site serving the **LIVE public
+domain caroluxinsulation.com** (Vercel). It replaced the old Wix site at the DNS cutover
+(~2026-06-30; verified live 2026-08-12). Wix is retired.
 
-The current live site at caroluxinsulation.com is on Wix and must NOT be touched.
-The new site goes live only when explicitly authorised — do NOT touch DNS until then.
+⚠️ **This is now a LIVE, revenue-critical site.** `main` auto-deploys to production on every push —
+each merge is a real customer-facing change. Verify before pushing; Vercel instant-rollback is the
+safety net. (Historical "apex still on Wix / do not touch DNS" notes elsewhere in this file predate
+the cutover — ignore them.) As of 2026-08-12: ~2 months live, only 1 estimate, no revenue yet; the
+open priority is the lead/comms path (email deliverability + a homeowner auto-reply), not new features.
 
 **Design reference page (internal only — not linked in nav):**
 https://carolux-site-g0kscstwv-carolux.vercel.app/design-reference
