@@ -19,14 +19,17 @@
 > **⚠️ LIVE-BUSINESS REALITY 2026-08-12 (owner):** live ~2 months, **1 estimate call, ZERO revenue.** Owner
 > is spinning up **Meta ads** (separate session) → the site's lead/comms path MUST be bulletproof before ad
 > spend. **Comms audit 2026-08-12 (site-dev):** plumbing is CONFIGURED — form/estimator → `/api/lead` →
-> Resend → team@; route alive, key present, site publicly reachable. **BUT delivery to team@ is UNCONFIRMED**
-> (Resend returns `200`=accepted, which is NOT proof of inbox delivery). A labeled test lead was POSTed to
-> prod 2026-08-12 (`200 {ok:true}`) — **owner must confirm it landed in team@ (inbox AND spam).**
-> **Top suspects for low leads → prioritize:** (1) **email deliverability** — likely `caroluxinsulation.com`
-> SPF/DKIM/DMARC not set for Resend, so Google Workspace spam-files mail "sent as itself" (owner/Resend-
-> dashboard fix); (2) **no auto-reply to the homeowner** (WI-002 Option B, still deferred) — a paid lead gets
-> zero confirmation; build this before ads; (3) single notification channel (team@ only). **NEXT SITE WORK is
-> conversion/comms, not new features.** SMS "Text Us" stays off (`smsEnabled=false`).
+> Resend → team@; route alive, key present, site publicly reachable. **✅ COMMS VERIFIED 2026-08-12:** the
+> labeled test lead LANDED in team@ **inbox** (owner-confirmed). Live DNS is healthy — Resend **DKIM present
+> & aligned** (`resend._domainkey.caroluxinsulation.com`), a `send.` subdomain with SES SPF, DMARC `p=none`,
+> MX=Google Workspace. **Leads DO reach the owners; the form is not the problem.** **✅ Homeowner auto-reply
+> SHIPPED (`f5f3d19`):** `/api/lead` now sends an instant branded confirmation to the LEAD's own inbox
+> (estimator always has email; contact only if an email field is added) — best-effort/try-catch, never fails
+> the lead; brand-safe copy. **→ THE REAL PROBLEM IS DEMAND, NOT COMMS:** 1 estimate in 2 months = a traffic/
+> conversion problem. Growth levers = Meta ads (owner, separate session) + **Google Business Profile + real
+> reviews** (WI-003 still placeholder) + the SEO content engine. Optional polish: root SPF TXT
+> (`v=spf1 include:_spf.google.com include:amazonses.com ~all`). SMS stays off (`smsEnabled=false`); contact
+> form is phone-first by design (no email field — deliberate, low friction).
 
 > **Shipped 2026-06-15→30 (after the 06-14 handoff below):** `fc6fce7` truthfulness · `6751e25` privacy
 > cluster · `b812811` legal scaffolding (WI-056/047/045) · `3c2ad26` FTC disclaimer + SMS consent
