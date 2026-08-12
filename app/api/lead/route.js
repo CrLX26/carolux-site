@@ -52,6 +52,28 @@ function shell(kicker, rows) {
   </div>`;
 }
 
+// Homeowner auto-reply — an instant, honest confirmation to the LEAD's own inbox so a
+// visitor (especially from paid ads) knows the form worked. Brand-safe copy: owner-operated,
+// "insured" (never "licensed"), 2-year workmanship guarantee, no exact-$ savings promises.
+function autoReplyHtml(name) {
+  const hi = name ? `Hi ${esc(name)},` : "Hi there,";
+  return `<div style="background:#faf8f5;padding:28px;">
+    <div style="max-width:520px;margin:0 auto;background:#fefdfb;border:1px solid #e7e3da;border-radius:6px;overflow:hidden;">
+      <div style="background:#1a2b3c;padding:20px 28px;">
+        <span style="color:#faf8f5;font:600 18px/1.2 Georgia,serif;letter-spacing:.04em;">Carolux Insulation</span>
+      </div>
+      <div style="padding:28px;color:#1a2b3c;font:400 15px/1.7 Arial,sans-serif;">
+        <p style="margin:0 0 16px;">${hi}</p>
+        <p style="margin:0 0 16px;">Thanks for reaching out. We've got your request, and an owner (Tony or Juan) will get back to you personally, usually within a few hours and no later than the next business day, to set up your free in-home assessment.</p>
+        <p style="margin:0 0 16px;">Want to talk sooner? Call or text us anytime at <a href="tel:+17042282729" style="color:#4a90a4;text-decoration:none;">(704) 228-2729</a>.</p>
+        <p style="margin:0 0 20px;color:#6b7a86;font-size:13px;line-height:1.6;">Owner-operated and fully insured, with a 2-year workmanship guarantee on every job. Serving the greater Charlotte and Gastonia area.</p>
+        <p style="margin:0;color:#6b7a86;font-size:13px;">— The Carolux Insulation team</p>
+      </div>
+    </div>
+    <p style="max-width:520px;margin:12px auto 0;color:#a8a29a;font:400 11px/1.5 Arial,sans-serif;text-align:center;">Automated confirmation that we received your request. Just reply to this email to reach us.</p>
+  </div>`;
+}
+
 export async function POST(req) {
   if (!process.env.RESEND_API_KEY) {
     return Response.json({ error: "Email service is not configured yet." }, { status: 503 });
@@ -82,7 +104,7 @@ export async function POST(req) {
   }
 
   const type = body?.type === "estimate" ? "estimate" : "contact";
-  let subject, html, replyTo;
+  let subject, html, replyTo, leadName = "";
 
   if (type === "estimate") {
     const email = clip(body?.email, 200).trim();
@@ -106,6 +128,7 @@ export async function POST(req) {
     }
     const maybeEmail = clip(body?.email, 200).trim();
     replyTo = EMAIL_RE.test(maybeEmail) ? maybeEmail : undefined;
+    leadName = name;
     subject = `Free estimate request: ${name}`;
 
     // WI-041: TCPA consent record. Capture the boolean (incl. false), the exact versioned text shown,
@@ -143,6 +166,20 @@ export async function POST(req) {
     });
     if (error) {
       return Response.json({ error: "We couldn't send that right now." }, { status: 502 });
+    }
+    // Homeowner auto-reply — instant confirmation to the lead's own inbox. Best-effort:
+    // an auto-reply failure must NOT fail the lead (which already reached team@). Fires
+    // whenever we have the lead's email (always for estimate; contact only if provided).
+    if (replyTo) {
+      try {
+        await resend.emails.send({
+          from: FROM,
+          to: replyTo,
+          subject: "We got your request — Carolux Insulation",
+          html: autoReplyHtml(leadName),
+          replyTo: TO,
+        });
+      } catch { /* team@ notification already succeeded; ignore */ }
     }
     return Response.json({ ok: true });
   } catch {
