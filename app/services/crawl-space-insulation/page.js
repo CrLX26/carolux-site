@@ -9,15 +9,8 @@ const BASE_URL = "https://caroluxinsulation.com";
 // byline in the hero. Bump when the page copy is revised.
 const LAST_UPDATED = "2026-06-13";
 
-// Charlotte metro centroid — same coordinates the other pages use.
-const GEO = { latitude: 35.2271, longitude: -80.8431 };
-
-const SAME_AS = [
-  COMPANY.instagram,
-  COMPANY.facebook,
-  COMPANY.googleBusiness,
-  COMPANY.nextdoor,
-];
+// NOTE (WI-072): geo/sameAs for the business entity live ONLY in
+// app/lib/schema.js (the single `#business` node). Don't re-declare them here.
 
 export const metadata = {
   title: "Charlotte Crawl Space Insulation & Vapor Barrier | Carolux",
@@ -68,23 +61,10 @@ const CRAWL_FAQ = [
 const schema = {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "LocalBusiness",
-      "@id": `${BASE_URL}/#business`,
-      name: "Carolux Insulation LLC",
-      url: `${BASE_URL}/services/crawl-space-insulation`,
-      telephone: "+17042282729",
-      email: "team@caroluxinsulation.com",
-      image: `${BASE_URL}/images/house-thermal4.webp`,
-      priceRange: "$$",
-      areaServed: CITY_LINKS.map((c) => ({ "@type": "City", name: `${c.name}, NC` })),
-      founder: [
-        { "@type": "Person", name: "Tony Kermis" },
-        { "@type": "Person", name: "Juan Gonzalez" },
-      ],
-      geo: { "@type": "GeoCoordinates", ...GEO },
-      sameAs: SAME_AS,
-    },
+    // WI-072: the LocalBusiness entity is declared ONCE on the homepage
+    // (app/lib/schema.js `#business`). Re-asserting it here with a different
+    // `url` made several pages claim the same @id with conflicting properties.
+    // This page now only REFERENCES it via `provider` below.
     {
       "@type": "Service",
       name: "Crawl Space Insulation & Vapor Barrier in Charlotte, NC",

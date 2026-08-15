@@ -9,18 +9,8 @@ const BASE_URL = "https://caroluxinsulation.com";
 // byline in the hero. Bump when the page copy is revised.
 const LAST_UPDATED = "2026-06-13";
 
-// Charlotte metro centroid — anchors the LocalBusiness entity geographically,
-// same coordinates the city pages use.
-const GEO = { latitude: 35.2271, longitude: -80.8431 };
-
-// Authoritative off-site profiles — mirrors layout.js `sameAs` so this page's
-// business node ties back to the same identities.
-const SAME_AS = [
-  COMPANY.instagram,
-  COMPANY.facebook,
-  COMPANY.googleBusiness,
-  COMPANY.nextdoor,
-];
+// NOTE (WI-072): geo/sameAs for the business entity live ONLY in
+// app/lib/schema.js (the single `#business` node). Don't re-declare them here.
 
 export const metadata = {
   title: "Charlotte Attic Insulation, Blown-In to R-49 | Carolux",
@@ -74,25 +64,10 @@ const ATTIC_FAQ = [
 const schema = {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      // Same @id as layout.js / the city pages so Google reads this as the same
-      // entity, not a duplicate listing.
-      "@type": "LocalBusiness",
-      "@id": `${BASE_URL}/#business`,
-      name: "Carolux Insulation LLC",
-      url: `${BASE_URL}/services/attic-insulation`,
-      telephone: "+17042282729",
-      email: "team@caroluxinsulation.com",
-      image: `${BASE_URL}/images/house-thermal4.webp`,
-      priceRange: "$$",
-      areaServed: CITY_LINKS.map((c) => ({ "@type": "City", name: `${c.name}, NC` })),
-      founder: [
-        { "@type": "Person", name: "Tony Kermis" },
-        { "@type": "Person", name: "Juan Gonzalez" },
-      ],
-      geo: { "@type": "GeoCoordinates", ...GEO },
-      sameAs: SAME_AS,
-    },
+    // WI-072: the LocalBusiness entity is declared ONCE on the homepage
+    // (app/lib/schema.js `#business`). Re-asserting it here with a different
+    // `url` made several pages claim the same @id with conflicting properties.
+    // This page now only REFERENCES it via `provider` below.
     {
       "@type": "Service",
       name: "Attic Insulation in Charlotte, NC",

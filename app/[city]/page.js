@@ -10,18 +10,9 @@ const BASE_URL = "https://caroluxinsulation.com";
 // "Last updated" byline in the hero. Bump when city copy is revised.
 const LAST_UPDATED = "2026-06-12";
 
-// Charlotte metro centroid — every service-area city sits within ~40mi.
-// Anchors the LocalBusiness entity geographically on each city page.
-const GEO = { latitude: 35.2271, longitude: -80.8431 };
-
-// Authoritative off-site profiles — mirrors layout.js `sameAs` so every
-// city-page entity node ties back to the same identities.
-const SAME_AS = [
-  COMPANY.instagram,
-  COMPANY.facebook,
-  COMPANY.googleBusiness,
-  COMPANY.nextdoor,
-];
+// NOTE (WI-072): geo/sameAs/address for the business entity live ONLY in
+// app/lib/schema.js (the single `#business` node on the homepage). Don't
+// re-declare them here — city pages reference that entity by `@id` instead.
 
 const C = {
   cream: "#faf8f5",
@@ -60,31 +51,12 @@ function buildSchema(slug, city) {
   return {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        // City-page LocalBusiness node — same @id as layout.js so Google
-        // recognises this as the same entity, not a duplicate listing.
-        "@type": "LocalBusiness",
-        "@id": `${BASE_URL}/#business`,
-        name: "Carolux Insulation LLC",
-        url: `${BASE_URL}/${slug}`,
-        telephone: "+17042282729",
-        email: "team@caroluxinsulation.com",
-        image: `${BASE_URL}/images/house-thermal4.webp`,
-        priceRange: "$$",
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: city.displayName,
-          addressRegion: "NC",
-          addressCountry: "US",
-        },
-        areaServed: [{ "@type": "City", name: `${city.displayName}, NC` }],
-        founder: [
-          { "@type": "Person", name: "Tony Kermis" },
-          { "@type": "Person", name: "Juan Gonzalez" },
-        ],
-        geo: { "@type": "GeoCoordinates", ...GEO },
-        sameAs: SAME_AS,
-      },
+      // WI-072: the LocalBusiness entity is declared ONCE, on the homepage
+      // (app/lib/schema.js `#business`). City pages must NOT re-assert it: 14 pages
+      // emitting the same `@id` with a different addressLocality/url made Google
+      // merge one entity holding 13 conflicting localities. City pages now only
+      // REFERENCE the entity via `provider: {"@id": …/#business"}` below, and keep
+      // their genuinely page-specific nodes (Service / FAQPage / BreadcrumbList).
       {
         "@type": "Service",
         name: `Attic Insulation in ${city.displayName}, NC`,

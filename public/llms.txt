@@ -23,8 +23,22 @@ Charlotte, Huntersville, Pineville, Matthews, Mint Hill, Concord, Harrisburg, Be
 ## Key Pages
 
 - [Home](https://caroluxinsulation.com/): services, four-step process, savings estimator, before/after work, and service area
+- [Services](https://caroluxinsulation.com/services): index of all three services with who each one is for, plus the service area and cost guide
 - [Insulation Cost Guide](https://caroluxinsulation.com/cost-guide): full Charlotte market price ranges for attic blown-in, crawl space, and vapor barrier insulation — what drives cost, why in-person assessment is required, and what every Carolux job includes
 - [Privacy Policy](https://caroluxinsulation.com/privacy-policy)
+- [Terms of Use](https://caroluxinsulation.com/terms-of-service): website terms; estimates shown on the site are planning figures, not a binding quote
+
+## Service Pages
+
+Dedicated pages for each service, with process, cost factors, and FAQs:
+
+- [Attic Insulation](https://caroluxinsulation.com/services/attic-insulation): blown-in fiberglass or cellulose to the DOE-recommended R-49 for North Carolina, with air sealing included on every full install
+- [Crawl Space Insulation & Vapor Barrier](https://caroluxinsulation.com/services/crawl-space-insulation): ground vapor barrier plus fiberglass batt between the floor joists, with a moisture and drainage inspection (Carolux does not do crawl space encapsulation)
+- [Attic Air Sealing](https://caroluxinsulation.com/services/air-sealing): sealing air bypasses around recessed lights, the attic hatch, top plates, and penetrations before insulation goes in
+
+## Booking
+
+Free in-home estimates can be booked directly at https://cal.com/carolux-xzktck/free-in-home-estimate, or by calling (704) 228-2729. The estimate is an in-person visit; the written price is delivered the same day.
 
 ## Service Area Pages
 
