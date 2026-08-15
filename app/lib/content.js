@@ -37,7 +37,7 @@ export const HERO = {
   headline: ["The owners", "do the work.", "Every job."],
   subheading:
     "Two owners on every job. Tony's a former NC home inspector; Juan runs the schedule and the follow-through. The person who reads your attic is the one who fixes it.",
-  primaryCta: "Book Your Free Estimate",
+  primaryCta: "Book Your Free In-Home Estimate",
   secondaryCta: "Call (704) 228-2729",
   secondaryPre:  "Your attic could be",
   secondaryMain: "Quietly Costing You",
@@ -302,7 +302,7 @@ export const ESTIMATOR = {
   ],
   resultLabel: "Estimated annual savings",
   tenYearLabel: "Roughly this much back over 10 years",
-  cta: "Book Your Free Estimate",
+  cta: "Book Your Free In-Home Estimate",
   // WI-002: honest copy. The form notifies the owners (team@); it does NOT send the
   // homeowner an automated email. (Option B = build an outbound homeowner email — still open.)
   emailPrompt:
@@ -366,12 +366,12 @@ export const SMS_CONSENT = {
 
 export const CONTACT = {
   eyebrow: "Free, No-Obligation",
-  title: "Get your free estimate",
+  title: "Book your free in-home estimate",
   intro:
-    "Tell us what's going on up top and an owner gets back to you, usually within a few hours. No call centers, no runaround.",
+    "Tell us about your attic or crawl space and an owner gets back to you, usually within a few hours. No call centers, no runaround.",
   // Online self-book lane (cal.com → Juan's Google Calendar). Shown above the form as the fast path.
   bookLead: "Know when you're free? Pick your own time, no phone tag.",
-  bookCta: "Book my free estimate online",
+  bookCta: "Book my free in-home estimate",
   formOr: "Or send your info and an owner will reach out",
   form: {
     nameLabel: "Name",
@@ -380,7 +380,7 @@ export const CONTACT = {
     phonePlaceholder: "(704) 000-0000",
     addressLabel: "Property address",
     addressPlaceholder: "Street, city",
-    messageLabel: "What's going on up there?",
+    messageLabel: "What's going on at your place?",
     messagePlaceholder: "Hot upstairs, high bills, drafty rooms, crawl space moisture...",
     submit: "Send My Request",
     submitting: "Sending",
