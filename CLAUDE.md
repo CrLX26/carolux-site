@@ -40,6 +40,20 @@
 > no third-party script/cookies — privacy-clean). Copy reframed to **"free in-home estimate"** (you book a
 > VISIT; the estimate is delivered in-home) and the contact form is now crawl-space-inclusive (no "up top").
 > ⚠️ If the receptionist session ever changes the cal.com event/slug, update `COMPANY.bookingUrl` to match.
+>
+> **✅ SEO/HYGIENE SWEEP 2026-08-13 (`38696d8` + `ffa1aad`) — deferred "B-group" cleared:**
+> **WI-072** duplicate-`@id` schema fix (was on 13 city pages **AND** all 3 service pages = 16 pages, wider
+> than the row said): the LocalBusiness entity is now declared **ONCE** in `app/lib/schema.js` (root layout
+> injects it site-wide); other pages reference it via `provider: {"@id": …/#business"}` only. **Never
+> re-declare that node on a page** — that was the bug. · **WI-073** `sitemap.js` uses a `MODIFIED` map of real
+> dates, not `new Date()` (bump the entry when a page actually changes). · **WI-074(b)** new indexable
+> **`/services`** hub. · **WI-004** `llms.txt` refreshed (3 service pages + hub + ToS + booking URL). ·
+> **WI-008** tracked `public/` **76MB → 12MB** (15 verified-dead assets; `house-thermal4.webp` IS in use —
+> kept). `.gitignore` hardened against `*.af`/`*OLD.*`/`* - Copy.*`/`*-master.mp4`.
+> **⚠️ NEVER `git add -A public/`** — it once staged a 245MB master and GitHub's 100MB hook rejected the push.
+> **Still open from that group:** **WI-074(a)** `openingHoursSpecification` (needs the owner's REAL hours —
+> do NOT fabricate) and **WI-017** Next.js/postcss CVE upgrade (breaking; deliberately NOT done unattended on
+> a live revenue site — schedule it with the owner).
 
 > **Shipped 2026-06-15→30 (after the 06-14 handoff below):** `fc6fce7` truthfulness · `6751e25` privacy
 > cluster · `b812811` legal scaffolding (WI-056/047/045) · `3c2ad26` FTC disclaimer + SMS consent
