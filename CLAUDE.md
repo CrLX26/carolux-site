@@ -30,6 +30,16 @@
 > reviews** (WI-003 still placeholder) + the SEO content engine. Optional polish: root SPF TXT
 > (`v=spf1 include:_spf.google.com include:amazonses.com ~all`). SMS stays off (`smsEnabled=false`); contact
 > form is phone-first by design (no email field — deliberate, low friction).
+>
+> **✅ ONLINE BOOKING LANE ADDED 2026-08-13 (`ca2f3cc` + copy `ca1fc45`):** the site now has a self-serve
+> booking lane → `COMPANY.bookingUrl` = `https://cal.com/carolux-xzktck/free-in-home-estimate` (single source
+> in `content.js`). It opens the cal.com "Free In-Home Estimate" (60min, in-person) which lands in Juan's
+> Google Calendar — **the SAME calendar the AI receptionist "Caroline" (Retell, in the separate `AI-Front-Desk`
+> project) books into**, so web + phone bookings converge and can't double-book. Wired into: the Contact
+> "Book my free in-home estimate" button (above the form) + the Estimator result CTA (both `target="_blank"`,
+> no third-party script/cookies — privacy-clean). Copy reframed to **"free in-home estimate"** (you book a
+> VISIT; the estimate is delivered in-home) and the contact form is now crawl-space-inclusive (no "up top").
+> ⚠️ If the receptionist session ever changes the cal.com event/slug, update `COMPANY.bookingUrl` to match.
 
 > **Shipped 2026-06-15→30 (after the 06-14 handoff below):** `fc6fce7` truthfulness · `6751e25` privacy
 > cluster · `b812811` legal scaffolding (WI-056/047/045) · `3c2ad26` FTC disclaimer + SMS consent
