@@ -81,7 +81,7 @@ function Field({ id, label, type = "text", value, onChange, placeholder, require
 }
 
 export default function Contact() {
-  const { eyebrow, title, intro, form, reassurance, serving } = CONTACT;
+  const { eyebrow, title, intro, bookLead, bookCta, formOr, form, reassurance, serving } = CONTACT;
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -185,7 +185,38 @@ export default function Contact() {
           {intro}
         </Reveal>
 
-        {/* ── Lead form (primary action) → /api/lead (Resend) ───── */}
+        {/* ── Online self-book (cal.com → Juan's Google Calendar) — the fast, no-phone-tag path ───── */}
+        <Reveal delay={0.18} style={{ margin: "clamp(28px, 4vh, 40px) auto 0", maxWidth: "560px" }}>
+          <p
+            style={{
+              margin: "0 0 clamp(14px, 2vh, 18px)",
+              fontFamily: "var(--font-dm-sans)",
+              fontSize: "clamp(0.95rem, 1.15vw, 1.05rem)",
+              lineHeight: 1.6,
+              color: "rgba(250,248,245,0.82)",
+            }}
+          >
+            {bookLead}
+          </p>
+          <Cta href={COMPANY.bookingUrl} target="_blank" rel="noopener noreferrer" variant="solid" ringColor={C.cream}>
+            {bookCta}
+          </Cta>
+          <p
+            style={{
+              margin: "clamp(22px, 3.5vh, 32px) 0 0",
+              fontFamily: "var(--font-label)",
+              fontSize: "12px",
+              fontWeight: 500,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "rgba(250,248,245,0.4)",
+            }}
+          >
+            {formOr}
+          </p>
+        </Reveal>
+
+        {/* ── Lead form (secondary action) → /api/lead (Resend) ───── */}
         <Reveal delay={0.2} style={{ maxWidth: "560px", margin: "clamp(32px, 5vh, 48px) auto 0" }}>
           {lead.status === "success" ? (
             <SuccessReveal

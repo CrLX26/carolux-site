@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ESTIMATOR, THREE_WAYS } from "../lib/content";
+import { ESTIMATOR, THREE_WAYS, COMPANY } from "../lib/content";
 import { C, Reveal, SectionHeading, Cta, sectionStyle, containerStyle } from "./sectionKit";
 import { useLead, Spinner, ErrorNote, SuccessReveal, CheckBadge, Honeypot, focusRing, ERR_ON_LIGHT } from "./leadForm";
 
@@ -573,7 +573,7 @@ export default function Estimator() {
 
               {hasResult && (
                 <div style={{ marginTop: "clamp(22px, 3vh, 30px)" }}>
-                  <Cta href="#contact" variant="solid" ringColor={C.cream}>
+                  <Cta href={COMPANY.bookingUrl} target="_blank" rel="noopener noreferrer" variant="solid" ringColor={C.cream}>
                     {cta}
                   </Cta>
                 </div>

@@ -4,6 +4,9 @@ export const COMPANY = {
   phoneHref: "tel:7042282729",
   email: "team@caroluxinsulation.com",
   emailHref: "mailto:team@caroluxinsulation.com",
+  // Online self-book lane → the SAME cal.com event the AI receptionist (Caroline) books into
+  // → Juan's Google Calendar. "Free In-Home Estimate", 60 min, in-person at the customer's address.
+  bookingUrl: "https://cal.com/carolux-xzktck/free-in-home-estimate",
   // SMS: the texting number IS the main line (correct). The "Text Us" button stays
   // HIDDEN until the business's SMS compliance registration (A2P/10DLC) is approved.
   // When approved, set smsEnabled: true — that's the only change needed to reveal it.
@@ -366,6 +369,10 @@ export const CONTACT = {
   title: "Get your free estimate",
   intro:
     "Tell us what's going on up top and an owner gets back to you, usually within a few hours. No call centers, no runaround.",
+  // Online self-book lane (cal.com → Juan's Google Calendar). Shown above the form as the fast path.
+  bookLead: "Know when you're free? Pick your own time, no phone tag.",
+  bookCta: "Book my free estimate online",
+  formOr: "Or send your info and an owner will reach out",
   form: {
     nameLabel: "Name",
     namePlaceholder: "Your name",
