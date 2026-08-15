@@ -42,4 +42,14 @@ next-env.d.ts
 
 .vercel
 .shots/
+.shots-dev.log
 _masters/
+
+# Local working media that must NEVER enter the repo (a stray `git add -A` once
+# staged a 245MB .af source file and GitHub's 100MB pre-receive hook rejected the
+# push). Masters/originals live in _masters/ or outside the repo; only optimized,
+# actually-referenced assets get committed to public/.
+*.af
+*OLD.*
+* - Copy.*
+*-master.mp4
