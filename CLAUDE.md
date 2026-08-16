@@ -51,9 +51,16 @@
 > **WI-008** tracked `public/` **76MB → 12MB** (15 verified-dead assets; `house-thermal4.webp` IS in use —
 > kept). `.gitignore` hardened against `*.af`/`*OLD.*`/`* - Copy.*`/`*-master.mp4`.
 > **⚠️ NEVER `git add -A public/`** — it once staged a 245MB master and GitHub's 100MB hook rejected the push.
-> **Still open from that group:** **WI-074(a)** `openingHoursSpecification` (needs the owner's REAL hours —
-> do NOT fabricate) and **WI-017** Next.js/postcss CVE upgrade (breaking; deliberately NOT done unattended on
-> a live revenue site — schedule it with the owner).
+> **WI-074(a) hours ✅ DONE 2026-08-13 (`1909757`)** — owner-confirmed `openingHoursSpecification` =
+> **Mon–Sat 07:00–18:00**, Sun closed. 🧭 **Two-layer model — do not collapse it:** schema hours = when the
+> BUSINESS is reachable/operating; **cal.com** holds the narrower in-home ASSESSMENT window (Mon–Thu
+> 6am–12pm, Fri–Sat 6am–6pm). Google renders "Open now / Closed" from the schema field, so putting the
+> assessment window there would show "Closed" every weekday afternoon = a live conversion leak.
+> Competitor baseline (verified Aug 2026): Charlotte insulation specialists are Mon–Fri 8–5, **closed
+> weekends** → Saturday + 6am starts are a real differentiator, now stated in the Contact booking copy.
+> **cal.com was also fixed that day** (was 9am-start = ~12 lost bookable hrs/week).
+> **Still open:** **WI-017** Next.js/postcss CVE upgrade (breaking; deliberately NOT done unattended on a
+> live revenue site — schedule it with the owner).
 
 > **Shipped 2026-06-15→30 (after the 06-14 handoff below):** `fc6fce7` truthfulness · `6751e25` privacy
 > cluster · `b812811` legal scaffolding (WI-056/047/045) · `3c2ad26` FTC disclaimer + SMS consent
