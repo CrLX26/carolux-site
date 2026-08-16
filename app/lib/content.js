@@ -370,7 +370,12 @@ export const CONTACT = {
   intro:
     "Tell us about your attic or crawl space and an owner gets back to you, usually within a few hours. No call centers, no runaround.",
   // Online self-book lane (cal.com → Juan's Google Calendar). Shown above the form as the fast path.
-  bookLead: "Know when you're free? Pick your own time, no phone tag.",
+  // Saturday + early-morning slots are a real differentiator (verified 2026-08-13: the
+  // Charlotte insulation specialists run Mon-Fri 8-5 and close weekends). Stated as OUR
+  // availability, never as a competitor knock — brand rule + the WI-027 comparative-claim
+  // precedent. Keep in sync with the cal.com availability.
+  bookLead:
+    "Know when you're free? Pick your own time, no phone tag. Saturdays and early mornings from 6am are open.",
   bookCta: "Book my free in-home estimate",
   formOr: "Or send your info and an owner will reach out",
   form: {

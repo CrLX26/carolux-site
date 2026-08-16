@@ -63,8 +63,29 @@ const business = {
     COMPANY.googleBusiness,
     COMPANY.nextdoor,
   ],
+  // WI-074(a): real business hours, owner-confirmed 2026-08-13. These are the hours the
+  // BUSINESS is reachable and operating (the line is answered and installs run with advance
+  // notice) — NOT the narrower in-home ASSESSMENT window, which lives in cal.com only.
+  // That distinction matters: Google renders "Open now / Closed" from this field, so
+  // encoding the assessment window here would show Carolux "Closed" every weekday
+  // afternoon while competitors show "Open". Market baseline is Mon-Fri 8-5, closed
+  // weekends (ABS, Koala, Austin, Standard Insulating), so Mon-SAT 7-6 is a genuine edge.
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ],
+      opens: "07:00",
+      closes: "18:00",
+    },
+  ],
   // TODO (legitimate signals to add later — do NOT fabricate):
-  //  - openingHoursSpecification: add real business hours
   //  - aggregateRating / review: only with genuine Google reviews
   //    (self-applied star ratings violate Google's policy and risk penalties)
 };
