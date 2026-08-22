@@ -59,6 +59,15 @@
 > Competitor baseline (verified Aug 2026): Charlotte insulation specialists are Mon–Fri 8–5, **closed
 > weekends** → Saturday + 6am starts are a real differentiator, now stated in the Contact booking copy.
 > **cal.com was also fixed that day** (was 9am-start = ~12 lost bookable hrs/week).
+> **✅ SEO TIER-1 2026-08-13 (`6036bbe`):** (1) **CWV** — the attic + crawl-space service pages rendered raw
+> `<img>` (shipping 464/459/630KB source PNGs on the pages paid traffic lands on); both now use `next/image`
+> with intrinsic dimensions + `sizes`. **Measured live: 464KB → 49KB at 640w = 90% smaller.** The homepage
+> already used `next/image`. **Rule: never add a raw `<img>` for a photo — use `next/image`.** (2) `/services`
+> **opengraph-image** added (hub had no social card). (3) **GSC hook**: set
+> `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` in the Vercel env + redeploy to verify Search Console — no code
+> change; left `undefined` so no bogus tag ships. **⚠️ GSC IS STILL NOT VERIFIED — the site has been live
+> since ~06-30 with zero index/query visibility. Highest-value open SEO item.**
+>
 > **Still open:** **WI-017** Next.js/postcss CVE upgrade (breaking; deliberately NOT done unattended on a
 > live revenue site — schedule it with the owner).
 
