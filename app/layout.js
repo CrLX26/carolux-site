@@ -37,6 +37,14 @@ export const metadata = {
   alternates: {
     canonical: "/",
   },
+  // Google Search Console verification. Set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in the
+  // Vercel project env (the string from GSC's "HTML tag" method — just the content value,
+  // not the whole tag) and redeploy; no code change needed. Left undefined until then so
+  // we never emit a bogus verification tag. DNS TXT verification via Namecheap also works
+  // and needs nothing here.
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
   openGraph: {
     title: "Carolux Insulation | Charlotte's Insulation Experts",
     description:

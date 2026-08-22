@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Nav from "../../components/Nav";
 import Footer from "../../components/Footer";
 import { COMPANY } from "../../lib/content";
@@ -492,8 +493,11 @@ export default function CrawlSpaceInsulationPage() {
               }}
             >
               <figure style={{ margin: 0 }}>
-                <img
+                <Image
                   src="/images/crawlspace-before.jpg"
+                  width={1600}
+                  height={1200}
+                  sizes="(max-width: 900px) 92vw, 460px"
                   alt="Charlotte crawl space before Carolux, bare dirt floor exposed to ground moisture"
                   loading="lazy"
                   style={{
@@ -518,8 +522,11 @@ export default function CrawlSpaceInsulationPage() {
                 </figcaption>
               </figure>
               <figure style={{ margin: 0 }}>
-                <img
+                <Image
                   src="/images/crawlspace-after.png"
+                  width={1448}
+                  height={1086}
+                  sizes="(max-width: 900px) 92vw, 460px"
                   alt="Charlotte crawl space after Carolux heavy-duty vapor barrier installation"
                   loading="lazy"
                   style={{

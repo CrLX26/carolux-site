@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Nav from "../../components/Nav";
 import Footer from "../../components/Footer";
 import { COMPANY } from "../../lib/content";
@@ -512,8 +513,11 @@ export default function AtticInsulationPage() {
               }}
             >
               <figure style={{ margin: 0 }}>
-                <img
+                <Image
                   src="/images/attic-before-2.png"
+                  width={1536}
+                  height={1152}
+                  sizes="(max-width: 900px) 92vw, 460px"
                   alt="Charlotte attic before Carolux insulation, showing thin, settled coverage between the joists"
                   loading="lazy"
                   style={{
@@ -538,8 +542,11 @@ export default function AtticInsulationPage() {
                 </figcaption>
               </figure>
               <figure style={{ margin: 0 }}>
-                <img
+                <Image
                   src="/images/attic-after-2.png"
+                  width={1536}
+                  height={1152}
+                  sizes="(max-width: 900px) 92vw, 460px"
                   alt="Charlotte attic after Carolux blown-in insulation installed to the R-49 target"
                   loading="lazy"
                   style={{
