@@ -68,6 +68,26 @@
 > change; left `undefined` so no bogus tag ships. **⚠️ GSC IS STILL NOT VERIFIED — the site has been live
 > since ~06-30 with zero index/query visibility. Highest-value open SEO item.**
 >
+> **✅ /builders PAGE SHIPPED 2026-09-08 (`e64aa39`)** — implements `BUILDER-PAGE-BRIEF.md` (marketing lane,
+> now committed in-repo as the spec). Unblocks a live builder enquiry for 3 homes in Gastonia. **New
+> construction has always been the objective; retrofit is the on-ramp** — the site read as attic-retrofit only.
+> Pitch = **RESNET Grade I install + documentation**, NOT owner-operation/comfort/savings. Server component,
+> local tokens (sectionKit is `"use client"`). **Claim discipline verified in the RENDERED page:** zero
+> "licens*", "mold", cellulose, or $ figures in visible copy; no completed-new-build / production-builder /
+> self-certification claims; the only %s are the 2% Grade I tolerance + 5% RESNET penalty (specs, not savings —
+> keeps WI-059 out of scope). **Do not add cellulose or spray-foam-as-offering to this page.**
+> Slug `/builders`; NOT in nav (Nav.js locked + brief says unlinked is defensible with 0 completed new-build
+> jobs); cross-linked from `/services`, in `sitemap.js` + `llms.txt`; CTA = mailto with prefilled scope
+> (no file upload, does NOT reuse the homeowner form/estimator).
+>
+> **🔴 FOUND 2026-09-08 — SITE-WIDE CONVERSION BUG, NEEDS OWNER OK (Nav.js is LOCKED):** the nav CTA uses
+> `href="#contact"` (Nav.js:118 desktop, :276 mobile drawer, :336 sticky mobile bar), but `id="contact"`
+> only exists on the HOMEPAGE (`Contact.js:123`, rendered by `app/page.js`). Live-verified: `/` has it,
+> `/builders` `/services` `/cost-guide` `/charlotte-insulation` all return 0. **So on all ~18 subpages the
+> primary "Free Estimate" CTA does nothing when clicked** — worst on mobile, where the sticky bottom bar is
+> always visible. **One-line fix: `#contact` → `/#contact`** (works from any page, still works on the
+> homepage). Blocked only by the Nav.js lock.
+>
 > **Still open:** **WI-017** Next.js/postcss CVE upgrade (breaking; deliberately NOT done unattended on a
 > live revenue site — schedule it with the owner).
 
@@ -619,6 +639,13 @@ See "Mobile Fixes Applied" table above.
 - Never the word **"mold"** (use "biological growth" / wood rot / moisture).
 - Never promise **specific dollar savings** — percentages + source (DOE/ENERGY STAR), "results vary."
 - **2-year** guarantee everywhere (not 1-year). No negative competitor mentions.
+- ⚠️ **The site understates what Carolux installs — update planned.** The only material they do
+  **not** install is **spray foam**. They also do **cellulose** (blown + dense-pack), **mineral wool /
+  Rockwool** batt, **rigid foam board** (rim/band joists), **exterior wall batt** and **interior sound
+  batt** — none of which the site currently mentions. Do not write copy implying attic-and-crawl only.
+  Spray foam stays a hard never. *(Recorded Aug 26 2026.)*
+- **Strategic objective is new construction**; retrofit is the on-ramp. Copy should not paint Carolux
+  as retrofit-only.
 
 ---
 
