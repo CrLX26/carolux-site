@@ -342,6 +342,20 @@ export default function ServicesHubPage() {
               </a>
               .
             </p>
+            <p
+              style={{
+                margin: "0.5rem 0 0",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "0.9rem",
+                color: C.inkSoft,
+              }}
+            >
+              Building new?{" "}
+              <a href="/builders" style={{ color: C.teal, textDecoration: "none" }}>
+                Insulation for builders and new construction
+              </a>
+              .
+            </p>
           </section>
 
           <p

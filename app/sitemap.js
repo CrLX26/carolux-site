@@ -11,6 +11,7 @@ const MODIFIED = {
   home: "2026-08-13",        // booking lane + in-home-estimate copy
   costGuide: "2026-06-15",   // WI-009 title fix
   services: "2026-08-13",    // new /services hub
+  builders: "2026-09-08",    // builder / new-construction page
   servicePages: "2026-06-13", // app/services/*/page.js LAST_UPDATED
   cities: "2026-06-12",      // app/[city]/page.js LAST_UPDATED
   privacy: "2026-06-30",     // PRIVACY_POLICY.lastUpdated (Service Providers port)
@@ -50,6 +51,14 @@ export default function sitemap() {
       priority: 0.8,
     },
     ...servicePages,
+    {
+      // Builder-facing. Indexable and in the sitemap, but deliberately NOT linked from
+      // the main nav (homeowner-facing, and Nav.js is locked) — see BUILDER-PAGE-BRIEF.md.
+      url: `${BASE_URL}/builders`,
+      lastModified: MODIFIED.builders,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     {
       url: `${BASE_URL}/cost-guide`,
       lastModified: MODIFIED.costGuide,
