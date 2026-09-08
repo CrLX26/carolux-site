@@ -80,13 +80,19 @@
 > jobs); cross-linked from `/services`, in `sitemap.js` + `llms.txt`; CTA = mailto with prefilled scope
 > (no file upload, does NOT reuse the homeowner form/estimator).
 >
-> **🔴 FOUND 2026-09-08 — SITE-WIDE CONVERSION BUG, NEEDS OWNER OK (Nav.js is LOCKED):** the nav CTA uses
-> `href="#contact"` (Nav.js:118 desktop, :276 mobile drawer, :336 sticky mobile bar), but `id="contact"`
-> only exists on the HOMEPAGE (`Contact.js:123`, rendered by `app/page.js`). Live-verified: `/` has it,
-> `/builders` `/services` `/cost-guide` `/charlotte-insulation` all return 0. **So on all ~18 subpages the
-> primary "Free Estimate" CTA does nothing when clicked** — worst on mobile, where the sticky bottom bar is
-> always visible. **One-line fix: `#contact` → `/#contact`** (works from any page, still works on the
-> homepage). Blocked only by the Nav.js lock.
+> **🟡 NAV CTA — ALREADY OWNED BY ANOTHER SESSION (2026-09-08). DO NOT TOUCH Nav.js.** While building
+> `/builders` I found the nav CTA points to `href="#contact"` (Nav.js:118 desktop, :276 drawer, :336 sticky
+> mobile bar) but `id="contact"` exists ONLY on the homepage (`Contact.js:123`) — live-verified `/` has it,
+> `/builders` `/services` `/cost-guide` `/charlotte-insulation` return 0, so the primary CTA dead-ends on
+> ~18 subpages. **Owner confirmed another session is actively rewiring those buttons to cal.com**, which
+> fixes this as a side effect (an external URL works from any page). **site-dev stands down — do not edit
+> Nav.js, and do not "fix" this independently.**
+>
+> **🛎️ COORDINATION for whoever wires the nav → cal.com:** use the existing single source
+> **`COMPANY.bookingUrl`** in `app/lib/content.js` (currently
+> `https://cal.com/carolux-xzktck/free-in-home-estimate`). The Contact section button and the Estimator
+> result CTA already read from it. Hardcoding the cal.com URL in Nav.js would create a second place to
+> update whenever the receptionist session changes the event/slug, and they WILL drift.
 >
 > **Still open:** **WI-017** Next.js/postcss CVE upgrade (breaking; deliberately NOT done unattended on a
 > live revenue site — schedule it with the owner).
