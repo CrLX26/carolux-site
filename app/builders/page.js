@@ -25,6 +25,12 @@ const LAST_UPDATED = "2026-09-08";
 //  · NO specific Duke incentive dollar amounts (unverified against programme terms).
 //  · NO ENERGY STAR partnership/affiliation implied — referencing the standard is fine.
 //  · NO per-sqft pricing. NO competitor negativity (incl. a builder's current sub).
+//  · FUTURE-PROOFED FOR HIRING (owner instruction 2026-09-08): never say "no crew", "no
+//    subcontractors", or "the owners do the work themselves" HERE. Carolux intends to expand,
+//    and a builder reading a capacity cap is a reason to pass on a multi-home job. The durable
+//    claim is AGENTS.md's canonical one: an owner, or a directly supervised team member, on
+//    every job. Sell SUPERVISION, not headcount. (Register WI-050 tracks the same advertised-
+//    vs-actual exposure sitewide; the rest of the site was deliberately left unchanged.)
 //  · Deliberately NO energy-savings percentages here, which also keeps the FTC R-value
 //    disclaimer (WI-059) out of scope for this page. Keep it that way.
 // Server component + local brand tokens, matching the other server pages (sectionKit is
@@ -377,11 +383,11 @@ export default function BuildersPage() {
           <section style={section}>
             <h2 style={h2}>Who is actually on your site</h2>
             <p style={{ ...para, marginBottom: 0 }}>
-              Both owners, on every job. Tony Kermis and Juan Gonzalez do the work themselves, with
-              no crew paid by the house and no subcontractors. Tony is a former North Carolina home
-              inspector, which is where the documentation habit comes from.
-              That labour model is the reason a Grade I standard is achievable on a schedule, not a
-              slogan.
+              An owner is on site for every job, start to finish, and signs off on the work before
+              it is covered. Tony Kermis is a former North Carolina home inspector, which is where
+              the documentation habit comes from. Grade I is a function of supervision and care
+              rather than headcount, and keeping an owner on the work is how we hold that standard
+              on a builder&apos;s schedule.
             </p>
           </section>
 
