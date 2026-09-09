@@ -12,8 +12,23 @@ const LAST_UPDATED = "2026-09-08";
 // strategy source: carolux-marketing/NEW-CONSTRUCTION.md.
 //
 // This page is deliberately NOT under /services/ — those are homeowner-facing and
-// conversion-shaped for a different reader. The builder pitch is Grade I installation
-// and the documentation that proves it, NOT owner-operation/comfort/energy savings.
+// conversion-shaped for a different reader.
+//
+// 🔬 ORDERING IS RESEARCH-DRIVEN (4-agent study, 2026-09-08). Do not "improve" it back:
+//  · Builders do NOT find subs via websites (referral / job-site sighting / permit records).
+//    This page's job is CREDIBILITY CONFIRMATION after a referral, not lead generation.
+//  · Schedule reliability + capacity is the #1 builder screening criterion (sub delays rank
+//    as the top builder challenge in industry surveys). It leads, and it was missing entirely
+//    from the first draft.
+//  · Insurance/COI/W-9 is a PREQUALIFICATION GATE, screened before quality is even read.
+//    It sits high on purpose; it used to be buried at position 8.
+//  · NC energy code does NOT require or inspect RESNET grading — a Grade III install passes
+//    code inspection every time. Only ~10-25% (est.) of Charlotte-metro starts touch a
+//    HERS/ENERGY STAR/Duke pathway. So the Grade I argument is GATED to that audience and
+//    placed after trust/capacity, instead of opening the page as it did in the first draft.
+//  · Photo documentation before drywall was claimed by ZERO of 9 competitor insulation
+//    builder-pages reviewed. It is the genuine white space, and it is the answer to the real
+//    objection ("can I trust a small shop with what I can't see after drywall").
 //
 // ⚠️ HARD CLAIM LIMITS (from the brief — do not relax without the owner):
 //  · NEVER "licensed" in any tense. Tony = FORMER NC home inspector; company = INSURED.
@@ -37,14 +52,14 @@ const LAST_UPDATED = "2026-09-08";
 // "use client" and would cost the indexability).
 
 export const metadata = {
-  title: "New Construction Insulation for Builders | Carolux",
+  title: "Insulation for Builders | New Construction | Carolux",
   description:
-    "Insulation for new single-family construction in Gaston and Mecklenburg County, NC. We install to the RESNET Grade I standard and photograph every bay before drywall.",
+    "New-construction insulation in Gaston and Mecklenburg County, NC. Written scope within two business days, insured with COI and W-9 on request, and every bay photographed before drywall.",
   alternates: { canonical: "/builders" },
   openGraph: {
-    title: "New Construction Insulation for Builders | Carolux",
+    title: "Insulation for Builders | New Construction | Carolux",
     description:
-      "Insulation for new construction in Gaston and Mecklenburg County, NC. Installed to the RESNET Grade I standard and documented before drywall.",
+      "New-construction insulation in Gaston and Mecklenburg County, NC. Scope in two business days, insured, and every bay photographed before drywall.",
     url: `${BASE_URL}/builders`,
     siteName: "Carolux Insulation",
     locale: "en_US",
@@ -95,6 +110,14 @@ const APPLICATIONS = [
   "Air sealing",
 ];
 
+// Prequalification facts, kept scannable because builders screen these as a checklist.
+const PAPERWORK = [
+  ["Insurance", "General liability. Certificate of insurance sent on request, or with the bid."],
+  ["W-9", "On request, or with the bid."],
+  ["Entity", "Carolux Insulation LLC, a North Carolina limited liability company."],
+  ["Guarantee", "2-year workmanship guarantee on the work we perform."],
+];
+
 const schema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -105,7 +128,7 @@ const schema = {
       name: "New Construction Insulation for Builders",
       serviceType: "New Construction Insulation",
       description:
-        "Insulation for new single-family residential construction in Gaston and Mecklenburg County, NC. Fiberglass batt and blown-in, mineral wool, rigid board at rim and band joists, vapor barrier, and air sealing. Installed to the RESNET Grade I standard and photographed before drywall.",
+        "Insulation for new single-family residential construction in Gaston and Mecklenburg County, NC. Fiberglass batt and blown-in, mineral wool, rigid board at rim and band joists, vapor barrier, and air sealing. Written scope within two business days, insured, and every bay photographed before drywall.",
       url: `${BASE_URL}/builders`,
       provider: { "@id": `${BASE_URL}/#business` },
       audience: { "@type": "Audience", audienceType: "Home builders and general contractors" },
@@ -178,12 +201,12 @@ export default function BuildersPage() {
       />
       <Nav />
       <main id="main" style={{ backgroundColor: C.cream, color: C.navy }}>
-        {/* ── Hero. Scale is the point: the H1 runs ~4x body, not 2x. ─────────── */}
+        {/* ── Hero. Leads on schedule + proof, the two things a builder screens on. ── */}
         <article
           style={{
             maxWidth: "900px",
             margin: "0 auto",
-            padding: "clamp(112px, 16vh, 168px) clamp(24px, 6vw, 48px) clamp(48px, 7vh, 76px)",
+            padding: "clamp(112px, 16vh, 168px) clamp(24px, 6vw, 48px) clamp(40px, 6vh, 64px)",
           }}
         >
           <p
@@ -214,7 +237,7 @@ export default function BuildersPage() {
               color: C.navy,
             }}
           >
-            Insulation that passes the rater the first time
+            On your schedule, and documented before drywall
           </h1>
           <p
             style={{
@@ -226,21 +249,104 @@ export default function BuildersPage() {
               color: C.inkSoft,
             }}
           >
-            New single-family construction across Gaston and Mecklenburg County. We install to the
-            RESNET Grade I standard and photograph every bay before drywall, so your rater and your
-            inspector both get what they need without a second trip.
+            Insulation for new single-family construction across Gaston and Mecklenburg County.
+            Plans in, written scope back within two business days, and a photo set of every bay
+            before it disappears behind drywall.
           </p>
         </article>
 
-        {/* ── FOCAL MOMENT. Full-bleed navy: the grade as an argument, not prose. ── */}
-        <section style={band}>
+        {/* ── 1. Schedule and capacity. The first thing a builder screens for. ────── */}
+        <article
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            padding: "0 clamp(24px, 6vw, 48px)",
+          }}
+        >
+          <section style={{ borderTop: `1.5px solid ${C.navy}`, paddingTop: "clamp(22px, 3vh, 30px)" }}>
+            <h2 style={h2}>Schedule, and what we can hold</h2>
+            <p style={para}>
+              Send plans and you get a written scope and a number back within two business days. If
+              we cannot hit the window you need, we will say so in that reply rather than take the
+              job and slip it. A missed insulation date stalls drywall and everything behind it, and
+              we would rather lose a bid than be that trade.
+            </p>
+            <p style={{ ...para, marginBottom: 0 }}>
+              Tell us the start date you are working toward when you send the plans. We book new
+              construction alongside our residential schedule, so the earlier you ask, the more
+              likely we can hold the slot you actually want.
+            </p>
+          </section>
+
+          {/* ── 2. Prequalification facts. Screened before quality is ever read. ──── */}
+          <section style={sectionWide}>
+            <h2 style={h2}>Insurance and paperwork</h2>
+            <dl style={{ margin: 0, display: "grid", gap: "0" }}>
+              {PAPERWORK.map(([term, detail]) => (
+                <div
+                  key={term}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+                    gap: "4px clamp(16px, 3vw, 40px)",
+                    padding: "14px 0",
+                    borderBottom: `1px solid ${C.border}`,
+                  }}
+                >
+                  <dt
+                    style={{
+                      fontFamily: "var(--font-label)",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: C.inkSoft,
+                      paddingTop: "3px",
+                    }}
+                  >
+                    {term}
+                  </dt>
+                  <dd
+                    style={{
+                      margin: 0,
+                      fontFamily: "var(--font-dm-sans)",
+                      fontSize: "0.98rem",
+                      lineHeight: 1.65,
+                      color: C.ink,
+                      gridColumn: "span 2",
+                    }}
+                  >
+                    {detail}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          {/* ── 3. The differentiator: proof. Zero of 9 competitor pages claim this. ── */}
+          <section style={sectionWide}>
+            <h2 style={h2}>Photographed before drywall</h2>
+            <p style={para}>
+              Every bay is photographed with a depth reference before it is covered, and the set is
+              yours. If a rater questions a wall, or a buyer asks two years later what is behind the
+              drywall, the answer exists as a file instead of a memory.
+            </p>
+            <p style={{ ...para, marginBottom: 0 }}>
+              If you are weighing a smaller outfit, this is the part that should decide it. You are
+              not taking anyone&apos;s word for the work you cannot see once the board goes up.
+            </p>
+          </section>
+        </article>
+
+        {/* ── 4. Grade I. GATED to programme builders: NC code does not grade insulation. ── */}
+        <section style={{ ...band, marginTop: "clamp(64px, 9vh, 104px)" }}>
           <div style={bandInner}>
             <p style={{ ...bandLabel, margin: "0 0 clamp(16px, 2.4vh, 22px)", color: C.teal }}>
-              The grade is the job
+              If you build to a programme
             </p>
             <h2
               style={{
-                margin: "0 0 clamp(36px, 5.5vh, 60px)",
+                margin: "0 0 clamp(22px, 3vh, 32px)",
                 maxWidth: "20ch",
                 fontFamily: "var(--font-cormorant)",
                 fontWeight: 400,
@@ -252,6 +358,21 @@ export default function BuildersPage() {
             >
               A rater decides what your insulation is worth
             </h2>
+            <p
+              style={{
+                margin: "0 0 clamp(36px, 5.5vh, 56px)",
+                maxWidth: "62ch",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "clamp(1rem, 1.2vw, 1.08rem)",
+                lineHeight: 1.72,
+                color: "rgba(250,248,245,0.82)",
+              }}
+            >
+              Building to ENERGY STAR, DOE Zero Energy Ready, or a Duke Energy incentive? Then a
+              HERS rater grades your insulation before drywall, and that grade carries money.
+              Building to code instead? Then nobody grades it at all, which is precisely why the
+              photographs matter more, not less.
+            </p>
 
             <div
               style={{
@@ -260,7 +381,6 @@ export default function BuildersPage() {
                 gap: "clamp(28px, 4.5vw, 56px)",
               }}
             >
-              {/* Grade I: what we install to */}
               <div style={{ borderTop: `1.5px solid ${C.teal}`, paddingTop: "clamp(18px, 2.6vh, 24px)" }}>
                 <p style={{ ...bandLabel, margin: "0 0 clamp(14px, 2vh, 20px)", color: C.teal }}>
                   Grade I · what we install to
@@ -280,7 +400,6 @@ export default function BuildersPage() {
                 </p>
               </div>
 
-              {/* Grade III: the cost. Diminished on purpose, the fade IS the meaning. */}
               <div
                 style={{
                   borderTop: "1.5px solid rgba(250,248,245,0.22)",
@@ -306,13 +425,12 @@ export default function BuildersPage() {
               </div>
             </div>
 
-            {/* Full-width line, deliberately breaking the two-column symmetry. */}
             <p
               style={{
                 margin: "clamp(36px, 5.5vh, 60px) 0 0",
                 paddingTop: "clamp(24px, 3.5vh, 34px)",
                 borderTop: "1px solid rgba(250,248,245,0.14)",
-                maxWidth: "34ch",
+                maxWidth: "36ch",
                 fontFamily: "var(--font-cormorant)",
                 fontWeight: 400,
                 fontSize: "clamp(1.25rem, 2.3vw, 1.7rem)",
@@ -321,7 +439,8 @@ export default function BuildersPage() {
                 color: C.cream,
               }}
             >
-              In Department of Energy field surveys, only about half of homes reach Grade I.
+              In a Department of Energy field study of North Carolina homes, fewer than half of
+              above-grade walls met Grade I.
             </p>
 
             <p
@@ -349,15 +468,15 @@ export default function BuildersPage() {
                 color: "rgba(250,248,245,0.38)",
               }}
             >
-              Grade definitions and the 5% modelling penalty per RESNET and the Insulation
-              Institute. ENERGY STAR v3 and most utility new-construction programmes require Grade
-              I. Duke Energy incentive availability and amounts are set by Duke and depend on the
-              programme.
+              Wall figure from the Pacific Northwest National Laboratory North Carolina Residential
+              Energy Code Field Study for the U.S. Department of Energy, 249 homes, data collected
+              2015. Grade definitions and the 5% modelling penalty per ANSI/RESNET/ICC 301. Duke
+              Energy incentive availability and amounts are set by Duke and depend on the programme.
             </p>
           </div>
         </section>
 
-        {/* ── Body. Back to cream, with uneven rhythm. ─────────────────────────── */}
+        {/* ── Capability and technical detail. ─────────────────────────────────────── */}
         <article
           style={{
             maxWidth: "900px",
@@ -366,16 +485,6 @@ export default function BuildersPage() {
           }}
         >
           <section>
-            <h2 style={h2}>Photographed before drywall</h2>
-            <p style={{ ...para, marginBottom: 0 }}>
-              Every bay is photographed with a depth reference before it is covered. You get the
-              set. If a rater questions a wall, or a buyer asks what is behind the drywall two years
-              from now, the answer exists as a file instead of a memory. It costs nothing but
-              discipline, which is exactly why it is worth asking any sub for.
-            </p>
-          </section>
-
-          <section style={sectionWide}>
             <h2 style={h2}>What we install</h2>
             <div style={{ overflowX: "auto" }}>
               <table
@@ -519,16 +628,6 @@ export default function BuildersPage() {
           </section>
 
           <section style={sectionTight}>
-            <h2 style={h2}>Insurance and paperwork</h2>
-            <p style={{ ...para, marginBottom: 0 }}>
-              Carolux Insulation LLC is a North Carolina limited liability company and carries
-              general liability insurance. A certificate of insurance and a W-9 are available on
-              request, and we will send both with a bid if you want them up front. All work carries
-              a 2-year workmanship guarantee.
-            </p>
-          </section>
-
-          <section style={sectionWide}>
             <h2
               style={{
                 margin: "0 0 1rem",
@@ -588,13 +687,14 @@ export default function BuildersPage() {
                 color: "rgba(250,248,245,0.8)",
               }}
             >
-              Email the drawings, the lot count, and your target programme if you are chasing one.
-              You get a written scope and a number back. If the scope calls for something we do not
-              install, we will say so in the reply instead of bidding around it.
+              Drawings, lot count, the start date you are working toward, and your target programme
+              if you are chasing one. Written scope and a number back within two business days. If
+              the scope calls for something we do not install, we will say so in the reply instead
+              of bidding around it.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
               <a
-                href="mailto:team@caroluxinsulation.com?subject=New%20construction%20bid%20request&body=Lots%2Fhomes%3A%20%0AAddress%20or%20subdivision%3A%20%0ATarget%20start%3A%20%0AProgramme%20(ENERGY%20STAR%2C%20Duke%2C%20none)%3A%20%0APlans%20attached%3A%20"
+                href="mailto:team@caroluxinsulation.com?subject=New%20construction%20bid%20request&body=Lots%2Fhomes%3A%20%0AAddress%20or%20subdivision%3A%20%0ATarget%20start%20date%3A%20%0AProgramme%20(ENERGY%20STAR%2C%20Duke%2C%20code%20only)%3A%20%0APlans%20attached%3A%20"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
