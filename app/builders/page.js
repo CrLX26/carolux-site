@@ -140,7 +140,34 @@ const para = {
   color: C.ink,
 };
 
+// Rhythm is deliberately UNEVEN. Uniform spacing is what made the first pass read flat.
 const section = { marginTop: "clamp(40px, 6vh, 64px)" };
+const sectionTight = { marginTop: "clamp(26px, 3.5vh, 38px)" };
+const sectionWide = { marginTop: "clamp(64px, 9vh, 104px)" };
+
+// Full-bleed dark band. The navy band is the site's signature move (Hero, Stats,
+// Estimator result, Contact) and its absence is most of why this page read bland.
+const band = {
+  background: C.navy,
+  padding: "clamp(56px, 9vh, 104px) clamp(24px, 6vw, 48px)",
+};
+const bandInner = { maxWidth: "900px", margin: "0 auto" };
+
+// Big Gloock numeral. Scale contrast against 1rem body is ~4-6x, not 1.5x.
+const numeral = {
+  fontFamily: "var(--font-cormorant)",
+  fontWeight: 400,
+  fontSize: "clamp(3.4rem, 8.5vw, 5.6rem)",
+  lineHeight: 0.92,
+  letterSpacing: "-0.03em",
+};
+const bandLabel = {
+  fontFamily: "var(--font-label)",
+  fontSize: "11px",
+  fontWeight: 600,
+  letterSpacing: "0.18em",
+  textTransform: "uppercase",
+};
 
 export default function BuildersPage() {
   return (
@@ -151,115 +178,204 @@ export default function BuildersPage() {
       />
       <Nav />
       <main id="main" style={{ backgroundColor: C.cream, color: C.navy }}>
+        {/* ── Hero. Scale is the point: the H1 runs ~4x body, not 2x. ─────────── */}
         <article
           style={{
             maxWidth: "900px",
             margin: "0 auto",
-            padding: "clamp(112px, 16vh, 168px) clamp(24px, 6vw, 48px) clamp(64px, 10vh, 120px)",
+            padding: "clamp(112px, 16vh, 168px) clamp(24px, 6vw, 48px) clamp(48px, 7vh, 76px)",
           }}
         >
-          {/* ── Hero: lead on the rater and the inspection, not comfort ─────────── */}
-          <header style={{ paddingBottom: "clamp(28px, 4vh, 40px)", borderBottom: `1px solid ${C.border}` }}>
-            <p
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "12px",
-                margin: "0 0 clamp(14px, 2vh, 20px)",
-                fontFamily: "var(--font-label)",
-                fontSize: "clamp(11px, 1vw, 13px)",
-                fontWeight: 500,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: C.teal,
-              }}
-            >
-              <span aria-hidden="true" style={{ width: "26px", height: "1.5px", background: C.teal, opacity: 0.8 }} />
-              For Builders · Gaston &amp; Mecklenburg
+          <p
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "12px",
+              margin: "0 0 clamp(16px, 2.4vh, 24px)",
+              fontFamily: "var(--font-label)",
+              fontSize: "clamp(11px, 1vw, 13px)",
+              fontWeight: 500,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: C.teal,
+            }}
+          >
+            <span aria-hidden="true" style={{ width: "26px", height: "1.5px", background: C.teal, opacity: 0.8 }} />
+            For Builders · Gaston &amp; Mecklenburg
+          </p>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: "var(--font-cormorant)",
+              fontWeight: 400,
+              fontSize: "clamp(2.6rem, 6.6vw, 4.4rem)",
+              lineHeight: 1.02,
+              letterSpacing: "-0.025em",
+              color: C.navy,
+            }}
+          >
+            Insulation that passes the rater the first time
+          </h1>
+          <p
+            style={{
+              margin: "clamp(20px, 3vh, 30px) 0 0",
+              maxWidth: "58ch",
+              fontFamily: "var(--font-dm-sans)",
+              fontSize: "clamp(1.05rem, 1.45vw, 1.24rem)",
+              lineHeight: 1.7,
+              color: C.inkSoft,
+            }}
+          >
+            New single-family construction across Gaston and Mecklenburg County. We install to the
+            RESNET Grade I standard and photograph every bay before drywall, so your rater and your
+            inspector both get what they need without a second trip.
+          </p>
+        </article>
+
+        {/* ── FOCAL MOMENT. Full-bleed navy: the grade as an argument, not prose. ── */}
+        <section style={band}>
+          <div style={bandInner}>
+            <p style={{ ...bandLabel, margin: "0 0 clamp(16px, 2.4vh, 22px)", color: C.teal }}>
+              The grade is the job
             </p>
-            <h1
+            <h2
               style={{
-                margin: 0,
+                margin: "0 0 clamp(36px, 5.5vh, 60px)",
+                maxWidth: "20ch",
                 fontFamily: "var(--font-cormorant)",
                 fontWeight: 400,
-                fontSize: "clamp(2.1rem, 5vw, 3.25rem)",
-                lineHeight: 1.06,
+                fontSize: "clamp(1.9rem, 4.2vw, 3rem)",
+                lineHeight: 1.08,
                 letterSpacing: "-0.02em",
-                color: C.navy,
+                color: C.cream,
               }}
             >
-              Insulation that passes the rater the first time
-            </h1>
-            <p
-              style={{
-                margin: "clamp(16px, 2.5vh, 24px) 0 0",
-                maxWidth: "64ch",
-                fontFamily: "var(--font-dm-sans)",
-                fontSize: "clamp(1rem, 1.2vw, 1.12rem)",
-                lineHeight: 1.75,
-                color: C.ink,
-              }}
-            >
-              Carolux installs insulation for new single-family construction across Gaston and
-              Mecklenburg County. We install to the RESNET Grade I standard and photograph every
-              bay before drywall, so your rater and your inspector both get what they need without
-              a second trip.
-            </p>
-          </header>
+              A rater decides what your insulation is worth
+            </h2>
 
-          {/* ── Grade I: the actual argument ─────────────────────────────────────── */}
-          <section style={section}>
-            <h2 style={h2}>Why the grade is the whole job</h2>
-            <p style={para}>
-              A HERS rater grades insulation before drywall, and then it is buried. That grade
-              carries real weight: ENERGY STAR v3 and most utility new-construction programmes
-              require Grade I to qualify, and Duke Energy pays builders an incentive for efficient
-              new construction that depends on the programme you are enrolled in.
-            </p>
-            <p style={para}>
-              Grade I allows only occasional very small gaps, with compression or incomplete fill
-              under about 2% of the area. When an install is graded III, RESNET models roughly 5%
-              of the insulated area as if it were not insulated at all. You paid for insulation
-              that then stops counting toward the score. In U.S. Department of Energy field
-              surveys, only about half of homes reach Grade I.
-            </p>
-            <p style={{ ...para, marginBottom: 0 }}>
-              <strong style={{ color: C.navy }}>
-                To be exact about who does what: we install to the Grade I standard and document
-                it. The rater grades it.
-              </strong>{" "}
-              We do not grade, rate, or certify our own work, and no installer can promise you a
-              HERS score, a blower-door result, or a code-compliance outcome.
-            </p>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
+                gap: "clamp(28px, 4.5vw, 56px)",
+              }}
+            >
+              {/* Grade I: what we install to */}
+              <div style={{ borderTop: `1.5px solid ${C.teal}`, paddingTop: "clamp(18px, 2.6vh, 24px)" }}>
+                <p style={{ ...bandLabel, margin: "0 0 clamp(14px, 2vh, 20px)", color: C.teal }}>
+                  Grade I · what we install to
+                </p>
+                <div style={{ ...numeral, color: C.teal }}>2%</div>
+                <p
+                  style={{
+                    margin: "clamp(14px, 2vh, 18px) 0 0",
+                    fontFamily: "var(--font-dm-sans)",
+                    fontSize: "0.98rem",
+                    lineHeight: 1.65,
+                    color: "rgba(250,248,245,0.82)",
+                  }}
+                >
+                  The most gap, compression, or incomplete fill allowed across the insulated area.
+                  Occasional very small gaps, and nothing more.
+                </p>
+              </div>
+
+              {/* Grade III: the cost. Diminished on purpose, the fade IS the meaning. */}
+              <div
+                style={{
+                  borderTop: "1.5px solid rgba(250,248,245,0.22)",
+                  paddingTop: "clamp(18px, 2.6vh, 24px)",
+                }}
+              >
+                <p style={{ ...bandLabel, margin: "0 0 clamp(14px, 2vh, 20px)", color: "rgba(250,248,245,0.5)" }}>
+                  Grade III · what it costs you
+                </p>
+                <div style={{ ...numeral, color: "rgba(250,248,245,0.42)" }}>5%</div>
+                <p
+                  style={{
+                    margin: "clamp(14px, 2vh, 18px) 0 0",
+                    fontFamily: "var(--font-dm-sans)",
+                    fontSize: "0.98rem",
+                    lineHeight: 1.65,
+                    color: "rgba(250,248,245,0.62)",
+                  }}
+                >
+                  The share of the insulated area RESNET then models as if it were bare. You bought
+                  insulation that stops counting toward the score.
+                </p>
+              </div>
+            </div>
+
+            {/* Full-width line, deliberately breaking the two-column symmetry. */}
             <p
               style={{
-                margin: "1rem 0 0",
+                margin: "clamp(36px, 5.5vh, 60px) 0 0",
+                paddingTop: "clamp(24px, 3.5vh, 34px)",
+                borderTop: "1px solid rgba(250,248,245,0.14)",
+                maxWidth: "34ch",
+                fontFamily: "var(--font-cormorant)",
+                fontWeight: 400,
+                fontSize: "clamp(1.25rem, 2.3vw, 1.7rem)",
+                lineHeight: 1.3,
+                letterSpacing: "-0.01em",
+                color: C.cream,
+              }}
+            >
+              In Department of Energy field surveys, only about half of homes reach Grade I.
+            </p>
+
+            <p
+              style={{
+                margin: "clamp(20px, 3vh, 28px) 0 0",
+                maxWidth: "62ch",
                 fontFamily: "var(--font-dm-sans)",
-                fontSize: "0.84rem",
+                fontSize: "0.98rem",
+                lineHeight: 1.7,
+                color: "rgba(250,248,245,0.78)",
+              }}
+            >
+              To be exact about who does what: we install to the Grade I standard and document it,
+              and the rater grades it. No installer can promise you a HERS score, a blower-door
+              result, or a code-compliance outcome.
+            </p>
+
+            <p
+              style={{
+                margin: "clamp(18px, 2.6vh, 24px) 0 0",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "0.8rem",
                 fontStyle: "italic",
                 lineHeight: 1.6,
-                color: C.inkSoft,
+                color: "rgba(250,248,245,0.38)",
               }}
             >
               Grade definitions and the 5% modelling penalty per RESNET and the Insulation
-              Institute. Incentive availability and amounts depend on the Duke Energy programme
-              and are set by Duke, not by us.
+              Institute. ENERGY STAR v3 and most utility new-construction programmes require Grade
+              I. Duke Energy incentive availability and amounts are set by Duke and depend on the
+              programme.
             </p>
-          </section>
+          </div>
+        </section>
 
-          {/* ── Documentation ────────────────────────────────────────────────────── */}
-          <section style={section}>
+        {/* ── Body. Back to cream, with uneven rhythm. ─────────────────────────── */}
+        <article
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            padding: "clamp(56px, 8vh, 90px) clamp(24px, 6vw, 48px) clamp(48px, 7vh, 80px)",
+          }}
+        >
+          <section>
             <h2 style={h2}>Photographed before drywall</h2>
             <p style={{ ...para, marginBottom: 0 }}>
               Every bay is photographed with a depth reference before it is covered. You get the
-              set. If a rater questions a wall, or a buyer asks what is behind the drywall two
-              years from now, the answer exists as a file instead of a memory. This costs nothing
-              but discipline, which is exactly why it is worth asking your current sub for.
+              set. If a rater questions a wall, or a buyer asks what is behind the drywall two years
+              from now, the answer exists as a file instead of a memory. It costs nothing but
+              discipline, which is exactly why it is worth asking any sub for.
             </p>
           </section>
 
-          {/* ── Capability table ─────────────────────────────────────────────────── */}
-          <section style={section}>
+          <section style={sectionWide}>
             <h2 style={h2}>What we install</h2>
             <div style={{ overflowX: "auto" }}>
               <table
@@ -279,7 +395,7 @@ export default function BuildersPage() {
                         style={{
                           textAlign: "left",
                           padding: "0 0 10px",
-                          borderBottom: `1.5px solid ${C.border}`,
+                          borderBottom: `1.5px solid ${C.navy}`,
                           fontFamily: "var(--font-label)",
                           fontSize: "11px",
                           fontWeight: 600,
@@ -298,10 +414,12 @@ export default function BuildersPage() {
                     <tr key={m.material}>
                       <td
                         style={{
-                          padding: "14px 16px 14px 0",
+                          padding: "16px 16px 16px 0",
                           borderBottom: `1px solid ${C.border}`,
+                          fontFamily: "var(--font-cormorant)",
+                          fontSize: "1.18rem",
+                          lineHeight: 1.25,
                           color: C.navy,
-                          fontWeight: 600,
                           verticalAlign: "top",
                         }}
                       >
@@ -309,7 +427,7 @@ export default function BuildersPage() {
                       </td>
                       <td
                         style={{
-                          padding: "14px 16px 14px 0",
+                          padding: "16px 16px 16px 0",
                           borderBottom: `1px solid ${C.border}`,
                           color: C.ink,
                           verticalAlign: "top",
@@ -320,7 +438,7 @@ export default function BuildersPage() {
                       </td>
                       <td
                         style={{
-                          padding: "14px 0",
+                          padding: "16px 0",
                           borderBottom: `1px solid ${C.border}`,
                           color: C.inkSoft,
                           lineHeight: 1.6,
@@ -368,19 +486,17 @@ export default function BuildersPage() {
             </ul>
           </section>
 
-          {/* ── Rim joists: the credibility marker ───────────────────────────────── */}
-          <section style={section}>
+          <section style={sectionWide}>
             <h2 style={h2}>Rim and band joists get board, not batt</h2>
             <p style={{ ...para, marginBottom: 0 }}>
               Batt at a band joist is a building-science failure. Fiberglass is air-permeable, so
-              conditioned interior air still reaches the cold rim, and moisture condenses behind
-              the insulation where nobody sees it. We cut and seal rigid board at the rim instead.
-              It is a small line item that quietly prevents a callback years later.
+              conditioned interior air still reaches the cold rim, and moisture condenses behind the
+              insulation where nobody sees it. We cut and seal rigid board at the rim instead. It is
+              a small line item that quietly prevents a callback years later.
             </p>
           </section>
 
-          {/* ── Who does the work ────────────────────────────────────────────────── */}
-          <section style={section}>
+          <section style={sectionWide}>
             <h2 style={h2}>Who is actually on your site</h2>
             <p style={{ ...para, marginBottom: 0 }}>
               An owner is on site for every job, start to finish, and signs off on the work before
@@ -391,20 +507,18 @@ export default function BuildersPage() {
             </p>
           </section>
 
-          {/* ── What we do not do ────────────────────────────────────────────────── */}
           <section style={section}>
             <h2 style={h2}>What we do not do</h2>
             <p style={{ ...para, marginBottom: 0 }}>
               <strong style={{ color: C.navy }}>We do not install spray foam.</strong> If your
               assembly is specified for closed-cell or open-cell foam, we are not your sub for that
-              scope and we would rather tell you now than waste a bid cycle. Rigid board at the rim
+              scope, and we would rather tell you now than waste a bid cycle. Rigid board at the rim
               is a different product and we do install that. We also do not currently take on
               multifamily or commercial work.
             </p>
           </section>
 
-          {/* ── Paperwork ────────────────────────────────────────────────────────── */}
-          <section style={section}>
+          <section style={sectionTight}>
             <h2 style={h2}>Insurance and paperwork</h2>
             <p style={{ ...para, marginBottom: 0 }}>
               Carolux Insulation LLC is a North Carolina limited liability company and carries
@@ -414,9 +528,20 @@ export default function BuildersPage() {
             </p>
           </section>
 
-          {/* ── Service area ─────────────────────────────────────────────────────── */}
-          <section style={section}>
-            <h2 style={h2}>Where we work</h2>
+          <section style={sectionWide}>
+            <h2
+              style={{
+                margin: "0 0 1rem",
+                fontFamily: "var(--font-label)",
+                fontSize: "12px",
+                fontWeight: 600,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: C.inkSoft,
+              }}
+            >
+              Where we work
+            </h2>
             <p style={{ margin: 0, lineHeight: 2, fontFamily: "var(--font-dm-sans)", fontSize: "0.95rem" }}>
               {CITY_LINKS.map((c, i) => (
                 <span key={c.slug}>
@@ -432,24 +557,42 @@ export default function BuildersPage() {
               works, we travel.
             </p>
           </section>
+        </article>
 
-          {/* ── CTA: send plans (mailto, no homeowner form, no estimator) ─────────── */}
-          <section
-            style={{
-              marginTop: "clamp(48px, 7vh, 76px)",
-              padding: "clamp(28px, 4vw, 40px)",
-              background: C.surface,
-              border: `1px solid ${C.border}`,
-              borderRadius: "4px",
-            }}
-          >
-            <h2 style={{ ...h2, marginBottom: "0.75rem" }}>Send us the plans</h2>
-            <p style={{ ...para, marginBottom: "1.25rem" }}>
+        {/* ── Close on the second navy band. Send plans, not a comfort survey. ──── */}
+        <section style={band}>
+          <div style={bandInner}>
+            <p style={{ ...bandLabel, margin: "0 0 clamp(14px, 2vh, 20px)", color: C.teal }}>
+              Next step
+            </p>
+            <h2
+              style={{
+                margin: "0 0 clamp(18px, 2.6vh, 26px)",
+                fontFamily: "var(--font-cormorant)",
+                fontWeight: 400,
+                fontSize: "clamp(2rem, 4.6vw, 3.2rem)",
+                lineHeight: 1.04,
+                letterSpacing: "-0.02em",
+                color: C.cream,
+              }}
+            >
+              Send us the plans
+            </h2>
+            <p
+              style={{
+                margin: "0 0 clamp(28px, 4vh, 38px)",
+                maxWidth: "58ch",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "clamp(1rem, 1.2vw, 1.1rem)",
+                lineHeight: 1.72,
+                color: "rgba(250,248,245,0.8)",
+              }}
+            >
               Email the drawings, the lot count, and your target programme if you are chasing one.
               You get a written scope and a number back. If the scope calls for something we do not
               install, we will say so in the reply instead of bidding around it.
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
               <a
                 href="mailto:team@caroluxinsulation.com?subject=New%20construction%20bid%20request&body=Lots%2Fhomes%3A%20%0AAddress%20or%20subdivision%3A%20%0ATarget%20start%3A%20%0AProgramme%20(ENERGY%20STAR%2C%20Duke%2C%20none)%3A%20%0APlans%20attached%3A%20"
                 style={{
@@ -461,8 +604,8 @@ export default function BuildersPage() {
                   fontWeight: 600,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
-                  padding: "16px 30px",
-                  minHeight: "52px",
+                  padding: "18px 34px",
+                  minHeight: "56px",
                   borderRadius: "3px",
                   background: C.teal,
                   color: "#ffffff",
@@ -475,24 +618,25 @@ export default function BuildersPage() {
                 href={COMPANY.phoneHref}
                 style={{
                   fontFamily: "var(--font-dm-sans)",
-                  fontSize: "1rem",
-                  color: C.navy,
+                  fontSize: "1.05rem",
+                  color: "rgba(250,248,245,0.9)",
                   textDecoration: "none",
                 }}
               >
                 or call {COMPANY.phone}
               </a>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <p
-            style={{
-              margin: "clamp(32px, 5vh, 48px) 0 0",
-              fontFamily: "var(--font-dm-sans)",
-              fontSize: "12px",
-              color: C.inkSoft,
-            }}
-          >
+        <article
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            padding: "clamp(28px, 4vh, 40px) clamp(24px, 6vw, 48px) clamp(48px, 7vh, 72px)",
+          }}
+        >
+          <p style={{ margin: 0, fontFamily: "var(--font-dm-sans)", fontSize: "12px", color: C.inkSoft }}>
             Last updated {LAST_UPDATED} · Homeowner, not a builder?{" "}
             <a href="/services" style={{ color: C.teal, textDecoration: "none" }}>
               See our residential services
