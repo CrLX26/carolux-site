@@ -6,7 +6,7 @@ import { CITY_LINKS } from "../lib/cities";
 const BASE_URL = "https://caroluxinsulation.com";
 
 // ISO date for schema freshness — keep in sync with app/sitemap.js MODIFIED.builders.
-const LAST_UPDATED = "2026-09-08";
+const LAST_UPDATED = "2026-09-18";
 
 // BUILDER-FACING PAGE. Spec: BUILDER-PAGE-BRIEF.md (marketing lane, 2026-09-08);
 // strategy source: carolux-marketing/NEW-CONSTRUCTION.md.
@@ -101,13 +101,21 @@ const MATERIALS = [
   },
 ];
 
-const APPLICATIONS = [
-  "Attic: new, replacement, or top-off",
-  "Exterior walls",
-  "Interior walls for sound control",
-  "Crawl space, between the floor joists",
-  "Rim and band joists",
-  "Air sealing",
+// Assembly capability WITH the R-value ranges we commonly install. Research pass
+// 2026-09-18: a builder's real question is "can you hit the number on my plans?", not
+// "what brands do you carry" (on new construction the spec is usually his call, not
+// ours). This replaced a plain location chip-list, which carried strictly less info.
+// NOT a code table: deliberately no NCECC values and no compliance guarantee, per the
+// claim limits above. Ranges describe product we install, not a required minimum.
+const ASSEMBLIES = [
+  ["Attic and ceiling", "Blown fiberglass, or batt where access is tight", "R-30 to R-60"],
+  ["2x4 exterior wall", "Fiberglass or mineral wool batt", "R-13 to R-15"],
+  ["2x6 exterior wall", "Fiberglass or mineral wool batt", "R-19 to R-21"],
+  ["Floor over crawl space", "Fiberglass batt between the joists", "R-19 to R-30"],
+  ["Rim and band joist", "Rigid board, cut and sealed", "By board thickness"],
+  ["Interior wall", "Mineral wool batt", "Specified for sound"],
+  ["Crawl space ground", "Americover vapor barrier, 8 to 10 mil", "Vapor, not R"],
+  ["Air sealing", "Before insulation, on every assembly we insulate", "Included"],
 ];
 
 // Prequalification facts, kept scannable because builders screen these as a checklist.
@@ -573,26 +581,96 @@ export default function BuildersPage() {
                 color: C.inkSoft,
               }}
             >
-              Where it goes
+              Where it goes, and what we can hit
             </h3>
-            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexWrap: "wrap", gap: "8px 10px" }}>
-              {APPLICATIONS.map((a) => (
-                <li
-                  key={a}
-                  style={{
-                    fontFamily: "var(--font-dm-sans)",
-                    fontSize: "0.9rem",
-                    color: C.ink,
-                    background: C.surface,
-                    border: `1px solid ${C.border}`,
-                    borderRadius: "3px",
-                    padding: "8px 14px",
-                  }}
-                >
-                  {a}
-                </li>
-              ))}
-            </ul>
+            <div style={{ overflowX: "auto" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.95rem",
+                  minWidth: "520px",
+                }}
+              >
+                <tbody>
+                  {ASSEMBLIES.map(([where, what, value]) => (
+                    <tr key={where}>
+                      <td
+                        style={{
+                          padding: "13px 16px 13px 0",
+                          borderBottom: `1px solid ${C.border}`,
+                          color: C.navy,
+                          fontWeight: 500,
+                          verticalAlign: "top",
+                        }}
+                      >
+                        {where}
+                      </td>
+                      <td
+                        style={{
+                          padding: "13px 16px 13px 0",
+                          borderBottom: `1px solid ${C.border}`,
+                          color: C.inkSoft,
+                          lineHeight: 1.6,
+                          verticalAlign: "top",
+                        }}
+                      >
+                        {what}
+                      </td>
+                      <td
+                        style={{
+                          padding: "13px 0",
+                          borderBottom: `1px solid ${C.border}`,
+                          textAlign: "right",
+                          whiteSpace: "nowrap",
+                          fontFamily: "var(--font-cormorant)",
+                          fontSize: "1.12rem",
+                          color: C.navy,
+                          verticalAlign: "top",
+                        }}
+                      >
+                        {value}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p
+              style={{
+                margin: "clamp(18px, 2.6vh, 24px) 0 0",
+                maxWidth: "68ch",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "0.95rem",
+                lineHeight: 1.7,
+                color: C.inkSoft,
+              }}
+            >
+              Those ranges are what we commonly install, not a code table. Your drawings and your
+              compliance path set the target, and we install to the value specified on them. If a
+              plan calls for something these materials cannot reach, you will hear it in the bid
+              rather than from your rater.
+            </p>
+            <p
+              style={{
+                margin: "clamp(14px, 2vh, 18px) 0 0",
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "0.95rem",
+                lineHeight: 1.7,
+              }}
+            >
+              <a
+                href="/carolux-capability-statement.pdf"
+                style={{ color: C.teal, textDecoration: "none", fontWeight: 500 }}
+              >
+                Download the capability statement (PDF, one page)
+              </a>
+              <span style={{ color: C.inkSoft }}>
+                {" "}
+                for the version you can forward to an estimator.
+              </span>
+            </p>
           </section>
 
           <section style={sectionWide}>
@@ -724,6 +802,19 @@ export default function BuildersPage() {
                 }}
               >
                 or call {COMPANY.phone}
+              </a>
+              <a
+                href="/carolux-capability-statement.pdf"
+                style={{
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: "0.98rem",
+                  color: "rgba(250,248,245,0.62)",
+                  textDecoration: "underline",
+                  textDecorationColor: "rgba(250,248,245,0.3)",
+                  textUnderlineOffset: "3px",
+                }}
+              >
+                Capability statement (PDF)
               </a>
             </div>
           </div>

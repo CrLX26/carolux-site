@@ -11,7 +11,7 @@ const MODIFIED = {
   home: "2026-08-13",        // booking lane + in-home-estimate copy
   costGuide: "2026-06-15",   // WI-009 title fix
   services: "2026-08-13",    // new /services hub
-  builders: "2026-09-08",    // builder / new-construction page
+  builders: "2026-09-18",    // assemblies + R-value table, capability statement PDF
   servicePages: "2026-06-13", // app/services/*/page.js LAST_UPDATED
   cities: "2026-06-12",      // app/[city]/page.js LAST_UPDATED
   privacy: "2026-06-30",     // PRIVACY_POLICY.lastUpdated (Service Providers port)
