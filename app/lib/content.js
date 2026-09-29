@@ -17,7 +17,12 @@ export const COMPANY = {
   // Social profiles (all confirmed 2026-06-11). SEO note: app/lib/schema.js `sameAs`
   // should list these same four profiles (coordinate with the SEO lane).
   facebook: "https://www.facebook.com/caroluxinsulation",
-  googleBusiness: "https://g.page/caroluxinsulation",
+  // Canonical Google Business Profile URL, taken from the LIVE listing 2026-09-29.
+  // The old https://g.page/caroluxinsulation was a vanity short-link that was NEVER
+  // created: it redirected to a generic Google search, so the footer button and the
+  // schema `sameAs` both pointed at a dead URL. The CID form is derived from the place
+  // id in the live Maps URL (hex 0xd1e5500193eaaa6) and is verified to resolve.
+  googleBusiness: "https://maps.google.com/?cid=945286430706281126",
   nextdoor: "https://nextdoor.com/page/carolux-insulation-gastonia-nc/",
   serviceArea: "Charlotte & Gastonia, NC",
   owners: "Tony Kermis and Juan Gonzalez",
