@@ -22,7 +22,7 @@ export const COMPANY = {
   // created: it redirected to a generic Google search, so the footer button and the
   // schema `sameAs` both pointed at a dead URL. The CID form is derived from the place
   // id in the live Maps URL (hex 0xd1e5500193eaaa6) and is verified to resolve.
-  googleBusiness: "https://maps.google.com/?cid=945286430706281126",
+  googleBusiness: "https://www.google.com/maps?cid=945286430706281126",
   nextdoor: "https://nextdoor.com/page/carolux-insulation-gastonia-nc/",
   serviceArea: "Charlotte & Gastonia, NC",
   owners: "Tony Kermis and Juan Gonzalez",
