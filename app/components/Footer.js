@@ -143,6 +143,42 @@ export default function Footer() {
               <SocialButton key={s.key} icon={ICON[s.key]} label={s.label} href={s.href} />
             ))}
           </div>
+
+          {/*
+            Google Preferred Sources (verified 2026-09-29). A reader who picks us gets our
+            pages surfaced more in Top Stories, AI Mode and AI Overviews, with a "preferred"
+            badge. Eligibility CONFIRMED by hand: caroluxinsulation.com resolves in Google's
+            own source-preferences picker.
+
+            Deliberately the plain deeplink, NOT Google's documented
+            news.google.com/swg/js/v1/publisher.js button script. The script is third-party
+            JS on every page: it costs Core Web Vitals (AGENTS.md: "no unnecessary
+            JavaScript") and opens a new third-party data flow that would need a privacy
+            policy disclosure, the way Vercel Analytics did in WI-045. The link does the
+            same job for free.
+
+            NOTE for whoever reads the reel this came from: the claim that clicks here act
+            as a "global ranking signal" that lifts the site for everybody is NOT in Google's
+            documentation. Treat this as personalisation for people who opt in, nothing more.
+          */}
+          <a
+            href="https://www.google.com/preferences/source?q=caroluxinsulation.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block",
+              marginTop: "clamp(16px, 2.4vh, 20px)",
+              fontFamily: "var(--font-dm-sans)",
+              fontSize: "0.85rem",
+              lineHeight: 1.5,
+              color: "rgba(250,248,245,0.62)",
+              textDecoration: "underline",
+              textDecorationColor: "rgba(250,248,245,0.28)",
+              textUnderlineOffset: "3px",
+            }}
+          >
+            Set Carolux as a preferred source on Google
+          </a>
         </div>
 
         {/* Explore */}
