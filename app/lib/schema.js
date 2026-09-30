@@ -36,16 +36,29 @@ const business = {
     { "@type": "Person", name: "Tony Kermis" },
     { "@type": "Person", name: "Juan Gonzalez" },
   ],
+  // WHERE THE BUSINESS IS, not where it works. Corrected 2026-09-30 on the owner's word:
+  // Carolux Insulation LLC is registered in GASTONIA. This previously said Charlotte with
+  // uptown Charlotte coordinates, which disagreed with the Google Business Profile, whose
+  // pin sits in Gaston County and cannot be moved without video re-verification.
+  //
+  // This does NOT reduce Charlotte targeting, and the owner's "we want Charlotte mentioned
+  // because it's the centre of our service range" is satisfied elsewhere by design:
+  // `areaServed` below lists every city we cover INCLUDING Charlotte, the page titles and
+  // H1s are Charlotte-led, and 13 city pages target it. addressLocality answers "where are
+  // you"; areaServed answers "where do you work". Conflating them is what made this wrong.
+  //
+  // Coordinates are GASTONIA CITY CENTRE, deliberately not the registered street address —
+  // this is a hidden-address service-area business and the owners' address is not published.
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Charlotte",
+    addressLocality: "Gastonia",
     addressRegion: "NC",
     addressCountry: "US",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 35.2271,
-    longitude: -80.8431,
+    latitude: 35.2621,
+    longitude: -81.1873,
   },
   areaServed,
   knowsAbout: [

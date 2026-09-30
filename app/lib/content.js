@@ -438,7 +438,7 @@ export const BEFORE_AFTER = {
 export const SERVICE_AREA = {
   eyebrow: "Service Area",
   title: "Serving Charlotte & beyond",
-  note: "Don't see your town? Give us a call. If you're near the metro, chances are we cover you.",
+  note: "We cover the Lake Norman area too. Don't see your town? Give us a call. If you're near the metro, chances are we cover you.",
   cities: [
     "Charlotte",
     "Huntersville",
@@ -453,6 +453,13 @@ export const SERVICE_AREA = {
     "Lowell",
     "Mount Holly",
     "Stanley",
+    // Added 2026-09-30 (owner: "lake norman mooresville yes we go there"). Caroline has
+    // offered the Lake Norman area on the phone for months while the site did not list it.
+    // NOTE: this list feeds `areaServed` in schema.js and the on-page service-area display.
+    // It deliberately does NOT create a city PAGE — the 13 existing city pages earn single
+    // digit impressions each (GSC, 3 months), so a 14th would be effort against a query
+    // shape nobody searches.
+    "Mooresville",
   ],
 };
 
@@ -467,7 +474,7 @@ export const SERVICE_AREA = {
 export const PRIVACY_POLICY = {
   org: "Carolux Insulation LLC",
   title: "Privacy Policy & Messaging Terms and Conditions",
-  lastUpdated: "September 29, 2026",
+  lastUpdated: "September 30, 2026",
   sections: [
     {
       heading: "1. Who We Are",
@@ -527,7 +534,16 @@ export const PRIVACY_POLICY = {
     // use is the same class of defect as the §506 line, so the false vendor name is removed
     // rather than swapped for a guess. OWNER: tell site-dev the CRM actually in use and it
     // gets named here.
-    "CRM and scheduling: customer and job records are kept in our business software and calendar tools.",
+    // 2026-09-30, owner: there is NO CRM in use right now ("no crm atm; when budget
+    // increases we will turn Pipedrive on again"). So this names what actually holds
+    // customer records today rather than a product nobody is paying for. If Pipedrive
+    // is switched back on, it must be named here BEFORE it starts receiving records.
+    "Customer records: job and customer records are kept in Google Workspace (email, documents, and calendar). Carolux does not currently use a separate customer-relationship-management product.",
+    // cal.com receives a customer NAME, PHONE and PROPERTY ADDRESS on every booking —
+    // from the website self-book lane and from the Caroline voice agent alike — and was
+    // an undisclosed processor until 2026-09-30. Same defect class as the Retell gap in
+    // WI-076, found while fixing that one. Flagged to legal/risk for wording review.
+    "Appointment scheduling: in-home estimates are booked through a scheduling provider (Cal.com), which receives your name, phone number, and property address in order to place the appointment on our calendar.",
         "Billing: payment records are maintained in Wave.",
       ],
       after: [

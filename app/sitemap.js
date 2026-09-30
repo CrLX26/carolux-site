@@ -8,13 +8,13 @@ const BASE_URL = "https://caroluxinsulation.com";
 // files (and the visible "Last updated" bylines) — bump the matching entry here
 // when a page's content actually changes.
 const MODIFIED = {
-  home: "2026-08-13",        // booking lane + in-home-estimate copy
+  home: "2026-09-30",        // addressLocality -> Gastonia; Mooresville added to service area
   costGuide: "2026-06-15",   // WI-009 title fix
   services: "2026-08-13",    // new /services hub
   builders: "2026-09-18",    // assemblies + R-value table, capability statement PDF
   servicePages: "2026-06-13", // app/services/*/page.js LAST_UPDATED
   cities: "2026-06-12",      // app/[city]/page.js LAST_UPDATED
-  privacy: "2026-09-29",     // WI-076: Retell voice-AI disclosure + call recording
+  privacy: "2026-09-30",     // Cal.com disclosed; CRM line corrected (no CRM in use)
   terms: "2026-06-15",       // TERMS_OF_SERVICE.lastUpdated
 };
 
