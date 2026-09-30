@@ -199,6 +199,16 @@ export default function Footer() {
               {s.name}
             </FootLink>
           ))}
+          {/*
+            The /services hub link. Added 2026-09-29 because the hub was a near-orphan:
+            its ONLY inbound internal link was from /builders, which is itself not yet
+            discovered by Google, and the nav's "Services" entry points at the homepage
+            anchor #services rather than the page. Result: /services is the one URL that
+            an exact-phrase search cannot find on EITHER host, i.e. genuinely undiscovered
+            rather than merely indexed under www. A sitewide footer link is the cheapest
+            fix; do not remove it without giving the hub another real inbound path.
+          */}
+          <FootLink href="/services">All Services</FootLink>
         </nav>
 
         {/* Service Areas */}
