@@ -467,7 +467,7 @@ export const SERVICE_AREA = {
 export const PRIVACY_POLICY = {
   org: "Carolux Insulation LLC",
   title: "Privacy Policy & Messaging Terms and Conditions",
-  lastUpdated: "June 30, 2026",
+  lastUpdated: "September 29, 2026",
   sections: [
     {
       heading: "1. Who We Are",
@@ -508,11 +508,26 @@ export const PRIVACY_POLICY = {
         "For clarity, these service providers are not \"external organizations\" or third parties to whom we sell or transfer your data; giving them information so they can perform services for us is not a sale or transfer of your personal information.",
       ],
       list: [
-        "AI processing: an AI provider (Anthropic) assists in drafting estimate narratives using your name, property address, year built, and job date only. No photos, phone number, or email are shared with the AI provider. Pricing is never set by AI; a person reviews every estimate before it is delivered.",
+        // WI-076 (2026-09-29, legal/risk wording): this was ONE line naming a single "AI
+    // provider" and promising no phone number was shared. A second AI (Retell, the voice
+    // receptionist "Caroline") went live on the (704) 228-2729 no-answer rollover and does
+    // receive the caller's number and the whole call, so the singular framing had become
+    // misleading. Split into two SCOPED disclosures so the Anthropic promise stays true of
+    // the estimate-drafting use and the voice agent is disclosed on its own terms.
+    // Verified against the live Caroline greeting before publishing: it opens with the AI
+    // disclosure, states the call is recorded and transcribed, and offers "say representative".
+    "AI in our written estimates: an AI provider (Anthropic) helps draft estimate narratives using only your name, property address, year built, and job date. No photos, phone number, or email are shared with this estimate-drafting AI, and pricing is never set by AI — a person reviews every estimate before it reaches you.",
+    "AI on our phone line: if your call is answered by our automated assistant, the call is handled, recorded, and transcribed by our voice-AI provider (Retell), which receives your phone number and the content of the call in order to answer questions and take messages. You can ask for a person at any time.",
         "Document storage: proposal documents and job-site photos are stored with a cloud storage provider (Vercel).",
-        "E-signature: service agreements are delivered and signed through an electronic signature platform (SignWell).",
+        "Voice assistant / call handling: Retell (records and transcribes inbound calls answered by our automated assistant).",
+    "E-signature: service agreements are delivered and signed through an electronic signature platform (SignWell).",
         "Email delivery: customer communications are sent via Resend and Google Workspace.",
-        "CRM: customer and job records are managed in Pipedrive.",
+        // WI-076 minor: Pipedrive is named here but is NOT in use (register WI-055 records the
+    // roadmap moving to Twenty; scheduling is Google Calendar). Naming a processor we do not
+    // use is the same class of defect as the §506 line, so the false vendor name is removed
+    // rather than swapped for a guess. OWNER: tell site-dev the CRM actually in use and it
+    // gets named here.
+    "CRM and scheduling: customer and job records are kept in our business software and calendar tools.",
         "Billing: payment records are maintained in Wave.",
       ],
       after: [

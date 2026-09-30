@@ -14,7 +14,7 @@ const MODIFIED = {
   builders: "2026-09-18",    // assemblies + R-value table, capability statement PDF
   servicePages: "2026-06-13", // app/services/*/page.js LAST_UPDATED
   cities: "2026-06-12",      // app/[city]/page.js LAST_UPDATED
-  privacy: "2026-06-30",     // PRIVACY_POLICY.lastUpdated (Service Providers port)
+  privacy: "2026-09-29",     // WI-076: Retell voice-AI disclosure + call recording
   terms: "2026-06-15",       // TERMS_OF_SERVICE.lastUpdated
 };
 
