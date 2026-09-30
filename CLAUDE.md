@@ -116,7 +116,9 @@
 > Authoritative open list = `RISK-REGISTER.md`.
 
 ### 🧭 THE 3-SESSION MODEL (set 2026-06-14 — this replaced the old 5-worktree setup)
-Carolux runs THREE Claude Code sessions. Full detail in memory [[worktree-split]].
+⚠️ **SUPERSEDED 2026-09-30:** the project now runs **eight lanes**, and **SEO is its own lane** (`seo` = `Carolux - GBP`) which owns SEO direction and diagnosis while site-dev implements. Canonical: `Carolux General Operations and Unifier\LANE-MAP.md`. The three-session summary below is kept for history.
+
+Carolux ran THREE Claude Code sessions. Full detail in memory [[worktree-split]].
 1. **site-dev (THIS session)** — builds the website. **Design, SEO, AND copy all happen here** (one
    repo). The old separate `carolux-seo` + `carolux-copy` worktrees were RETIRED 2026-06-14 — the
    website is now a SINGLE worktree at `…\Carolux Pro Website\carolux-site` on `main`.
@@ -340,7 +342,7 @@ pinned-scroll length / always-reachable estimate CTA.
 **Local path:** `H:\Claude Code Folders\Carolux Pro Website\carolux-site`
 **Dev server:** `npm run dev` → http://localhost:3000  (⚠️ NEVER `vercel dev` — it's ~13× slower and feels janky; if the site is sluggish locally, check that the process on :3000 is `next dev`, not `vercel dev`)
 **Production:** `main` auto-deploys to Vercel. All work through the growth-levers batch + the Firefox scrub fallback is **merged and live**.
-**Workflow:** branch off `main`, merge back via PR (a couple of direct merges to `main` have been used when explicitly requested). Two parallel worktrees exist — this one (`carolux-site`, design/front-end) and `carolux-seo` (SEO session, branch `seo-foundation`). Stay in your lane; SEO owns `schema.js`, `sitemap.js`, `robots.js`, `layout.js` metadata, FAQ.
+**Workflow:** branch off `main`, merge back via PR (a couple of direct merges to `main` have been used when explicitly requested). ⚠️ **CORRECTED 2026-09-30.** This previously said a parallel `carolux-seo` worktree (branch `seo-foundation`) owned `schema.js`, `sitemap.js`, `robots.js`, `layout.js` metadata and FAQ. **That worktree was retired in June and those files are OURS** — the old wording would stop a session doing work that belongs to it, and it contradicted `:121-122` in this same file. **site-dev owns and edits all of them.** What site-dev does NOT own is SEO *direction*: that belongs to the `seo` lane (`Carolux - GBP`), and we implement to it. Canonical: `Carolux General Operations and Unifier\LANE-MAP.md`.
 
 ---
 

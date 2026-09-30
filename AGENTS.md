@@ -311,6 +311,13 @@ that requires its own decisions.
 **Current state (2026-06-14):** `main` = **`4dc394f`** (Vercel production deploying). See the
 **CLAUDE.md "🟢 CURRENT HANDOFF — 2026-06-14"** block for the authoritative latest state.
 
+> ⚠️ **SUPERSEDED 2026-09-30 (owner-confirmed).** The project now runs **eight lanes** and **SEO is
+> its own lane**: `seo` = `Carolux - GBP`, owning the Google Business Profile, the local pack,
+> **organic SEO direction and diagnosis**, and directory citations. **site-dev owns the website and
+> implements to that direction** — it does NOT own SEO direction. The 3-session model below is kept
+> for history. Canonical: `Carolux General Operations and Unifier\LANE-MAP.md` and the
+> `RISK-REGISTER.md` head.
+
 **⚠️ SESSION MODEL CHANGED 2026-06-14 — read this:** the old 3-worktree split (design / SEO / copy)
 was **consolidated into a 3-SESSION model**: (1) **site-dev** = the website (design + SEO + copy, all
 in this ONE `carolux-site` worktree — the `carolux-seo`/`carolux-copy` worktrees were removed),
