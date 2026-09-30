@@ -32,7 +32,17 @@ const LAST_UPDATED = "2026-09-18";
 //
 // ⚠️ HARD CLAIM LIMITS (from the brief — do not relax without the owner):
 //  · NEVER "licensed" in any tense. Tony = FORMER NC home inspector; company = INSURED.
-//  · NO cellulose anywhere on this page (we cannot dense-pack with the rented machine).
+//  · CELLULOSE: allowed, with a distinction that must survive (owner, 2026-09-29).
+//    Loose-fill blown cellulose is CURRENT capability. DENSE-PACK is quoted for new
+//    construction with the machine acquired on award, which the owner confirmed is the
+//    deliberate plan. Never state dense-pack as present-tense in-house capability, and
+//    never put it on a homeowner-facing page or the Business Profile: those are public
+//    adverts to strangers and must describe what we can do TODAY. A builder bid is a
+//    negotiation with a known counterparty on a stated timeline, which is why it is
+//    defensible HERE and not there.
+//  · RADIANT BARRIER STAYS OUT. The owner's block is knowledge, not equipment (physics,
+//    zone 3A moisture behaviour, the FTC claims boundary). Equipment gaps close with a
+//    purchase order; knowledge gaps do not. Do not add it because cellulose was added.
 //  · NO spray foam as an offering (stated only as something we do not do).
 //  · NEVER claim we achieve/grade/certify Grade I — we install TO the standard; the
 //    HERS rater grades. No HERS score, ACH50, or code-compliance guarantee.
@@ -77,12 +87,20 @@ const C = {
   border: "rgba(26,43,60,0.1)",
 };
 
-// Capability table. NOTE: cellulose is intentionally absent (no dense-pack machine).
+// Capability table. Cellulose added 2026-09-29 on the owner's instruction. The Aug 26
+// correction in carolux-tools/CLAUDE.md records that an understated list of exactly this
+// kind already "produced a wrong bid scope on a builder RFQ", so understating here is not
+// the safe default it looks like.
 const MATERIALS = [
   {
     material: "Fiberglass",
     forms: "Batt and blown-in",
     notes: "The default. Owens Corning AttiCat and Pink Next Gen.",
+  },
+  {
+    material: "Cellulose",
+    forms: "Blown loose-fill; dense-pack on request",
+    notes: "Loose-fill in-house. Dense-pack equipment mobilised per contract.",
   },
   {
     material: "Mineral wool (Rockwool)",
@@ -116,6 +134,8 @@ const ASSEMBLIES = [
   ["Interior wall", "Mineral wool batt", "Specified for sound"],
   ["Crawl space ground", "Americover vapor barrier, 8 to 10 mil", "Vapor, not R"],
   ["Air sealing", "Before insulation, on every assembly we insulate", "Included"],
+  ["Existing insulation removal", "Bagged and hauled before new material goes in", "Quoted per job"],
+  ["Attic decking", "Interlocking platform set above the insulation, not crushing it", "Quoted per job"],
 ];
 
 // Prequalification facts, kept scannable because builders screen these as a checklist.
