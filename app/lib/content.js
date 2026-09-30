@@ -85,6 +85,35 @@ export const STATS = [
   },
 ];
 
+// ─── 16 CFR 460.19(a) REASONABLE BASIS — the documented substantiation. READ BEFORE EDITING ANY % ───
+// The Rule needs TWO separate things and they are easy to confuse:
+//   (a) a documented REASONABLE BASIS for any claim that insulation cuts fuel bills or fuel use,
+//       retained for three years per (f)  → this block
+//   (b) the verbatim R-value DISCLOSURE wherever such a claim appears → FTC_SAVINGS_DISCLAIMER below
+// The (g) exemption covers only TV, radio and space-constrained ads, and only from (b). It does NOT
+// rescue a web page and it NEVER waives (a).
+//
+// ⚠️ VERIFIED LIVE 2026-09-30 by site-dev, after a cross-lane report that the source was dead and the
+// figures should be dropped. THE SOURCE IS NOT DEAD — IT MOVED. Do not drop these figures on the
+// strength of a 404 against the old path:
+//     DEAD : energystar.gov/campaign/seal_insulate/methodology   → 404
+//     LIVE : https://www.energystar.gov/saveathome/seal_insulate/methodology → 200
+//
+// The live page substantiates BOTH figures in one sentence, verbatim:
+//     "homeowners can save an average of 15% on heating and cooling costs (or an average of 11% on
+//      total energy costs) ... by air sealing their homes and adding insulation in attics, floors
+//      over crawl spaces, and accessible basement rim joists"
+// ENERGY STAR's stated method: energy modelling of cost-effective improvements to "typical" existing
+// US homes (Beacon Residential), corroborated by contractor field experience; typical-home
+// assumptions from RECS, housing stock 1970-1989.
+//
+// So 15% and 11% are NOT competing or drifting figures — they are the SAME finding on two different
+// denominators (heating+cooling vs total bill), which is exactly how the site states it. And the
+// cited scope (attics, floors over crawl spaces, rim joists) is an exact match for the work Carolux
+// actually performs, which is a stronger substantiation position than a generic citation.
+export const ENERGY_STAR_SAVINGS_SOURCE =
+  "https://www.energystar.gov/saveathome/seal_insulate/methodology";
+
 // WI-059: FTC R-Value Rule (16 CFR 460.19) — REQUIRED verbatim disclaimer wherever the site makes a
 // quantified energy-savings claim (the "up to 15%" / "~11%" ENERGY STAR figures). Do NOT paraphrase.
 // Single-sourced so every savings claim carries the identical text. Carolux must also keep an R-value
