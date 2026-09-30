@@ -132,6 +132,18 @@ Pro Website` — that cwd holds the real memory store. Launching from `…\carol
 memory store (this was the cause of past continuity loss). Git commands `cd` into `carolux-site`.
 
 ### 📌 COORDINATION FILES OUTSIDE THIS REPO (read these — the state isn't all in here)
+- **`H:\Claude Code Folders\Carolux - GBP\CORRECTION-NOTICE.md`** — ⚠️ **read this before trusting
+  any status you did not personally verify.** The project's "stop, here is why you were about to be
+  wrong" document. Holds the six **empty-state traps** (a screen showing nothing because it is not
+  YOUR account reads exactly like a thing being broken or missing — this cost several lanes a full
+  day on the Google Business Profile) and the **stale-middle pattern** (a document accurate at the
+  top and stale in the middle is more dangerous than one wrong throughout, because it reads
+  authoritative right up to where it misleads — four instances across four lanes on 2026-09-30, two
+  of them in THIS repo: `CLAUDE.md:343` and this session's persistent memory). Its four tests are
+  worth following: read the line alone after annotating; annotate retired history but CORRECT active
+  traps; prefer files to memory for anything cross-lane, because files are auditable and memory is
+  private; and label per line (SOURCE / DEPLOYED? / NOT LIVE / VERIFIED / UNKNOWN) rather than
+  stamping a freshness banner on a whole document.
 - **`H:\Claude Code Folders\RISK-REGISTER.md`** — cross-project risk / security / legal register; it
   is THE bus. site-dev owns + fixes the rows tagged `design`, and **flips its own rows' Status**.
   Curated by the spine. The authoritative list of open launch work lives here, not in CLAUDE.md.
