@@ -1,5 +1,5 @@
 # CAROLUX PRO WEBSITE — AGENTS.md
-<!-- CAROLUX-SETTLED:BEGIN sha=bff4c935a74d -->
+<!-- CAROLUX-SETTLED:BEGIN sha=7155d867ad09 -->
 ## ⬛ CAROLUX / NORTHKEEP — SETTLED FACTS AND KILLED CLAIMS
 
 *Generated. Do not hand-edit. Source: `AUDITORS\Carolux Auditor\findings\SETTLED.md`. Updated 2026-10-01.*
@@ -12,7 +12,7 @@
 | # | Question | The answer |
 |---|---|---|
 | 1 | Can we install cellulose? | **YES.** Loose-fill cellulose in occupied homes, with or without removing existing insulation. Current, performed, sellable, publishable. *(Owner 2026-09-30, restated 10-01)* |
-| 2 | Dense-pack cellulose — do we offer it? | **YES**, to builders, and we bid on it. Equipment is procured **once the first contract is won** — a procurement sequence, **not a capability gap**. Builder product: don't lead a homeowner surface with it. *(Owner 2026-10-01)* |
+| 2 | Dense-pack cellulose — do we offer it? | **YES to builders, and we bid on it — but NOT public.** Owner verbatim: *"not equipment has been bought but if we where offered a subcontraact to do that today we would figure out how to do it well done."* **Off the GBP and out of service descriptions entirely** — homeowner surfaces state **current** capability, because a homeowner who calls tomorrow must get a yes. Builder bids may quote it; `/builders` wording is the **owner's** call. **Do not describe it as something we cannot do.** *(Owner split ruling 2026-09-30, restated 10-01)* |
 | 3 | Is SMS / A2P 10DLC registered? | **YES — approved 2026-06-30**, anchored at `0008cea`. Grasshopper handles STOP/HELP. Manual 1:1 texting is live. **Not an open question.** |
 | 3a | The only live A2P sub-question | Registered scope is **transactional** (estimate/scheduling/appointment). Whether a **post-job review request** falls inside it is a `legal/risk` ruling (`WI-129`), **not an owner task.** A new automated sender needs its own registration. |
 | 4 | Is Lake Norman / Mooresville in the service area? | **YES** — owner: *"lake norman mooresville yes we go there."* Shipped in `carolux-site/app/lib/content.js`. **SC towns stay out.** *(2026-09-30)* |
@@ -23,7 +23,7 @@
 | 9 | Are we doing GBP posts? | **NO.** Owner: *"We are not doing posts. We are doing pictures."* The 8 drafts stay parked. *(2026-09-24)* |
 | 10 | Where is the job footage? | Source `H:\Documents\-- Carolux\Images\Jobs\`; backups on `G:\Carolux-Ad-Source\` **and** `K:\Carolux-Ad-Source\`. `K:` is a **portable LaCie that gets unplugged — absent ≠ lost.** **Never say the footage is missing.** |
 | 11 | Which Carolux archive is canonical? | **`H:\Documents\-- Carolux\`** (1,751 files, ~140 GB). **`D:` is an older partial copy AND a failing drive — write nothing new to it, and never cite it as source of truth.** |
-| 12 | Do we have employees or subs? | **No.** Both owners personally perform every job. No subcontractors. |
+| 12 | Do we have employees or subs? | **No.** Both owners personally perform every job. No subcontractors. ⚠️ **TRUE OF STAFFING — NOT APPROVED COPY.** The owner instructed `site` on **2026-09-08** to **remove** this language from `/builders`: a builder reading a capacity cap is a reason to pass on a multi-home job, and Carolux intends to expand. **The durable public claim is: "an owner, or a directly supervised team member, on every job."** See `WI-050` (advertised-vs-actual, UDTPA). Use fact 12 for costing and classification, **never as licence for customer-facing copy.** |
 
 ### 🔴 KILLED — these claims are dead. Delete on sight, in any file.
 
