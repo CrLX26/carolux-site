@@ -6,7 +6,7 @@ import { CITY_LINKS } from "../lib/cities";
 const BASE_URL = "https://caroluxinsulation.com";
 
 // ISO date for schema freshness — keep in sync with app/sitemap.js MODIFIED.builders.
-const LAST_UPDATED = "2026-09-18";
+const LAST_UPDATED = "2026-10-01";
 
 // BUILDER-FACING PAGE. Spec: BUILDER-PAGE-BRIEF.md (marketing lane, 2026-09-08);
 // strategy source: carolux-marketing/NEW-CONSTRUCTION.md.
@@ -32,14 +32,21 @@ const LAST_UPDATED = "2026-09-18";
 //
 // ⚠️ HARD CLAIM LIMITS (from the brief — do not relax without the owner):
 //  · NEVER "licensed" in any tense. Tony = FORMER NC home inspector; company = INSURED.
-//  · CELLULOSE: allowed, with a distinction that must survive (owner, 2026-09-29).
-//    Loose-fill blown cellulose is CURRENT capability. DENSE-PACK is quoted for new
-//    construction with the machine acquired on award, which the owner confirmed is the
-//    deliberate plan. Never state dense-pack as present-tense in-house capability, and
-//    never put it on a homeowner-facing page or the Business Profile: those are public
-//    adverts to strangers and must describe what we can do TODAY. A builder bid is a
-//    negotiation with a known counterparty on a stated timeline, which is why it is
-//    defensible HERE and not there.
+//  · CELLULOSE: allowed on this page, BOTH forms, no caveat (owner ruling 2026-10-01,
+//    which REVERSED the 2026-09-29 wording). The page previously said "dense-pack
+//    equipment mobilised per contract". Owner, verbatim: "i dont need builder toknow our
+//    handicaps or limitations. they should just know if we bid on it we can get it done."
+//    That is a defensible B2B position: builders are sophisticated commercial counterparties,
+//    not consumers, and declining to volunteer internal constraints in a bid document is
+//    ordinary practice, not misrepresentation. Equipment is acquired on award and the owner
+//    is committing to deliver. Do NOT reinstate the caveat without the owner.
+//    ⚠️ THE BOUNDARY STILL HOLDS AND IS NOT OPTIONAL: this applies to BUILDER-FACING
+//    surfaces only. DENSE-PACK MUST STAY OFF the homeowner pages and the Google Business
+//    Profile, which face consumers where the FTC rules this project runs under genuinely
+//    apply. Verified 2026-09-30: dense-pack appears ZERO times across eight live consumer
+//    pages. Keep it that way. Attic LOOSE-FILL cellulose is fine everywhere — it is current
+//    capability (owner, 2026-09-30) and WI-010's apparent contradiction was only ever
+//    attic loose-fill vs wall dense-pack being conflated.
 //  · RADIANT BARRIER STAYS OUT. The owner's block is knowledge, not equipment (physics,
 //    zone 3A moisture behaviour, the FTC claims boundary). Equipment gaps close with a
 //    purchase order; knowledge gaps do not. Do not add it because cellulose was added.
@@ -99,8 +106,8 @@ const MATERIALS = [
   },
   {
     material: "Cellulose",
-    forms: "Blown loose-fill; dense-pack on request",
-    notes: "Loose-fill in-house. Dense-pack equipment mobilised per contract.",
+    forms: "Blown loose-fill and dense-pack",
+    notes: "Attics, and closed wall cavities on new construction.",
   },
   {
     material: "Mineral wool (Rockwool)",

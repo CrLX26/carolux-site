@@ -95,9 +95,15 @@ const PRICE_TABLE = [
     note: "Between floor joists",
   },
   {
-    service: "Vapor Barrier — Basic Poly Liner",
+    // Renamed 2026-10-01 (owner: "we use an Americover, so it should reflect that").
+    // "Basic Poly Liner" was both bad positioning AND inaccurate to its own range: this row
+    // spans $1.50-$4.00/sqft, and $4.00 is not basic poly. The spread IS the liner grade, so
+    // naming the whole range after its cheapest end anchored a reader low, in the exact row
+    // where Carolux's differentiator belongs. Market range itself is unchanged (Angi /
+    // HomeAdvisor / HomeGuide); only the label and note are.
+    service: "Crawl Space Vapor Barrier",
     range: "$1.50 – $4.00 / sqft",
-    note: "Standard contractor-grade installation",
+    note: "Liner grade drives the range. Carolux installs Americover.",
   },
   {
     service: "Crawl Space Full Encapsulation",
