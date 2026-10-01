@@ -152,7 +152,7 @@ memory store (this was the cause of past continuity loss). Git commands `cd` int
 - **`H:\Claude Code Folders\carolux-legal\RISK-LANE-CHARTER.md`** — the spine's charter (how the
   lanes coordinate). **`…\carolux-legal\LEGAL-AUDIT-site-and-tools.md`** — the full both-projects audit.
 - **`H:\Claude Code Folders\carolux-marketing\CAROLUX_MARKETING.md`** — marketing brain + GBP plan
-  (§2). **`D:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`** — master doc map. See [[reference-master-docs]].
+  (§2). **`H:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`** — master doc map. See [[reference-master-docs]].
 - Estimator specifics: `carolux-tools\CLAUDE.md`, `LAUNCH_READINESS.md`, `CAROLUX_TOOLS_TODO.md`, `PRODUCTS.md`.
 
 ### ▶️ THE DESIGN BOARD — site-dev's open rows (authoritative = RISK-REGISTER.md)

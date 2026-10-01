@@ -1,8 +1,49 @@
 # CAROLUX PRO WEBSITE — AGENTS.md
+<!-- CAROLUX-SETTLED:BEGIN sha=bff4c935a74d -->
+## ⬛ CAROLUX / NORTHKEEP — SETTLED FACTS AND KILLED CLAIMS
+
+*Generated. Do not hand-edit. Source: `AUDITORS\Carolux Auditor\findings\SETTLED.md`. Updated 2026-10-01.*
+
+**If your question is on the SETTLED list, it is closed — act on the answer, don't ask the owner.**
+**If a line you are reading is on the KILLED list, it is dead no matter which file you found it in.**
+
+### SETTLED — answered by the owner. Do not re-ask.
+
+| # | Question | The answer |
+|---|---|---|
+| 1 | Can we install cellulose? | **YES.** Loose-fill cellulose in occupied homes, with or without removing existing insulation. Current, performed, sellable, publishable. *(Owner 2026-09-30, restated 10-01)* |
+| 2 | Dense-pack cellulose — do we offer it? | **YES**, to builders, and we bid on it. Equipment is procured **once the first contract is won** — a procurement sequence, **not a capability gap**. Builder product: don't lead a homeowner surface with it. *(Owner 2026-10-01)* |
+| 3 | Is SMS / A2P 10DLC registered? | **YES — approved 2026-06-30**, anchored at `0008cea`. Grasshopper handles STOP/HELP. Manual 1:1 texting is live. **Not an open question.** |
+| 3a | The only live A2P sub-question | Registered scope is **transactional** (estimate/scheduling/appointment). Whether a **post-job review request** falls inside it is a `legal/risk` ruling (`WI-129`), **not an owner task.** A new automated sender needs its own registration. |
+| 4 | Is Lake Norman / Mooresville in the service area? | **YES** — owner: *"lake norman mooresville yes we go there."* Shipped in `carolux-site/app/lib/content.js`. **SC towns stay out.** *(2026-09-30)* |
+| 5 | Energy Saver NC — enrol? | **NO, PARKED.** Owner phoned: not accepting new contractors. **Do not re-research.** *(2026-09-30)* |
+| 6 | What's our loaded crew rate? | **Wrong question — there are no employees.** Use the **hurdle rate: ~$135 gross profit per crew-hour** (2-person), ~$83 fully loaded with selling time. *(Owner 2026-09-30)* |
+| 7 | Which services are we adding? | **Six:** attic decking · crawl dehumidifier · dryer vent cleaning · radiant barrier · insulated hatch cover · $2,200 crawl moisture tier (**vented scope only**). **Dropped on the hurdle: duct insulation wrap, solar attic ventilation.** *(2026-09-30)* |
+| 8 | Radiant barrier in copy? | **Not yet.** In the catalogue and sellable in person; **stays out of ads, GBP and proposal templates** until owners are trained and `WI-078` clears the savings claim. *(2026-09-29)* |
+| 9 | Are we doing GBP posts? | **NO.** Owner: *"We are not doing posts. We are doing pictures."* The 8 drafts stay parked. *(2026-09-24)* |
+| 10 | Where is the job footage? | Source `H:\Documents\-- Carolux\Images\Jobs\`; backups on `G:\Carolux-Ad-Source\` **and** `K:\Carolux-Ad-Source\`. `K:` is a **portable LaCie that gets unplugged — absent ≠ lost.** **Never say the footage is missing.** |
+| 11 | Which Carolux archive is canonical? | **`H:\Documents\-- Carolux\`** (1,751 files, ~140 GB). **`D:` is an older partial copy AND a failing drive — write nothing new to it, and never cite it as source of truth.** |
+| 12 | Do we have employees or subs? | **No.** Both owners personally perform every job. No subcontractors. |
+
+### 🔴 KILLED — these claims are dead. Delete on sight, in any file.
+
+| Killed claim | Why it's dead | Use instead |
+|---|---|---|
+| **"Cellulose is not yet installable" / "don't promise cellulose"** | Contradicts SETTLED 1. The live phone agent refused cellulose **four times** while the website advertised it — homeowners were turned away. Fixed in the agent (V5); the instruction files were not. | *"We install blown-in (loose-fill) fiberglass or cellulose."* |
+| **"~117% ROI on attic insulation"** — any sourcing, incl. Remodeling magazine | **KILLED owner-verified 2026-06-14.** The figure is 8 years stale and **withdrawn from the study** — there is no current figure to replace it. Re-citing it to a different source does **not** revive it. | Delete. If an ROI point is needed: **Claim C** verbatim from `SAVINGS-METHODOLOGY.md` §3 + the FTC 460.19(b) disclosure. |
+| **"10–15% savings"** applied to a customer's total bill | HVAC-only figure applied to the wrong denominator; the Charlotte-specific version is **not verified, not approved**. | **~11% of total bill** (ENERGY STAR) + *"results vary"* + the 460.19(b) disclosure. |
+| **`D:\Documents\-- Carolux\` as cross-project source of truth / doc map** | Contradicts SETTLED 11. `D:` is a failing Seagate ST2000DM008; Windows still reports "Healthy" and that flag is not trustworthy. | **`H:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`** |
+| **"The loaded 2-person crew hourly rate does not exist, so margins are directional"** | Contradicts SETTLED 6. The metric was **replaced**, not missing — it will never exist, so nothing should wait on it. | The **hurdle rate**, ~$135 gross profit per crew-hour. |
+| **Solar attic ventilation / duct insulation wrap as live service candidates** | Contradicts SETTLED 7 — both were **dropped on the hurdle**. | Remove the row, or mark it `DROPPED (hurdle, 2026-09-30)`. |
+| **"No completed jobs / zero job footage / clips are lost"** | Contradicts SETTLED 10. Job photo sets exist; `K:` being unplugged is not loss. | Cite the three paths in SETTLED 10. |
+
+**Before putting ANY question to the owner:** check this block, then run `search_session_transcripts`. **Re-asking a settled question is this estate's most expensive recurring defect.**
+<!-- CAROLUX-SETTLED:END -->
+
 ## Read this file at the start of every session. Every decision made here is permanent until explicitly changed.
 *Last updated: June 2026*
 
-> **🔗 Cross-project source of truth & doc map:** `D:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`. **Shared invariants — keep site copy consistent:** **2-year** warranty; **Tony = FORMER NC home inspector — never "licensed"**; company is **"insured," not "licensed"** (trust bar = "Insured" only); never the word **"mold"**; **no spray foam**; no exact-$ savings (% + "results vary" only); never knock competitors. Pricing truth = estimator code → `PRODUCTS.md` → pricing guide v5 ($1.50/$1.75/$1.95 all-in). Other projects' docs → the index.
+> **🔗 Cross-project source of truth & doc map:** `H:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`. **Shared invariants — keep site copy consistent:** **2-year** warranty; **Tony = FORMER NC home inspector — never "licensed"**; company is **"insured," not "licensed"** (trust bar = "Insured" only); never the word **"mold"**; **no spray foam**; no exact-$ savings (% + "results vary" only); never knock competitors. Pricing truth = estimator code → `PRODUCTS.md` → pricing guide v5 ($1.50/$1.75/$1.95 all-in). Other projects' docs → the index.
 
 ---
 
