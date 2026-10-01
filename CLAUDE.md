@@ -63,7 +63,7 @@ Sources footer link.
 | **WI-017 🟠** | Next/postcss CVE upgrade. Breaking change — schedule with the owner, do not do it unattended on a live revenue site. |
 | Service-page depth | The evidenced next SEO move. Hold until the sitemap submission settles and the host consolidation completes. |
 | Sitemap submission | The `seo` lane owns it and will ping when it lands. Expect indexed counts to **dip** as `www` consolidates onto apex — that is the 308 working, not a regression. Do not revert it. |
-| Legal fast-follows | NC-attorney glance on ToS §11/§12 and the Service-Providers wording; Cal.com disclosure wording flagged to legal/risk. |
+| Legal fast-follows | NC-attorney glance on ToS §11/§12 and the Service-Providers wording; Cal.com disclosure wording flagged to legal/risk. **Authoritative source = `carolux-legal/PRIVACY-POLICY-EDITS-RECONCILED.md`** (WI-091b, 2026-10-01). Do NOT use `privacy-policy-additions-FINAL.md` — superseded 2026-06-15 and now stamped as such. RECONCILED also REVERSED the old timing call: the wording is **finished, not pending**, so the former "do not merge until an attorney glances" gate is obsolete — the attorney glance is a fast-follow, not a blocker. |
 | Owner-side | Real reviews (WI-003), mailing address (WI-049). |
 
 ### Caroline (the Retell receptionist) — not this lane, but it quotes our copy
