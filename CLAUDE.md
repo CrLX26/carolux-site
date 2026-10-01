@@ -6,271 +6,84 @@
 
 ---
 
-## 🟢 CURRENT HANDOFF — 2026-06-14 (latest). Read this first.
-**You are the `site-dev` session.** `main` = **`0008cea`** (HEAD `477fa2e`) — **LIVE in production.**
+## 🟢 CURRENT HANDOFF — 2026-10-01 (latest). Read this first.
 
-> **✅ SITE IS LIVE — DNS cutover COMPLETE. Verified 2026-08-12 (do not trust older "go-live pending / apex
-> still Wix" wording anywhere in this file — that was the pre-cutover snapshot).** `caroluxinsulation.com`
-> now serves THIS Next.js/Vercel site; Wix is retired. Live checks 2026-08-12: apex `200`, no Vercel
-> Deployment Protection, footer Privacy + ToS present, `/api/lead` alive + `RESEND_API_KEY` present in prod
-> (missing-fields → `400` not `503`). **The repo has been idle since 2026-06-30** (last commit `477fa2e`);
-> the launch shipped at the 06-30 cutover and nothing has deployed since.
->
-> **⚠️ LIVE-BUSINESS REALITY 2026-08-12 (owner):** live ~2 months, **1 estimate call, ZERO revenue.** Owner
-> is spinning up **Meta ads** (separate session) → the site's lead/comms path MUST be bulletproof before ad
-> spend. **Comms audit 2026-08-12 (site-dev):** plumbing is CONFIGURED — form/estimator → `/api/lead` →
-> Resend → team@; route alive, key present, site publicly reachable. **✅ COMMS VERIFIED 2026-08-12:** the
-> labeled test lead LANDED in team@ **inbox** (owner-confirmed). Live DNS is healthy — Resend **DKIM present
-> & aligned** (`resend._domainkey.caroluxinsulation.com`), a `send.` subdomain with SES SPF, DMARC `p=none`,
-> MX=Google Workspace. **Leads DO reach the owners; the form is not the problem.** **✅ Homeowner auto-reply
-> SHIPPED (`f5f3d19`):** `/api/lead` now sends an instant branded confirmation to the LEAD's own inbox
-> (estimator always has email; contact only if an email field is added) — best-effort/try-catch, never fails
-> the lead; brand-safe copy. **→ THE REAL PROBLEM IS DEMAND, NOT COMMS:** 1 estimate in 2 months = a traffic/
-> conversion problem. Growth levers = Meta ads (owner, separate session) + **Google Business Profile + real
-> reviews** (WI-003 still placeholder) + the SEO content engine. Optional polish: root SPF TXT
-> (`v=spf1 include:_spf.google.com include:amazonses.com ~all`). SMS stays off (`smsEnabled=false`); contact
-> form is phone-first by design (no email field — deliberate, low friction).
->
-> **✅ ONLINE BOOKING LANE ADDED 2026-08-13 (`ca2f3cc` + copy `ca1fc45`):** the site now has a self-serve
-> booking lane → `COMPANY.bookingUrl` = `https://cal.com/carolux-xzktck/free-in-home-estimate` (single source
-> in `content.js`). It opens the cal.com "Free In-Home Estimate" (60min, in-person) which lands in Juan's
-> Google Calendar — **the SAME calendar the AI receptionist "Caroline" (Retell, in the separate `AI-Front-Desk`
-> project) books into**, so web + phone bookings converge and can't double-book. Wired into: the Contact
-> "Book my free in-home estimate" button (above the form) + the Estimator result CTA (both `target="_blank"`,
-> no third-party script/cookies — privacy-clean). Copy reframed to **"free in-home estimate"** (you book a
-> VISIT; the estimate is delivered in-home) and the contact form is now crawl-space-inclusive (no "up top").
-> ⚠️ If the receptionist session ever changes the cal.com event/slug, update `COMPANY.bookingUrl` to match.
->
-> **✅ SEO/HYGIENE SWEEP 2026-08-13 (`38696d8` + `ffa1aad`) — deferred "B-group" cleared:**
-> **WI-072** duplicate-`@id` schema fix (was on 13 city pages **AND** all 3 service pages = 16 pages, wider
-> than the row said): the LocalBusiness entity is now declared **ONCE** in `app/lib/schema.js` (root layout
-> injects it site-wide); other pages reference it via `provider: {"@id": …/#business"}` only. **Never
-> re-declare that node on a page** — that was the bug. · **WI-073** `sitemap.js` uses a `MODIFIED` map of real
-> dates, not `new Date()` (bump the entry when a page actually changes). · **WI-074(b)** new indexable
-> **`/services`** hub. · **WI-004** `llms.txt` refreshed (3 service pages + hub + ToS + booking URL). ·
-> **WI-008** tracked `public/` **76MB → 12MB** (15 verified-dead assets; `house-thermal4.webp` IS in use —
-> kept). `.gitignore` hardened against `*.af`/`*OLD.*`/`* - Copy.*`/`*-master.mp4`.
-> **⚠️ NEVER `git add -A public/`** — it once staged a 245MB master and GitHub's 100MB hook rejected the push.
-> **WI-074(a) hours ✅ DONE 2026-08-13 (`1909757`)** — owner-confirmed `openingHoursSpecification` =
-> **Mon–Sat 07:00–18:00**, Sun closed. 🧭 **Two-layer model — do not collapse it:** schema hours = when the
-> BUSINESS is reachable/operating; **cal.com** holds the narrower in-home ASSESSMENT window (Mon–Thu
-> 6am–12pm, Fri–Sat 6am–6pm). Google renders "Open now / Closed" from the schema field, so putting the
-> assessment window there would show "Closed" every weekday afternoon = a live conversion leak.
-> Competitor baseline (verified Aug 2026): Charlotte insulation specialists are Mon–Fri 8–5, **closed
-> weekends** → Saturday + 6am starts are a real differentiator, now stated in the Contact booking copy.
-> **cal.com was also fixed that day** (was 9am-start = ~12 lost bookable hrs/week).
-> **✅ SEO TIER-1 2026-08-13 (`6036bbe`):** (1) **CWV** — the attic + crawl-space service pages rendered raw
-> `<img>` (shipping 464/459/630KB source PNGs on the pages paid traffic lands on); both now use `next/image`
-> with intrinsic dimensions + `sizes`. **Measured live: 464KB → 49KB at 640w = 90% smaller.** The homepage
-> already used `next/image`. **Rule: never add a raw `<img>` for a photo — use `next/image`.** (2) `/services`
-> **opengraph-image** added (hub had no social card). (3) **GSC hook**: set
-> `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` in the Vercel env + redeploy to verify Search Console — no code
-> change; left `undefined` so no bogus tag ships. **⚠️ GSC IS STILL NOT VERIFIED — the site has been live
-> since ~06-30 with zero index/query visibility. Highest-value open SEO item.**
->
-> **✅ /builders PAGE SHIPPED 2026-09-08 (`e64aa39`)** — implements `BUILDER-PAGE-BRIEF.md` (marketing lane,
-> now committed in-repo as the spec). Unblocks a live builder enquiry for 3 homes in Gastonia. **New
-> construction has always been the objective; retrofit is the on-ramp** — the site read as attic-retrofit only.
-> Pitch = **RESNET Grade I install + documentation**, NOT owner-operation/comfort/savings. Server component,
-> local tokens (sectionKit is `"use client"`). **Claim discipline verified in the RENDERED page:** zero
-> "licens*", "mold", cellulose, or $ figures in visible copy; no completed-new-build / production-builder /
-> self-certification claims; the only %s are the 2% Grade I tolerance + 5% RESNET penalty (specs, not savings —
-> keeps WI-059 out of scope). **Do not add cellulose or spray-foam-as-offering to this page.**
-> Slug `/builders`; NOT in nav (Nav.js locked + brief says unlinked is defensible with 0 completed new-build
-> jobs); cross-linked from `/services`, in `sitemap.js` + `llms.txt`; CTA = mailto with prefilled scope
-> (no file upload, does NOT reuse the homeowner form/estimator).
->
-> **🟡 NAV CTA — ALREADY OWNED BY ANOTHER SESSION (2026-09-08). DO NOT TOUCH Nav.js.** While building
-> `/builders` I found the nav CTA points to `href="#contact"` (Nav.js:118 desktop, :276 drawer, :336 sticky
-> mobile bar) but `id="contact"` exists ONLY on the homepage (`Contact.js:123`) — live-verified `/` has it,
-> `/builders` `/services` `/cost-guide` `/charlotte-insulation` return 0, so the primary CTA dead-ends on
-> ~18 subpages. **Owner confirmed another session is actively rewiring those buttons to cal.com**, which
-> fixes this as a side effect (an external URL works from any page). **site-dev stands down — do not edit
-> Nav.js, and do not "fix" this independently.**
->
-> **🛎️ COORDINATION for whoever wires the nav → cal.com:** use the existing single source
-> **`COMPANY.bookingUrl`** in `app/lib/content.js` (currently
-> `https://cal.com/carolux-xzktck/free-in-home-estimate`). The Contact section button and the Estimator
-> result CTA already read from it. Hardcoding the cal.com URL in Nav.js would create a second place to
-> update whenever the receptionist session changes the event/slug, and they WILL drift.
->
-> **Still open:** **WI-017** Next.js/postcss CVE upgrade (breaking; deliberately NOT done unattended on a
-> live revenue site — schedule it with the owner).
+**You are the `site-dev` session.** `main` = **`5be5a97`**, live in production on Vercel.
+`caroluxinsulation.com` serves this Next.js site; Wix is retired. Every push to `main` is a real
+customer-facing change.
 
-> **Shipped 2026-06-15→30 (after the 06-14 handoff below):** `fc6fce7` truthfulness · `6751e25` privacy
-> cluster · `b812811` legal scaffolding (WI-056/047/045) · `3c2ad26` FTC disclaimer + SMS consent
-> (WI-059/041/035/001) · **`0008cea` launch prep (WI-011 Edit 1 + WI-048).** Authoritative open list =
-> `RISK-REGISTER.md`.
+> **⬛ READ `AGENTS.md` FIRST.** Its `<!-- CAROLUX-SETTLED -->` block (generated, do not hand-edit)
+> holds the 12 settled owner answers and the KILLED-claims list. **That is the agreement channel.**
+> `RISK-REGISTER.md` is the work queue only. Check SETTLED before asking the owner anything.
+> `CLAUDE.md:1` is `@AGENTS.md`, a literal import, so it loads either way.
 
-> **Shipped 2026-06-15 (after the 06-14 handoff below):** `fc6fce7` truthfulness cluster (WI-002/003/
-> 006/009/027 site side) → `6751e25` privacy cluster (WI-007/044/057/011 edits 2-4) → `b812811`
-> legal scaffolding (WI-056 savings copy → ENERGY STAR 11% Claim A · WI-047 `/terms-of-service` page ·
-> WI-045 Vercel Web Analytics cookieless + privacy §6) → **`3c2ad26` FTC disclaimer + SMS consent
-> (WI-059 FTC 16 CFR 460.19 savings disclaimer on all site savings claims · WI-041 SMS consent checkbox
-> on Contact + record in team@ email · WI-035 site "Workmanship Guarantee" · WI-001 stray EXIF photo
-> removed · WI-060/WI-055 site halves verified clean).** All on the Vercel URL, NOT the public apex.
-> **🛎️ Open flags for spine/owner:** (1) privacy §6 Vercel-Analytics wording → spine to bless (WI-045);
-> (2) guarantee number 2yr-site vs 1yr-contract → owner/tools reconcile (WI-035); (3) durable SMS-consent
-> store gated on WI-014; (4) NC-attorney glance on ToS §11/§12 + the SMS label before DNS cutover.
-> Cross rows (WI-059/060/041/035/001/055) stay `in-progress` — design halves done, tools/owner halves open.
-> Authoritative open list = `RISK-REGISTER.md`.
+### What this lane owns, and what it does NOT
 
-### 🧭 THE 3-SESSION MODEL (set 2026-06-14 — this replaced the old 5-worktree setup)
-⚠️ **SUPERSEDED 2026-09-30:** the project now runs **eight lanes**, and **SEO is its own lane** (`seo` = `Carolux - GBP`) which owns SEO direction and diagnosis while site-dev implements. Canonical: `Carolux General Operations and Unifier\LANE-MAP.md`. The three-session summary below is kept for history.
+**Owns:** the website. Page implementation, on-page content, `schema.js`, `sitemap.js`, `robots.js`,
+metadata, deploys. All copy lives in `app/lib/content.js`, never hardcoded in components.
 
-Carolux ran THREE Claude Code sessions. Full detail in memory [[worktree-split]].
-1. **site-dev (THIS session)** — builds the website. **Design, SEO, AND copy all happen here** (one
-   repo). The old separate `carolux-seo` + `carolux-copy` worktrees were RETIRED 2026-06-14 — the
-   website is now a SINGLE worktree at `…\Carolux Pro Website\carolux-site` on `main`.
-2. **tools-dev** — builds the estimator (`H:\Claude Code Folders\carolux-tools`, SEPARATE repo).
-   Runs in parallel. **READ-ONLY to this session — never edit carolux-tools from here.**
-3. **Legal / Risk / Integration ("the spine")** — `carolux-legal` session. Doesn't build. Owns the
-   risk register, runs cross-cutting legal/risk/security audits as sub-agents, routes work.
+**Does NOT own: SEO *direction*.** Since 2026-09-30 that is the **`seo` lane** (`Carolux - GBP`),
+which owns the Business Profile, the local pack, organic diagnosis, and citations. **site-dev
+implements to that direction.** Owning the SEO *files* and owning the SEO *direction* are different
+things; conflating them is what made this wrong for three months. Canonical lane map:
+`Carolux General Operations and Unifier\LANE-MAP.md`.
 
-⚠️ **LAUNCH RULE:** start website work from the **wrapper folder** `H:\Claude Code Folders\Carolux
-Pro Website` — that cwd holds the real memory store. Launching from `…\carolux-site` hits an EMPTY
-memory store (this was the cause of past continuity loss). Git commands `cd` into `carolux-site`.
+**Read before trusting any status you did not personally verify:**
+`Carolux - GBP\CORRECTION-NOTICE.md` — the six empty-state traps and the stale-middle pattern.
 
-### 📌 COORDINATION FILES OUTSIDE THIS REPO (read these — the state isn't all in here)
-- **`H:\Claude Code Folders\Carolux - GBP\CORRECTION-NOTICE.md`** — ⚠️ **read this before trusting
-  any status you did not personally verify.** The project's "stop, here is why you were about to be
-  wrong" document. Holds the six **empty-state traps** (a screen showing nothing because it is not
-  YOUR account reads exactly like a thing being broken or missing — this cost several lanes a full
-  day on the Google Business Profile) and the **stale-middle pattern** (a document accurate at the
-  top and stale in the middle is more dangerous than one wrong throughout, because it reads
-  authoritative right up to where it misleads — four instances across four lanes on 2026-09-30, two
-  of them in THIS repo: `CLAUDE.md:343` and this session's persistent memory). Its four tests are
-  worth following: read the line alone after annotating; annotate retired history but CORRECT active
-  traps; prefer files to memory for anything cross-lane, because files are auditable and memory is
-  private; and label per line (SOURCE / DEPLOYED? / NOT LIVE / VERIFIED / UNKNOWN) rather than
-  stamping a freshness banner on a whole document.
-- **`H:\Claude Code Folders\RISK-REGISTER.md`** — cross-project risk / security / legal register; it
-  is THE bus. site-dev owns + fixes the rows tagged `design`, and **flips its own rows' Status**.
-  Curated by the spine. The authoritative list of open launch work lives here, not in CLAUDE.md.
-- **`H:\Claude Code Folders\CAROLUX_MASTER_TODO.md`** — whole-business roadmap (site + estimator +
-  marketing + legal + finances). Has a pointer to the register.
-- **`H:\Claude Code Folders\carolux-legal\RISK-LANE-CHARTER.md`** — the spine's charter (how the
-  lanes coordinate). **`…\carolux-legal\LEGAL-AUDIT-site-and-tools.md`** — the full both-projects audit.
-- **`H:\Claude Code Folders\carolux-marketing\CAROLUX_MARKETING.md`** — marketing brain + GBP plan
-  (§2). **`H:\Documents\-- Carolux\CAROLUX_DOCS_INDEX.md`** — master doc map. See [[reference-master-docs]].
-- Estimator specifics: `carolux-tools\CLAUDE.md`, `LAUNCH_READINESS.md`, `CAROLUX_TOOLS_TODO.md`, `PRODUCTS.md`.
+### Where things actually stand (measured, not assumed)
 
-### ▶️ THE DESIGN BOARD — site-dev's open rows (authoritative = RISK-REGISTER.md)
-Launch blockers + important items owned by THIS session, all waiting (most need an owner decision):
-- **WI-002 🔴** Estimator email over-promises (UI says "watch your inbox"; system emails only team@).
-  `api/lead/route.js:119-127` + `content.js` `emailPrompt`/`emailDone`/`emailDoneSub`. Fix A (reword,
-  no-regret) or B (send the homeowner an email). Owner parked the A/B call.
-- **WI-003 🔴** Placeholder reviews: `content.js:188` ("$80" exact-$ claim) + `Reviews.js:62-67`
-  (hardcoded 5-star). FTC issue. Plan: hide the Reviews section behind a flag until REAL reviews.
-- **WI-004 🟠** `llms.txt` missing the 3 service pages (`public/llms.txt`). SEO is site-dev's now.
-- **WI-006 🟠** `/design-reference`: noindex ✅ shipped (`4dc394f`); STILL OPEN = scrub the fabricated
-  "47% Verified" stat + ENERGY STAR/Owens Corning logo reel, or delete the route (decision).
-- **WI-007 🟠** RapidScan site-seal script in `Footer.js:104-107` — spine decides disclose/keep/drop,
-  THEN site-dev implements.
-- **WI-008 🟠** ~50MB dead tracked assets in `public/`. ⚠️ The register row erroneously lists
-  `house-thermal4.webp` as dead — it is IN USE (Hero + all-page schema/OG image). Delete the verified
-  set only; KEEP house-thermal4.webp.
-- **WI-009 🟡** em dash in `cost-guide/page.js` `<title>`. **WI-010 🟡** cellulose copy vs tools gap
-  (owner keeps copy). **WI-026/WI-027** air-sealing top-off disclosure / soften "most contractors".
-- **WI-011 🟠** Privacy-policy additions — staged on branch (see In-Flight below), pending NC attorney.
+- **Indexation is healthy.** 17 indexed, 6 benign canonical/redirect exclusions. Do **not** act on
+  `site:` result counts — they are a sampled, truncated view and produced a wrong "two-thirds
+  unindexed" conclusion that nearly bought a 13-page rewrite.
+- **The real problem is ranking, not discovery.** 435 impressions, 5 clicks, average position 22.3
+  over ~3 months. Service pages sit at 22–35 with real volume; city pages rank 4–9 with almost none.
+  **Never act on the 22.3 blended average** — it averages two opposite problems.
+- **The 13 city pages are NOT worth rewriting.** They rank well (Cramerton 4.0, Pineville 5.0,
+  Stanley 7.0, Gastonia 9.3) and earn 1–8 impressions each. Better content cannot create search
+  volume. Depth and authority on the **three service pages** is where the demand is.
+- **Gaston County is won on the Business Profile; Charlotte is won on the site, slowly.** Not a
+  fork — different surfaces, do both.
 
-### ✅ SHIPPED to main this session (2026-06-14)
-- **Reorg → 3-session model** (docs/process only): retired seo/copy worktrees; created the risk
-  register + spine charter; SEO knowledge captured to memory [[seo-aeo-conventions]].
-- **WI-005 + WI-006 noindex** (`4dc394f`): footer Services column via new single-source `SERVICE_LINKS`
-  in `content.js`; `app/design-reference/layout.js` noindex/nofollow. Built-HTML verified.
+### Shipped recently
 
-### 🔶 IN FLIGHT — branch `privacy-policy-service-providers` (`40f928a`, NOT merged)
-Privacy-policy "Service Providers / AI processing" additions applied to `content.js` PRIVACY_POLICY
-(new §7, DNT sentence, §2 assessment-details, renumbered 7/8/9→8/9/10). Per
-`carolux-legal/privacy-policy-additions-FINAL.md`. **Do NOT merge until an NC attorney glances**;
-then bump `lastUpdated` (held at "June 3, 2026" with a `// PENDING` comment). Tracked = WI-011.
+`/builders` rebuilt on 4-agent research (schedule and insurance lead; Grade I gated to programme
+builders) · assemblies + R-value table · one-page capability-statement PDF (`scripts/capability-pdf.mjs`,
+regenerate when materials or service area change) · cellulose, insulation removal and attic decking
+added to the bid scope · `www` → apex 308 · `/services` un-orphaned from the footer · real Maps CID
+link replacing the dead `g.page` vanity URL · Retell voice-AI and Cal.com disclosed in the privacy
+policy · `addressLocality` → Gastonia · Mooresville added to the service area · Google Preferred
+Sources footer link.
 
-### ✅ MERGED to main this session (2026-06-13) — dedicated service pages (PR #6)
-Three SEO/AEO service pages, cloned from the cost-guide + city templates; SEO-reviewed (PASS) +
-design-taste pass done before merge. `main` ff'd to `dc3b792`.
-- `/services/attic-insulation`, `/services/crawl-space-insulation`, `/services/air-sealing`
-  (+ each has a static `opengraph-image.js`).
-- Each: answer-first quick-answer, process / why-NC / cost / FAQ; native `<details>` FAQ (answers in
-  server HTML); `@graph` schema (LocalBusiness + Service + FAQPage-from-on-page-array + Breadcrumb);
-  unique metadata/canonical.
-- Crawl page: batt + ground vapor barrier ONLY, states plainly Carolux does NOT encapsulate.
-  Air-sealing: "included with every full install at no extra charge" + top-off caveat disclosed.
-- Internal mesh (bidirectional): homepage `Services.js` (data-driven `learnMoreLabel`) + 13 city
-  pages → service pages; service pages cross-link each other + 13 cities + `/cost-guide`. Added to
-  `sitemap.js`.
-- Accuracy fix: removed false "we encapsulate" + perimeter-wall claims from `content.js` (homepage
-  card + 2 Packages features). SEO lane separately fixed `schema.js` + `llms.txt` encapsulation claims.
-- **Cellulose** stays in copy (owner's call) but is a REVISIT: real support needs carolux-tools
-  estimator changes (PRODUCTS.md lists cellulose as future). See master TODO.
+### Open threads
 
-### ✅ MERGED to main this session (2026-06-13) — estimator-reframe (fast-forward, 4 commits)
-- `63310d2` feat(estimator): reframe with three-ways ledger and NC-honest rates
-- `9bc1083` Estimator reframe: THREE_WAYS ledger, live Charlotte temp panel, UX clarity
-- `9388290` Temp panel honesty fix: daily high, showAttic gate, mobile strip, DOE source
-- `d4bbb9d` impeccable: estimator polish — all P1/P2/P3 fixes + copy
+| Thread | State |
+|---|---|
+| **WI-125 🔴** | No Meta Pixel on the site; CAPI fires into an unconnected dataset. Gates honest measurement of ad spend. Joint with marketing. |
+| **WI-017 🟠** | Next/postcss CVE upgrade. Breaking change — schedule with the owner, do not do it unattended on a live revenue site. |
+| Service-page depth | The evidenced next SEO move. Hold until the sitemap submission settles and the host consolidation completes. |
+| Sitemap submission | The `seo` lane owns it and will ping when it lands. Expect indexed counts to **dip** as `www` consolidates onto apex — that is the 308 working, not a regression. Do not revert it. |
+| Legal fast-follows | NC-attorney glance on ToS §11/§12 and the Service-Providers wording; Cal.com disclosure wording flagged to legal/risk. |
+| Owner-side | Real reviews (WI-003), mailing address (WI-049). |
 
-**What this shipped:**
-- `app/components/Estimator.js` — complete reframe: THREE_WAYS savings ledger replacing single-metric; live Charlotte daily high temperature panel via Open-Meteo (lat=35.2271, lon=-80.8431); `showAttic` gate (only shows heat-loss panel when daily high ≥78°F + +40°F attic delta); `tempError` fallback card; mobile strip line "Your AC is fighting both." gated on `showAttic`; result card CTA now conditional on `hasResult`; email error fallback shows phone + email contact; all impeccable P1/P2/P3 findings addressed.
-- `app/lib/content.js` — `insulationHint` updated to "Most homes here were last insulated 10–20 years ago — it's worth checking."; email CTA relabeled to "Send my estimate".
-- Impeccable critique snapshot: `.impeccable/critique/2026-06-13T23-59-19Z__app-components-estimator-js.md`
+### Caroline (the Retell receptionist) — not this lane, but it quotes our copy
 
-### ⚠️ OPEN WORK = the DESIGN BOARD above + `RISK-REGISTER.md`
-The register is the single source of open work — read it for the authoritative, current list (and
-flip your own rows as you ship). The two big launch blockers for site-dev: WI-002 (email
-over-promise) and WI-003 (placeholder reviews). One minor item NOT in the register: the Estimator CTA
-"Book Your Free Estimate" vs the Contact submit label (`CONTACT.form.submit`) — align the wording
-when next editing `content.js`.
+Ground truth: `AI-Front-Desk\CAROLINE-GROUND-TRUTH.md`. Live at **V6**. She offers residential
+attic cellulose, **never** discusses dense-pack or any contractor-side option, routes every builder
+and GC call straight to Tony or Juan, and states no savings percentage on calls. **Her greeting and
+our privacy policy must say the same thing** — if either changes, change both.
 
-### Shipped to `main` (previous session, 2026-06-12 — still live)
-- **Owner photos downscaled** (`05ac1f3`): tony/juan PNG → WebP (40KB/34KB). References updated in `content.js`.
-- **SEO batch** (SEO lane, `4676747…80d2cae`): `/cost-guide` page (Charlotte pricing guide, FAQPage
-  schema), AEO authority pass, all 9 FAQ answers rewritten for AI extractability. `seo-foundation`
-  merged and closed — SEO worktree now on `seo-next`.
-- **Impeccable — FAQ + cost-guide** (`916c6db`, `86a66c8`): `Faq.js` now renders `learnMoreHref`
-  as a small teal link after the answer text (first FAQ item → `/cost-guide`). `cost-guide/page.js`
-  brand violations fixed: side-stripe border removed, identical card grids → hairline ledgers,
-  all `#fff` → `C.surface`/`C.cream`, `borderRadius` normalised to 4px/3px, CTA section teal→navy.
+### Hard rules
 
-### Prior shipped (still live, earlier sessions)
-- **Stats polish** (`ebc6a0a`), **WhyUs 2×2 ledger** (`7b1cf35`), **SEO foundation**
-  (`ca3e6b0…7a88342`), **FAQ component** (`9e59ab5`, `e2f091c`), **lead capture** (`2e1fe4c`),
-  **social footer buttons + sameAs** (`6430346`, `4cfbc55`).
+Claim limits live in `AGENTS.md` and in the header comment of `app/builders/page.js`. The ones that
+bite most often: **never "licensed"** (insured; Tony is a FORMER NC home inspector) · **never
+"mold"** · **no spray foam as an offering** · **2-year** workmanship guarantee · no exact-$ savings
+· never knock a competitor · **do not touch `Nav.js`** · `carolux-tools` is read-only from here ·
+never `git add -A public/` (it once staged a 245MB file and GitHub rejected the push).
 
-### Lead capture — ✅ LIVE on `main` (`2e1fe4c`) — ⚠️ see WI-002 (Design Board / RISK-REGISTER.md)
-Estimator email + Contact form POST to a hardened **`app/api/lead/route.js`** (Resend; reuses
-carolux-tools' account + verified sender; honeypot, per-IP rate limit, HTML-escape, validation).
-Shared kit **`app/components/leadForm.js`** (`useLead` state machine, Spinner, ErrorNote,
-SuccessReveal, CheckBadge, Honeypot). `RESEND_API_KEY` is set in the carolux-site **Vercel
-production** env (preview env not set — non-blocking). Production verified: honeypot→200,
-missing-fields→400 (key read), and a labeled prod test delivered to team@. PR #5 closed. `resend` in
-package.json; `.env.local` has the key (UTF-8 BOM — extract with `grep -ao`). Verify: `scripts/leadshot.mjs`.
-**Gap:** only team@ receives the Resend email. Homeowner sees "Watch your inbox" but receives nothing
-automatically. See **WI-002** in the Design Board / `RISK-REGISTER.md` for fix options (A reword / B outbound email).
+**Dense-pack cellulose is builder-facing only.** It must stay off the homeowner pages and the
+Business Profile, which face consumers. Attic loose-fill cellulose is fine everywhere.
 
-### Social buttons — ✅ LIVE on `main` (`6430346`)
-Footer brand-column icon row (Google, Instagram, Facebook, Nextdoor; monochrome cream→teal; Nextdoor
-= house glyph). All four URLs in `content.js` COMPANY confirmed (instagram/facebook/googleBusiness/
-nextdoor). SEO added the same four to `schema.js` `sameAs` (`4cfbc55`, derives from `COMPANY.*` so it
-stays in sync). Verify: `scripts/footshot.mjs`.
-
-### Path-to-live backlog (from the launch audit) — now tracked in `RISK-REGISTER.md`
-*These items are superseded by the register (WI rows); kept here for context. Reviews = WI-003,
-DNS/Vercel = WI-012.*
-Reviews are PLACEHOLDER incl. a "$80" $-claim (replace or pull); desktop thermal XOR verified
-Chromium-only (check Firefox/Safari); Vercel Deployment Protection off + DNS repoint.
-Owner photos ✅ downscaled (tony/juan PNG → WebP, 40KB/34KB). Before/after photos ✅ confirmed
-real Carolux jobs — city captions are safe to add. Lead capture ✅ DONE and live (⚠️ outbound gap — see above).
-Site stays on Wix until explicitly ready to cut over — do NOT touch DNS.
-
-### Highest-leverage NEXT (off-site, user-owned — ON HOLD per user 2026-06-11)
-Claim + fully fill the **Google Business Profile** and gather **real reviews** (NAP-consistent). The
-`sameAs` links only pay off once those profiles are live + complete. Code-side follow-through when
-reviews exist: replace placeholder reviews + drop the "$80" line in `Reviews.js`/`content.js`, then
-add Review/AggregateRating schema — **only from genuine reviews** (self-applied ratings violate
-Google policy; `schema.js` already warns against this).
-
----
 
 ## 🟡 PRIOR HANDOFF — Hero (mobile sequence + desktop thermal cycle) — LIVE on main
 *Detail reference from 2026-06-10. Still accurate for the Hero; superseded as "latest" by the block above.*
