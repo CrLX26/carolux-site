@@ -237,28 +237,69 @@ export const PACKAGES = [
   },
 ];
 
-// WI-003: these reviews are PLACEHOLDER (not real → FTC Endorsement Guides). While REVIEWS_LIVE
-// is false, Reviews.js renders an HONEST "reviews coming soon" placeholder instead (the #reviews
-// section stays because Nav.js — locked — hardcodes that anchor). To go live: gather REAL reviews,
-// replace this array, set REVIEWS_LIVE = true, AND add Review/AggregateRating schema (only from
-// genuine reviews — self-applied ratings violate Google policy).
-export const REVIEWS_LIVE = false;
+// ─── REAL CUSTOMER REVIEWS — verbatim from the Google Business Profile ───────────────
+// WENT LIVE 2026-10-11 (owner instruction). These replaced the WI-003 placeholders, and
+// the section no longer says "reviews coming soon", which had become false.
+//
+// ⚠️ EVERY WORD IS VERBATIM, transcribed from the live profile. The typos are the
+// customers' own and are KEPT DELIBERATELY: 16 CFR 465 and the FTC Endorsement Guides
+// turn on an endorsement being the endorser's honest words, and "tidying" a review is
+// exactly the edit that creates exposure. Do NOT fix "the remover", "safe some money",
+// "haven't", or remove the emoji. Whitespace normalisation only.
+//
+// ATTRIBUTION = first name + last initial, deliberately, after a research pass:
+//   · NO law prescribes a format — not the FTC, not North Carolina.
+//   · NC has no right-of-publicity statute but DOES have a common-law appropriation tort
+//     (Flake v. Greensboro News Co.; Hall v. Post): name used for commercial benefit
+//     WITHOUT consent. A customer's own words about us is the weakest possible form of
+//     that claim, but consent is a fact question and no NC case covers reviews. First
+//     name + last initial shrinks that surface to near nothing.
+//   · Credibility is NOT lost, because credibility does not come from the name — it comes
+//     from being CHECKABLE. The Google profile is linked under the grid, where the full
+//     names live. We borrow Google's verification instead of republishing identities.
+//   · It is also the verified industry norm (Thumbtack displays exactly this shape).
+//   TO USE FULL NAMES: ask the customers first. Consent removes the only real legal
+//   question. Do not upgrade the names without it.
+//
+// 🔴 DO NOT ADD Review OR AggregateRating SCHEMA. This REPLACES the old note here that
+// said to add it — that instruction was wrong, and genuineness was never the issue.
+// Google: "If the entity that's being reviewed controls the reviews about itself, their
+// pages that use LocalBusiness or any other type of Organization structured data are
+// ineligible for star review feature" — and that explicitly covers embedded third-party
+// widgets too. It earns zero stars and reads as markup spam. The stars belong on the
+// Business Profile, which already shows 5.0. This page shows the words and links out.
+//
+// 🔴 NO hardcoded review COUNT or AVERAGE anywhere in the copy. A number here goes stale
+// silently the moment a review lands. The link carries the live truth instead.
+//
+// ⚠️ INCOMPLETE BY ONE: a 4th genuine review (Bradford V.) exists on the profile but sits
+// behind Google's "More reviews" pagination and could not be transcribed reliably from
+// the browser. Add it from the GBP dashboard, same shape, verbatim. Omitting a POSITIVE
+// review is not an FTC problem — the suppression rules target hiding NEGATIVES — it is
+// just incomplete. Showing every review that exists is the strongest posture available.
+export const REVIEWS_LIVE = true;
 
 export const REVIEWS = [
   {
-    name: "Marcus T.",
-    location: "South End, Charlotte",
-    text: "Tony and Juan came out within two days of calling. They sealed the attic and blew in the insulation — told me exactly what they were doing the whole time. My power bill dropped $80 the next month. Worth every penny.",
+    name: "Ben S.",
+    source: "Google review",
+    rating: 5,
+    text:
+      "You will make an excellent choice if you have Carolux provide insulation services for your home. Juan and Tony are reputable, knowledgeable, punctual, thorough and work efficiently with great integrity. I am beyond pleased with every step of the job, from bid to completion. Thank you guys!",
   },
   {
-    name: "Sandra R.",
-    location: "Ballantyne, Charlotte",
-    text: "I got three quotes and Carolux was the only company that mentioned air sealing before I even asked. They know their craft. The crawl space looks completely different — clean, dry, and professional.",
+    name: "Marely D.",
+    source: "Google review",
+    rating: 5,
+    text:
+      "Carolux was great! They showed up on time and gave me a quote the same day. I live in an older home (1970s) the remover all of the old insulation and air sealed the attic and installed upgraded insulation. Time will tell but I have noticed my air conditioning haven’t been running as much since the new installation.",
   },
   {
-    name: "Dave H.",
-    location: "Gastonia, NC",
-    text: "These guys are the real deal. Owner-operated means something — Juan walked me through every step and answered every question. No upsell, no pressure. My house is noticeably more comfortable upstairs now.",
+    name: "Linda M.",
+    source: "Google review",
+    rating: 5,
+    text:
+      "I got a free estimate to see if I could get new insulation in our attic, and the price was better than other places I tried. Juan and Tony were helpful, answered all our questions and guided us through the whole process. I’m sure I’m going to safe some money this summer 💸 the room next to the attic feels Way cooler. Good customer service, fast, efficient and good pricing.",
   },
 ];
 
