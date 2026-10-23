@@ -8,7 +8,7 @@ const BASE_URL = "https://caroluxinsulation.com";
 // files (and the visible "Last updated" bylines) — bump the matching entry here
 // when a page's content actually changes.
 const MODIFIED = {
-  home: "2026-10-11",        // real customer reviews went live
+  home: "2026-10-23",        // booking window 9-5 Mon-Sat; booking copy resynced
   costGuide: "2026-10-01",   // vapor barrier row renamed; Americover named
   services: "2026-08-13",    // new /services hub
   builders: "2026-10-01",    // cellulose both forms, no caveat (owner ruling)

@@ -445,12 +445,19 @@ export const CONTACT = {
   intro:
     "Tell us about your attic or crawl space and an owner gets back to you, usually within a few hours. No call centers, no runaround.",
   // Online self-book lane (cal.com → Juan's Google Calendar). Shown above the form as the fast path.
-  // Saturday + early-morning slots are a real differentiator (verified 2026-08-13: the
-  // Charlotte insulation specialists run Mon-Fri 8-5 and close weekends). Stated as OUR
-  // availability, never as a competitor knock — brand rule + the WI-027 comparative-claim
-  // precedent. Keep in sync with the cal.com availability.
+  // ⚠️ KEEP IN SYNC WITH THE LIVE CAL.COM AVAILABILITY — this copy is a promise about slots.
+  // CURRENT (owner instruction 2026-10-23, verified on the public booking page same day):
+  //   schedule window = Mon-Sat 9:00 AM - 5:00 PM, SUNDAY OFF, America/New_York.
+  //   The event is 60 MINUTES, so the visible bookable STARTS are 9am through 4pm.
+  //   THE WINDOW AND THE SLOTS ARE NOT THE SAME NUMBER: the window must run one event-length
+  //   past the last slot you want shown. The old 6:00-12:00 window is exactly why the owner
+  //   reported seeing "6am to 11am". Mind that trap when changing this again.
+  // The EARLY-MORNING claim is gone with the 6am slots. The SATURDAY claim stays and is still a
+  // real differentiator (verified 2026-08-13: the Charlotte insulation specialists run Mon-Fri
+  // 8-5 and close weekends). Stated as OUR availability, never as a competitor knock — brand
+  // rule + the WI-027 comparative-claim precedent.
   bookLead:
-    "Know when you're free? Pick your own time, no phone tag. Saturdays and early mornings from 6am are open.",
+    "Know when you're free? Pick your own time, no phone tag. We book Saturdays too, 9 to 5 like any other day.",
   bookCta: "Book my free in-home estimate",
   formOr: "Or send your info and an owner will reach out",
   form: {
