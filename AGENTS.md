@@ -1,5 +1,5 @@
 # CAROLUX PRO WEBSITE — AGENTS.md
-<!-- CAROLUX-SETTLED:BEGIN sha=7155d867ad09 -->
+<!-- CAROLUX-SETTLED:BEGIN sha=6ff8f001ea96 -->
 ## ⬛ CAROLUX / NORTHKEEP — SETTLED FACTS AND KILLED CLAIMS
 
 *Generated. Do not hand-edit. Source: `AUDITORS\Carolux Auditor\findings\SETTLED.md`. Updated 2026-10-01.*
@@ -22,7 +22,9 @@
 | 8 | Radiant barrier in copy? | **Not yet.** In the catalogue and sellable in person; **stays out of ads, GBP and proposal templates** until owners are trained and `WI-078` clears the savings claim. *(2026-09-29)* |
 | 9 | Are we doing GBP posts? | **NO.** Owner: *"We are not doing posts. We are doing pictures."* The 8 drafts stay parked. *(2026-09-24)* |
 | 10 | Where is the job footage? | Source `H:\Documents\-- Carolux\Images\Jobs\`; backups on `G:\Carolux-Ad-Source\` **and** `K:\Carolux-Ad-Source\`. `K:` is a **portable LaCie that gets unplugged — absent ≠ lost.** **Never say the footage is missing.** |
-| 11 | Which Carolux archive is canonical? | **`H:\Documents\-- Carolux\`** (1,751 files, ~140 GB). **`D:` is an older partial copy AND a failing drive — write nothing new to it, and never cite it as source of truth.** |
+| 11 | Which Carolux archive is canonical? | **`H:\Documents\-- Carolux\`** (~140 GB). **`H:` IS CANON — full stop.** *(Owner, 2026-10-01)* |
+| 11a | `D:` — what is the rule? | **`D:` IS RETIRED. It does not need to be used and must not be.** Never write to it, never cite it, never read from it except for the one-time salvage below. It is failing and accelerating: SMART still reports "Healthy" and **that flag is meaningless here** (65+ bad blocks in 14 days; **3 files already destroyed**). *(Owner, 2026-10-01)* |
+| 11b | A file is on both `D:` and `H:` and the `D:` copy is NEWER — which wins? | **`H:` WINS. Any copy on `H:` is canon**, regardless of dates. **Do not restore a newer `D:` version over it, and do not re-raise the comparison.** Only files that exist on `D:` and **nowhere on `H:`** get copied across. *(Owner, 2026-10-01 — this settles the `carolux_social_strategy.jsx` conflict: keep `H:`)* |
 | 12 | Do we have employees or subs? | **No.** Both owners personally perform every job. No subcontractors. ⚠️ **TRUE OF STAFFING — NOT APPROVED COPY.** The owner instructed `site` on **2026-09-08** to **remove** this language from `/builders`: a builder reading a capacity cap is a reason to pass on a multi-home job, and Carolux intends to expand. **The durable public claim is: "an owner, or a directly supervised team member, on every job."** See `WI-050` (advertised-vs-actual, UDTPA). Use fact 12 for costing and classification, **never as licence for customer-facing copy.** |
 
 ### 🔴 KILLED — these claims are dead. Delete on sight, in any file.
@@ -36,6 +38,20 @@
 | **"The loaded 2-person crew hourly rate does not exist, so margins are directional"** | Contradicts SETTLED 6. The metric was **replaced**, not missing — it will never exist, so nothing should wait on it. | The **hurdle rate**, ~$135 gross profit per crew-hour. |
 | **Solar attic ventilation / duct insulation wrap as live service candidates** | Contradicts SETTLED 7 — both were **dropped on the hurdle**. | Remove the row, or mark it `DROPPED (hurdle, 2026-09-30)`. |
 | **"No completed jobs / zero job footage / clips are lost"** | Contradicts SETTLED 10. Job photo sets exist; `K:` being unplugged is not loss. | Cite the three paths in SETTLED 10. |
+
+### ⚙️ THE LIVE STACK — built by NorthKeep, running on Carolux. Stop re-deriving this.
+
+**NorthKeep is the owner's other company** (it sells AI + business automation). **Carolux is its customer-zero and first case study** — the live builds are NorthKeep's to run. Full operator detail: `New NorthKeepHQ Business/docs/delivery/`.
+
+| Piece | What it is |
+|---|---|
+| **Caroline** | Retell voice receptionist, **(704) 350-2906**, on no-answer rollover. Live. |
+| **Otto** | A **Telegram bot** on **n8n Cloud + Claude Haiku + Google Apps Script**. Alerts Juan on every new Meta lead, takes text commands to update the sheet. **Owners only — never talks to customers.** Live since 2026-08-26. |
+| **📲 Telegram = how things reach the owner** | **This is the notification channel for the estate.** Not SMS, not email-to-Juan. If you are designing an alert, it goes to Telegram via n8n. |
+| **Booking** | **Cal.com event-type `6673455`** → the **`team@caroluxinsulation.com` Google Calendar**. ⚠️ **Retell has NO native Google Calendar — booking is Cal.com ONLY.** |
+| **Visit availability** | **Mon–Sat 9am–5pm ET · Sun closed** (`America/New_York`). ⚠️ **Visits are 60 min, so the bookable STARTS a caller sees are 9am–4pm** — a window and its slots are different things, and confusing them already cost one round trip. ⚠️ **Cal.com is authoritative, NOT this cell.** The owner changes these hours in Cal.com directly and nothing ties the two together, so **if Cal.com disagrees with this line, Cal.com wins — then tell the auditor.** Set by the owner + `site` and verified on the public booking page **2026-10-23**. |
+| **One calendar is truth** | Everything converges on that one Google Calendar: **Caroline books via Cal.com, Otto writes directly, manual by hand.** ⚠️ **Cal.com's "Bookings" tab is NOT the master view** — it only shows Cal.com bookings, so Otto's never appear there and it looks emptier than reality. |
+| **Customer confirmations** | **Cal.com email.** The **Retell paid SMS add-on is OFF** as a cost guardrail (auto-recharge off, no paid add-ons). |
 
 **Before putting ANY question to the owner:** check this block, then run `search_session_transcripts`. **Re-asking a settled question is this estate's most expensive recurring defect.**
 <!-- CAROLUX-SETTLED:END -->
