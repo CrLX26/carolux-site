@@ -8,7 +8,7 @@
 
 ## 🟢 CURRENT HANDOFF — 2026-10-01 (latest). Read this first.
 
-**You are the `site-dev` session.** `main` = **`5be5a97`**, live in production on Vercel.
+**You are the `site-dev` session.** `main` = **`22137dc`**, live in production on Vercel.
 `caroluxinsulation.com` serves this Next.js site; Wix is retired. Every push to `main` is a real
 customer-facing change.
 
@@ -46,6 +46,23 @@ things; conflating them is what made this wrong for three months. Canonical lane
   fork — different surfaces, do both.
 
 ### Shipped recently
+
+**2026-10-28 — `/builders` commercial unblock (`22137dc`).** The page was turning commercial and
+multifamily GCs away in three places, while the business had already sent ~6 commercial bids.
+Removed the explicit multifamily/commercial exclusion (page + capability PDF); rescoped the hero,
+metadata, OG and the Service JSON-LD off **"new single-family construction"**, which excluded
+commercial on its own even after the exclusion was deleted; reframed "Where we work" so the 13-town
+list is a day-to-day service area, not a bid boundary. Turnaround is **next business day**
+everywhere (was two business days). Added the scope-letter promise (inclusions, exclusions,
+clarifications, alternates priced separately) and buy-direct-from-a-distributor, no rates.
+Capacity-free benefit line, owner's wording: *the person who prices the job is on site when it gets
+built*. Also fixed a standing **SETTLED 12** violation this page's own header comment (`:63`)
+already forbade — *"An owner is on site for every job"* became *"an owner, or a directly supervised
+team member, on every job"*, on the page and in the PDF. Regenerate the PDF with
+`node scripts/capability-pdf.mjs` whenever materials, service area or claims change; verify its text
+with `pdftotext` (a naive `\(...\)` regex extracts nothing from it and silently reads as "clean").
+**Still hard-never:** spray foam, any implied commercial portfolio or experience.
+
 
 `/builders` rebuilt on 4-agent research (schedule and insurance lead; Grade I gated to programme
 builders) · assemblies + R-value table · one-page capability-statement PDF (`scripts/capability-pdf.mjs`,
