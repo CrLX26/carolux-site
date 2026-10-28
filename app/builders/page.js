@@ -71,12 +71,12 @@ const LAST_UPDATED = "2026-10-01";
 export const metadata = {
   title: "Insulation for Builders | New Construction | Carolux",
   description:
-    "New-construction insulation in Gaston and Mecklenburg County, NC. Written scope within two business days, insured with COI and W-9 on request, and every bay photographed before drywall.",
+    "Insulation subcontractor for new construction, renovation and tenant work. Send the drawings and get a written scope and a number back by the next business day. Insured, COI and W-9 on request.",
   alternates: { canonical: "/builders" },
   openGraph: {
     title: "Insulation for Builders | New Construction | Carolux",
     description:
-      "New-construction insulation in Gaston and Mecklenburg County, NC. Scope in two business days, insured, and every bay photographed before drywall.",
+      "Insulation subcontractor for new construction, renovation and tenant work. Scope and number back by the next business day. Insured, COI and W-9 on request.",
     url: `${BASE_URL}/builders`,
     siteName: "Carolux Insulation",
     locale: "en_US",
@@ -163,7 +163,7 @@ const schema = {
       name: "New Construction Insulation for Builders",
       serviceType: "New Construction Insulation",
       description:
-        "Insulation for new single-family residential construction in Gaston and Mecklenburg County, NC. Fiberglass batt and blown-in, mineral wool, rigid board at rim and band joists, vapor barrier, and air sealing. Written scope within two business days, insured, and every bay photographed before drywall.",
+        "Insulation subcontracting for new construction, renovation and tenant work. Fiberglass batt and blown-in, cellulose, mineral wool, rigid board at rim and band joists, vapor barrier, and air sealing. Written scope and a number back by the next business day, insured, and every bay photographed before drywall.",
       url: `${BASE_URL}/builders`,
       provider: { "@id": `${BASE_URL}/#business` },
       audience: { "@type": "Audience", audienceType: "Home builders and general contractors" },
@@ -284,9 +284,10 @@ export default function BuildersPage() {
               color: C.inkSoft,
             }}
           >
-            Insulation for new single-family construction across Gaston and Mecklenburg County.
-            Plans in, written scope back within two business days, and a photo set of every bay
-            before it disappears behind drywall.
+              Insulation subcontracting for new construction, renovation and tenant work across the
+              Charlotte metro. Send the drawings and you get a written scope and a number back by
+              the next business day, plus a photo set of every bay before it disappears behind
+              drywall.
           </p>
         </article>
 
@@ -301,7 +302,12 @@ export default function BuildersPage() {
           <section style={{ borderTop: `1.5px solid ${C.navy}`, paddingTop: "clamp(22px, 3vh, 30px)" }}>
             <h2 style={h2}>Schedule, and what we can hold</h2>
             <p style={para}>
-              Send plans and you get a written scope and a number back within two business days. If
+              Send plans and you get a written scope and a number back by the next business day.
+              Every bid comes as a scope letter, not just a figure: inclusions, exclusions,
+              clarifications, and any alternates priced separately, so it drops into your bid tab
+              without you having to level it first. We buy our materials direct from a distributor,
+              and the person who prices the job is on site when it gets built, which is why the
+              number holds between bid and build. If
               we cannot hit the window you need, we will say so in that reply rather than take the
               job and slip it. A missed insulation date stalls drywall and everything behind it, and
               we would rather lose a bid than be that trade.
@@ -713,8 +719,8 @@ export default function BuildersPage() {
           <section style={sectionWide}>
             <h2 style={h2}>Who is actually on your site</h2>
             <p style={{ ...para, marginBottom: 0 }}>
-              An owner is on site for every job, start to finish, and signs off on the work before
-              it is covered. Tony Kermis is a former North Carolina home inspector, which is where
+              An owner, or a directly supervised team member, is on every job, and an owner signs
+              off on the work before it is covered. Tony Kermis is a former North Carolina home inspector, which is where
               the documentation habit comes from. Grade I is a function of supervision and care
               rather than headcount, and keeping an owner on the work is how we hold that standard
               on a builder&apos;s schedule.
@@ -727,8 +733,7 @@ export default function BuildersPage() {
               <strong style={{ color: C.navy }}>We do not install spray foam.</strong> If your
               assembly is specified for closed-cell or open-cell foam, we are not your sub for that
               scope, and we would rather tell you now than waste a bid cycle. Rigid board at the rim
-              is a different product and we do install that. We also do not currently take on
-              multifamily or commercial work.
+              is a different product and we do install that.
             </p>
           </section>
 
@@ -757,8 +762,9 @@ export default function BuildersPage() {
               ))}
             </p>
             <p style={{ margin: "1rem 0 0", fontFamily: "var(--font-dm-sans)", fontSize: "0.9rem", color: C.inkSoft }}>
-              Building outside that list in Gaston or Mecklenburg County? Ask. If the schedule
-              works, we travel.
+              That list is where we work day to day. For new construction, commercial and tenant
+              bids there is no radius: mobilisation is a line item, not a reason to say no. Send
+              the set to team@caroluxinsulation.com and we will price it.
             </p>
           </section>
         </article>
@@ -793,8 +799,8 @@ export default function BuildersPage() {
               }}
             >
               Drawings, lot count, the start date you are working toward, and your target programme
-              if you are chasing one. Written scope and a number back within two business days. If
-              the scope calls for something we do not install, we will say so in the reply instead
+              if you are chasing one. Written scope and a number back by the next business day, as
+              a scope letter with inclusions, exclusions and clarifications spelled out. If
               of bidding around it.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>

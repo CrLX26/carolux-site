@@ -34,17 +34,17 @@ const ASSEMBLIES = [
 
 const BLOCKS = [
   ["Response and schedule",
-   "Written scope and price within two business days of receiving plans. If we cannot hold the window you need, you get that in the same reply rather than a slipped date later."],
+   "Written scope and price by the next business day after receiving plans. Every bid is a scope letter: inclusions, exclusions, clarifications, and any alternates priced separately. If we cannot hold the window you need, you get that in the same reply rather than a slipped date later."],
   ["Documentation",
    "Every bay photographed with a depth reference before it is covered. The photo set is delivered to the builder, so what is behind the drywall stays on record."],
   ["Quality standard",
    "Installed to the RESNET Grade I standard as defined in ANSI/RESNET/ICC 301. A HERS rater assigns the grade; we install to the standard and document it. No installer can promise a HERS score, a blower-door result, or a code-compliance outcome."],
   ["Personnel",
-   "An owner is on site for every job, start to finish, and signs off before the work is covered. Tony Kermis is a former North Carolina home inspector."],
+   "An owner, or a directly supervised team member, is on every job, and an owner signs off before the work is covered. Tony Kermis is a former North Carolina home inspector."],
   ["Insurance and paperwork",
    "General liability insurance; certificate of insurance on request or with the bid. W-9 on request. Carolux Insulation LLC, a North Carolina limited liability company. All work carries a 2-year workmanship guarantee."],
   ["Not offered",
-   "Spray foam, closed-cell or open-cell. Multifamily and commercial work."],
+   "Spray foam, closed-cell or open-cell."],
 ];
 
 const cities = CITY_LINKS.map((c) => c.name).join(", ");
@@ -102,9 +102,9 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
 
 <section>
   <h2>Scope</h2>
-  <p>Insulation for new single-family residential construction. Attic and ceiling, exterior
-  and interior walls, floors over crawl space, rim and band joists, crawl space ground vapor
-  barrier, and air sealing.</p>
+  <p>Insulation subcontracting for new construction, renovation and tenant work. Attic and
+  ceiling, exterior and interior walls, floors over crawl space, rim and band joists, crawl
+  space ground vapor barrier, and air sealing.</p>
 </section>
 
 <div class="cols">
@@ -123,8 +123,9 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
 
 <section>
   <h2>Service area</h2>
-  <p>Gaston and Mecklenburg County, NC: ${cities}. Building elsewhere in those counties?
-  Ask, and if the schedule works we travel.</p>
+  <p>Day to day: ${cities}. For new construction, commercial and tenant bids there is no
+  radius. Mobilisation is a line item, not a reason to say no. Send the set and we will
+  price it.</p>
 </section>
 
 <footer><span>Carolux Insulation LLC &middot; Gaston &amp; Mecklenburg County, NC</span>
