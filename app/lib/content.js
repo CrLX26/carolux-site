@@ -281,6 +281,13 @@ export const REVIEWS_LIVE = true;
 
 export const REVIEWS = [
   {
+    name: "Bradford V.",
+    source: "Google review",
+    rating: 5,
+    text:
+      "Carolux Insulation did an excellent job!  Both Tony and Juan were professional, communicative, timely, and neat. They identified insulation problems, came up with creative and cost effective solutions, showed up on time and completed the job ad proposed. Highly recommend.",
+  },
+  {
     name: "Ben S.",
     source: "Google review",
     rating: 5,
@@ -288,11 +295,18 @@ export const REVIEWS = [
       "You will make an excellent choice if you have Carolux provide insulation services for your home. Juan and Tony are reputable, knowledgeable, punctual, thorough and work efficiently with great integrity. I am beyond pleased with every step of the job, from bid to completion. Thank you guys!",
   },
   {
-    name: "Marely D.",
+    name: "Yuliani S.",
     source: "Google review",
     rating: 5,
     text:
-      "Carolux was great! They showed up on time and gave me a quote the same day. I live in an older home (1970s) the remover all of the old insulation and air sealed the attic and installed upgraded insulation. Time will tell but I have noticed my air conditioning haven’t been running as much since the new installation.",
+      "We had a great experience with Carolux Insulation. From start to finish, the team was professional, knowledgeable, friendly, and dedicated to providing excellent service.The quality of their workmanship speaks for itself, it’s clear that this team goes above and beyond to make sure every job is done right. Their prices are very reasonable, excellent service with all our questions and requirements, affordable prices, and amazing results. Thanks again!!!",
+  },
+  {
+    name: "Chase R.",
+    source: "Google review",
+    rating: 5,
+    text:
+      "They’re amazing! Pros & very knowledgeable they cleaned up everything before they left! Top notch customer service! Thanks guys !",
   },
   {
     name: "Linda M.",
@@ -300,6 +314,13 @@ export const REVIEWS = [
     rating: 5,
     text:
       "I got a free estimate to see if I could get new insulation in our attic, and the price was better than other places I tried. Juan and Tony were helpful, answered all our questions and guided us through the whole process. I’m sure I’m going to safe some money this summer 💸 the room next to the attic feels Way cooler. Good customer service, fast, efficient and good pricing.",
+  },
+  {
+    name: "Marely D.",
+    source: "Google review",
+    rating: 5,
+    text:
+      "Carolux was great! They showed up on time and gave me a quote the same day. I live in an older home (1970s) the remover all of the old insulation and air sealed the attic and installed upgraded insulation. Time will tell but I have noticed my air conditioning haven’t been running as much since the new installation.",
   },
 ];
 
