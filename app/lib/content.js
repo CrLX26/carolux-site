@@ -295,20 +295,6 @@ export const REVIEWS = [
       "You will make an excellent choice if you have Carolux provide insulation services for your home. Juan and Tony are reputable, knowledgeable, punctual, thorough and work efficiently with great integrity. I am beyond pleased with every step of the job, from bid to completion. Thank you guys!",
   },
   {
-    name: "Yuliani S.",
-    source: "Google review",
-    rating: 5,
-    text:
-      "We had a great experience with Carolux Insulation. From start to finish, the team was professional, knowledgeable, friendly, and dedicated to providing excellent service.The quality of their workmanship speaks for itself, it’s clear that this team goes above and beyond to make sure every job is done right. Their prices are very reasonable, excellent service with all our questions and requirements, affordable prices, and amazing results. Thanks again!!!",
-  },
-  {
-    name: "Chase R.",
-    source: "Google review",
-    rating: 5,
-    text:
-      "They’re amazing! Pros & very knowledgeable they cleaned up everything before they left! Top notch customer service! Thanks guys !",
-  },
-  {
     name: "Linda M.",
     source: "Google review",
     rating: 5,
